@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const params = new URLSearchParams(window.location.search);
     const serviceParam = params.get('service');
 
-    redirectHome.value = new URL('index.html', window.location.href).href;
+    redirectHome.value = './index.html';
 
     if (serviceParam) {
         const matchingOption = Array.from(serviceSelect.options).find(function (option) {
