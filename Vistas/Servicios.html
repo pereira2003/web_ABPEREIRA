@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Services | AB Pereira Company</title>
+  <link rel="preload" href="../styles/menu.css?v=3" as="style">
+  <link rel="stylesheet" href="../styles/menu.css?v=3">
+  <link rel="preload" href="../styles/style.css?v=14" as="style">
+  <link rel="stylesheet" href="../styles/style.css?v=14">
+  <link rel="preload" href="../styles/Servicios.css?v=3" as="style">
+  <link rel="stylesheet" href="../styles/Servicios.css?v=3">
+</head>
+
+<body>
+  <header class="page-header">
+  <!-- AB Pereira Company — Navigation Menu -->
+  <div class="menu container" id="site-menu">
+    <a href="index.html" class="logo" aria-label="AB Pereira Company home">
+      <img src="../img/ABPEREIRA L.png" alt="AB Pereira Company logo" class="logo-img" decoding="async" fetchpriority="high">
+      <span>AB Pereira Company</span>
+    </a>
+
+    <button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false" aria-controls="mainNav">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+
+    <nav class="navbar" id="mainNav" aria-label="Primary navigation">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="Servicios.html">Services</a></li>
+        <li><a href="Contact.html">Contact</a></li>
+      </ul>
+    </nav>
+
+    <!-- Full-screen mobile overlay -->
+    <div class="nav-overlay" id="navOverlay" aria-hidden="true">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="Servicios.html">Services</a></li>
+        <li><a href="Contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+
+    <div class="page-hero container">
+      <p class="eyebrow">Services</p>
+      <h1>Refined repair services designed to solve real problems beautifully.</h1>
+      <p>Choose the service you need and request a quote with the same visual clarity and care we bring to the work itself.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="services-grid" aria-label="List of home repair services">
+      <article class="service-card" tabindex="0" data-service="0" aria-describedby="popover-0-desc" aria-haspopup="dialog">
+        <img class="service-image" src="../img/Galeria 4.png" alt="Roof Repair" loading="lazy">
+        <div class="service-content">
+          <div>
+            <span class="service-tag">Exterior</span>
+            <h2 class="service-title">Roof Repair</h2>
+            <div class="service-price">From $250</div>
+            <p class="service-description">Repairs and maintenance for worn roofs, leaks, and exposed areas that need reliable protection.</p>
+          </div>
+          <div class="service-actions">
+            <button class="like-button" aria-pressed="false" aria-label="Like roof repair">
+              <svg class="like-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+              </svg>
+              <span class="like-count">0</span>
+            </button>
+            <a href="Contact.html?service=Roof%20Repair" class="cotizar-button" aria-label="Request quote for roof repair">Request Quote</a>
+          </div>
+        </div>
+        <div class="popover" id="popover-0" role="dialog" aria-modal="false" aria-labelledby="popover-0-title">
+          <h3 id="popover-0-title">Roof Repair</h3>
+          <p id="popover-0-desc">A focused service for leaks, reinforcement, and repairs that restore both appearance and protection.</p>
+        </div>
+      </article>
+
+      <article class="service-card" tabindex="0" data-service="1" aria-describedby="popover-1-desc" aria-haspopup="dialog">
+        <img class="service-image" src="../img/Galeria 1.png" alt="Painting and Finishes" loading="lazy">
+        <div class="service-content">
+          <div>
+            <span class="service-tag">Interior and Exterior</span>
+            <h2 class="service-title">Painting and Finishes</h2>
+            <div class="service-price">From $150</div>
+            <p class="service-description">Careful preparation, clean application, and finish work that elevates the overall feel of the space.</p>
+          </div>
+          <div class="service-actions">
+            <button class="like-button" aria-pressed="false" aria-label="Like painting and finishes">
+              <svg class="like-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+              </svg>
+              <span class="like-count">0</span>
+            </button>
+            <a href="Contact.html?service=Painting%20and%20Finishes" class="cotizar-button" aria-label="Request quote for painting and finishes">Request Quote</a>
+          </div>
+        </div>
+        <div class="popover" id="popover-1" role="dialog" aria-modal="false" aria-labelledby="popover-1-title">
+          <h3 id="popover-1-title">Painting and Finishes</h3>
+          <p id="popover-1-desc">Ideal for renovation work that needs fresh color, better presentation, and a cleaner finish throughout.</p>
+        </div>
+      </article>
+
+      <article class="service-card" tabindex="0" data-service="2" aria-describedby="popover-2-desc" aria-haspopup="dialog">
+        <img class="service-image" src="../img/Galeria 2.png" alt="Electrical Installation" loading="lazy">
+        <div class="service-content">
+          <div>
+            <span class="service-tag">Technical Work</span>
+            <h2 class="service-title">Electrical Installation</h2>
+            <div class="service-price">From $300</div>
+            <p class="service-description">Safe and reliable electrical work for upgrades, corrections, and installations that need lasting performance.</p>
+          </div>
+          <div class="service-actions">
+            <button class="like-button" aria-pressed="false" aria-label="Like electrical installation">
+              <svg class="like-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+              </svg>
+              <span class="like-count">0</span>
+            </button>
+            <a href="Contact.html?service=Electrical%20Installation" class="cotizar-button" aria-label="Request quote for electrical installation">Request Quote</a>
+          </div>
+        </div>
+        <div class="popover" id="popover-2" role="dialog" aria-modal="false" aria-labelledby="popover-2-title">
+          <h3 id="popover-2-title">Electrical Installation</h3>
+          <p id="popover-2-desc">A practical service for structured electrical improvements completed with care, safety, and clean presentation.</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="services-note">
+      <div>
+        <p class="eyebrow eyebrow-dark">Why Clients Choose Us</p>
+        <h2>Each service is built around organization, durability, and a refined final result.</h2>
+      </div>
+      <p>Our work is not only about solving the issue. It is also about leaving the property in a better condition visually, structurally, and professionally.</p>
+    </section>
+  </main>
+
+  <script src="../javascript/menu.js?v=2"></script>
+  <script src="../javascript/services.js?v=2"></script>
+</body>
+
+</html>
+

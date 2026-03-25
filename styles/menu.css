@@ -1,0 +1,172 @@
+/* =============================================
+   AB Pereira Company — Menu Component Styles
+   ============================================= */
+
+/* ── Base menu bar ── */
+.menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 0;
+    position: relative;
+    z-index: 1000;
+}
+
+/* ── Logo ── */
+.logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    position: relative;
+    z-index: 1100;
+}
+
+.logo-img {
+    width: 72px;
+}
+
+.logo span {
+    color: #ffffff;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+}
+
+/* ── Desktop navbar ── */
+.navbar {
+    display: flex;
+    align-items: center;
+}
+
+.navbar ul {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar li {
+    list-style: none;
+}
+
+.navbar a {
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.navbar a:hover {
+    color: #be945d;
+}
+
+.navbar a:focus-visible {
+    color: #be945d;
+    outline: 2px solid rgba(190, 148, 93, 0.45);
+    outline-offset: 3px;
+}
+
+/* ── Hamburger toggle button ── */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    position: relative;
+    z-index: 1100;
+}
+
+.hamburger-line {
+    display: block;
+    width: 26px;
+    height: 2px;
+    background: #ffffff;
+    border-radius: 2px;
+    transition: transform 0.35s ease, opacity 0.25s ease, width 0.25s ease;
+    transform-origin: center;
+}
+
+/* ── X icon when open ── */
+.menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(2) {
+    opacity: 0;
+    width: 0;
+}
+
+.menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ── Full-screen overlay ── */
+.nav-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+    background: #0c1d34;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+}
+
+.nav-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.nav-overlay ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 2.2rem;
+}
+
+.nav-overlay a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 8vw, 4rem);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.88);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    transition: color 0.2s ease;
+}
+
+.nav-overlay a:hover {
+    color: #be945d;
+}
+
+/* ── Responsive: show hamburger below 768 px ── */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+    }
+
+    .navbar {
+        display: none;
+    }
+
+    .nav-overlay {
+        display: flex;
+    }
+}

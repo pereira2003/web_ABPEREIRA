@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | AB Pereira Company</title>
+    <link rel="preload" href="../styles/menu.css?v=3" as="style">
+    <link rel="stylesheet" href="../styles/menu.css?v=3">
+    <link rel="preload" href="../styles/style.css?v=14" as="style">
+    <link rel="stylesheet" href="../styles/style.css?v=14">
+    <link rel="preload" href="../styles/styleContact.css?v=4" as="style">
+    <link rel="stylesheet" href="../styles/styleContact.css?v=4">
+</head>
+
+<body>
+    <header class="page-header">
+        <!-- AB Pereira Company — Navigation Menu -->
+        <div class="menu container" id="site-menu">
+            <a href="index.html" class="logo" aria-label="AB Pereira Company home">
+                <img src="../img/ABPEREIRA L.png" alt="AB Pereira Company logo" class="logo-img" decoding="async" fetchpriority="high">
+                <span>AB Pereira Company</span>
+            </a>
+
+            <button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false" aria-controls="mainNav">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+
+            <nav class="navbar" id="mainNav" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="Servicios.html">Services</a></li>
+                    <li><a href="Contact.html">Contact</a></li>
+                </ul>
+            </nav>
+
+            <!-- Full-screen mobile overlay -->
+            <div class="nav-overlay" id="navOverlay" aria-hidden="true">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="Servicios.html">Services</a></li>
+                    <li><a href="Contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main class="container contact-shell">
+        <section class="form-contact">
+            <div class="contact-intro">
+                <p class="eyebrow">Contact</p>
+                <div class="intro-copy">
+                    <h1>Tell us what you need and we will guide the next step clearly.</h1>
+                    <p>Use the form to request a quote or describe the repair you need. We keep the process direct, organized, and easy to follow.</p>
+                </div>
+
+                <div class="contact-highlights">
+                    <div class="highlight-item">
+                        <span class="highlight-label">Clear quotes</span>
+                        <span class="highlight-value">Simple request flow with the right project details.</span>
+                    </div>
+                    <div class="highlight-item">
+                        <span class="highlight-label">Service-based inquiry</span>
+                        <span class="highlight-value">Choose the service first so the request arrives better organized.</span>
+                    </div>
+                    <div class="highlight-item">
+                        <span class="highlight-label">Fast follow-up</span>
+                        <span class="highlight-value">We can review your information and respond with a clearer next step.</span>
+                    </div>
+                </div>
+            </div>
+
+            <form class="contact-form" action="https://formsubmit.co/pereiraabrahan20@gmail.com" method="POST">
+                <input type="hidden" name="_next" id="redirect-home">
+
+                <div class="form-section-heading">
+                    <h2>Project Details</h2>
+                    <p>Complete the form and we will redirect you to the homepage after sending your request.</p>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" name="name" id="name" placeholder="Your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Number</label>
+                        <input type="tel" name="phone" id="phone" placeholder="Your phone number" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" id="email" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="service">Service</label>
+                        <select name="service" id="service" required>
+                            <option value="" disabled selected>Select a service</option>
+                            <option value="Roof Repair">Roof Repair</option>
+                            <option value="Painting and Finishes">Painting and Finishes</option>
+                            <option value="Electrical Installation">Electrical Installation</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group form-group-full">
+                    <label for="subject">Subject</label>
+                    <input type="text" name="subject" id="subject" placeholder="Short description of the request" required>
+                </div>
+
+                <div class="form-group form-group-full">
+                    <label for="comments">Comments</label>
+                    <textarea name="comments" id="comments" rows="5" placeholder="Write a brief description of the job or service you need" required></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <input class="btn" type="submit" value="Send Message">
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="../javascript/menu.js?v=2"></script>
+    <script src="../javascript/contact.js?v=2"></script>
+</body>
+
+</html>

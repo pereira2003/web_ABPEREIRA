@@ -1,0 +1,228 @@
+/* ── Contact Page Specific Styles ── */
+
+.page-header {
+    padding: 1.3rem 0;
+    background: linear-gradient(180deg, #0c1d34 0%, #17365f 100%);
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0.75rem 1.2rem;
+    border-radius: 999px;
+    background: #0f3f79;
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow: 0 10px 24px rgba(15, 63, 121, 0.18);
+}
+
+.contact-shell {
+    padding: 1.5rem 0 4rem;
+}
+
+.form-contact {
+    display: grid;
+    grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+    gap: 2rem;
+    padding: 1.4rem;
+    border-radius: 32px;
+    background: #fcfdff;
+    border: 1px solid var(--color-line);
+    box-shadow: var(--shadow-card);
+}
+
+.contact-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    padding: 2rem;
+    border-radius: 26px;
+    background: linear-gradient(180deg, #0c1d34 0%, #17365f 100%);
+    color: #ffffff;
+}
+
+h1,
+h2 {
+    font-family: 'Cormorant Garamond', serif;
+    letter-spacing: -0.03em;
+}
+
+h1 {
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    line-height: 0.98;
+    margin-bottom: 1rem;
+}
+
+.intro-copy p,
+.form-section-heading p,
+.highlight-value {
+    line-height: 1.85;
+}
+
+.intro-copy p {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.contact-highlights {
+    display: grid;
+    gap: 0.9rem;
+}
+
+.highlight-item {
+    padding: 1rem 1.1rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.highlight-label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.68);
+}
+
+.highlight-value {
+    color: #ffffff;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 2rem;
+    border-radius: 26px;
+    background: #ffffff;
+    border: 1px solid var(--color-line);
+}
+
+.form-section-heading {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.form-section-heading h2 {
+    margin-bottom: 0.35rem;
+    font-size: 2.1rem;
+    color: var(--color-ink);
+}
+
+.form-section-heading p {
+    color: var(--color-ink-soft);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+label {
+    font-size: 0.94rem;
+    font-weight: 700;
+    color: var(--color-ink);
+}
+
+input:not([type="hidden"]),
+select,
+textarea {
+    width: 100%;
+    border: 1px solid #d8e0eb;
+    border-radius: 16px;
+    background: var(--color-surface);
+    color: var(--color-ink);
+    padding: 1rem 1.05rem;
+    font: inherit;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+input:not([type="hidden"])::placeholder,
+textarea::placeholder {
+    color: #8aa0bc;
+}
+
+select {
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, #6281a9 50%), linear-gradient(135deg, #6281a9 50%, transparent 50%);
+    background-position: calc(100% - 22px) calc(50% - 3px), calc(100% - 16px) calc(50% - 3px);
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 3rem;
+    cursor: pointer;
+}
+
+select:invalid {
+    color: #8aa0bc;
+}
+
+textarea {
+    min-height: 180px;
+    resize: vertical;
+}
+
+input:not([type="hidden"]):focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #7aa2d6;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: 0.9rem 1.5rem;
+    border: none;
+    border-radius: 999px;
+    background: #0f3f79;
+    color: #ffffff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 14px 30px rgba(15, 63, 121, 0.22);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 991px) {
+    .form-contact {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-intro,
+    .contact-form {
+        padding: 1.4rem;
+    }
+
+    .back-button,
+    .btn {
+        width: 100%;
+    }
+
+    .form-actions {
+        justify-content: stretch;
+    }
+}
