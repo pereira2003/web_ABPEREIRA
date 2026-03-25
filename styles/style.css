@@ -684,15 +684,15 @@ main {
     }
 
     .carousel-control {
-        top: auto;
-        bottom: 4.5rem;
+        top: 50%;
+        bottom: auto;
         width: 46px;
         height: 46px;
-        transform: none;
+        transform: translateY(-50%);
     }
 
     .carousel-control:hover {
-        transform: scale(1.04);
+        transform: translateY(-50%) scale(1.04);
     }
 
     .carousel-control-prev {
