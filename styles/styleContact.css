@@ -1,10 +1,5 @@
 /* ── Contact Page Specific Styles ── */
 
-.page-header {
-    padding: 1.3rem 0;
-    background: var(--menu-bg);
-}
-
 .back-button {
     display: inline-flex;
     align-items: center;
@@ -191,7 +186,7 @@ textarea:focus {
     padding: 0.9rem 1.5rem;
     border: none;
     border-radius: 999px;
-    background: #0f3f79;
+    background: #0c3363;
     color: #ffffff;
     font: inherit;
     font-weight: 700;
@@ -199,9 +194,20 @@ textarea:focus {
     box-shadow: 0 14px 30px rgba(15, 63, 121, 0.22);
 }
 
+.btn:hover,
+.btn:focus-visible {
+    background: #0a2a52;
+    color: #ffffff;
+}
+
 .form-actions {
     display: flex;
     justify-content: flex-end;
+}
+
+.form-actions .btn {
+    opacity: 1;
+    visibility: visible;
 }
 
 @media (max-width: 991px) {
