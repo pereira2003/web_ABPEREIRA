@@ -684,11 +684,7 @@ main {
     }
 
     .carousel-control {
-        top: 50%;
-        bottom: auto;
-        width: 46px;
-        height: 46px;
-        transform: translateY(-50%);
+        display: none;
     }
 
     .carousel-control:hover {
