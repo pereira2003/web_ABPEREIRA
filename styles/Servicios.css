@@ -1,9 +1,13 @@
 /* ── Services Page Specific Styles ── */
 
 .page-header {
-  padding: 1.3rem 0 4.2rem;
-  background: linear-gradient(180deg, #0c1d34 0%, #17365f 100%);
+  padding: 1.3rem 0;
+  background: var(--menu-bg);
   color: var(--color-white);
+}
+
+.page-header-hero {
+  padding: 0 0 4.2rem;
 }
 
 .page-hero {

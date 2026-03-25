@@ -2,7 +2,7 @@
 
 .page-header {
     padding: 1.3rem 0;
-    background: linear-gradient(180deg, #0c1d34 0%, #17365f 100%);
+    background: var(--menu-bg);
 }
 
 .back-button {

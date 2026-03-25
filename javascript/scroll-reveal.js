@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     const revealGroups = [
-        { selector: '.menu', step: 0 },
         { selector: '.hero-copy > *', step: 90 },
         { selector: '.page-hero > *', step: 95 },
         { selector: '.hero-panel', step: 0 },
@@ -14,8 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
         { selector: '.services-note > *', step: 110 },
         { selector: '.cta-content > *', step: 105 },
         { selector: '.footer-brand', step: 0 },
-        { selector: '.footer .link', step: 90 },
-        { selector: '.copyright', step: 0 }
+        { selector: '.footer .link', step: 90 }
     ];
 
     const seen = new Set();
