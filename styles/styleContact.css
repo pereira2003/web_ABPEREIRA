@@ -31,6 +31,7 @@
     background: #fcfdff;
     border: 1px solid var(--color-line);
     box-shadow: var(--shadow-card);
+    overflow: hidden;
 }
 
 .contact-intro {
@@ -41,6 +42,7 @@
     border-radius: 26px;
     background: linear-gradient(180deg, #0c1d34 0%, #17365f 100%);
     color: #ffffff;
+    min-width: 0;
 }
 
 h1,
@@ -126,6 +128,7 @@ h1 {
     display: flex;
     flex-direction: column;
     gap: 0.45rem;
+    min-width: 0;
 }
 
 label {
@@ -202,19 +205,63 @@ textarea:focus {
 }
 
 @media (max-width: 991px) {
+    .contact-shell {
+        padding: 1.1rem 0 3rem;
+    }
+
     .form-contact {
         grid-template-columns: 1fr;
+        gap: 1.1rem;
+        padding: 1rem;
+        border-radius: 24px;
+    }
+
+    h1 {
+        font-size: clamp(2.2rem, 10vw, 3.2rem);
+        line-height: 1.02;
     }
 }
 
 @media (max-width: 640px) {
+    .contact-shell {
+        padding: 0.9rem 0 2.2rem;
+    }
+
+    .form-contact {
+        padding: 0.8rem;
+        border-radius: 20px;
+    }
+
     .form-row {
         grid-template-columns: 1fr;
+        gap: 0.85rem;
     }
 
     .contact-intro,
     .contact-form {
-        padding: 1.4rem;
+        padding: 1.15rem;
+        border-radius: 18px;
+    }
+
+    .form-section-heading h2 {
+        font-size: 1.75rem;
+    }
+
+    .form-section-heading p,
+    .intro-copy p,
+    .highlight-value {
+        line-height: 1.65;
+    }
+
+    input:not([type="hidden"]),
+    select,
+    textarea {
+        border-radius: 14px;
+        padding: 0.9rem 0.95rem;
+    }
+
+    textarea {
+        min-height: 150px;
     }
 
     .back-button,
