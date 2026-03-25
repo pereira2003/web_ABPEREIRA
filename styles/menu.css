@@ -7,7 +7,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.25rem 0;
+    padding: 2rem 0;
     position: relative;
     z-index: 1000;
 }
@@ -16,7 +16,7 @@
 .logo {
     display: inline-flex;
     align-items: center;
-    gap: 0.9rem;
+    gap: 1rem;
     font-weight: 700;
     letter-spacing: 0.04em;
     text-decoration: none;
@@ -25,12 +25,12 @@
 }
 
 .logo-img {
-    width: 72px;
+    width: 98px;
 }
 
 .logo span {
     color: #ffffff;
-    font-size: 0.95rem;
+    font-size: 1.14rem;
     text-transform: uppercase;
 }
 
@@ -43,7 +43,7 @@
 .navbar ul {
     display: flex;
     align-items: center;
-    gap: 1.2rem;
+    gap: 1.9rem;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -55,7 +55,7 @@
 
 .navbar a {
     color: rgba(255, 255, 255, 0.88);
-    font-size: 0.95rem;
+    font-size: 1.16rem;
     font-weight: 600;
     text-decoration: none;
     transition: color 0.2s ease;
@@ -158,8 +158,26 @@
 
 /* ── Responsive: show hamburger below 768 px ── */
 @media (max-width: 768px) {
+    .menu {
+        padding: 1.2rem 0;
+    }
+
+    .logo {
+        gap: 0.75rem;
+    }
+
+    .logo-img {
+        width: 78px;
+    }
+
+    .logo span {
+        font-size: 0.98rem;
+    }
+
     .menu-toggle {
         display: flex;
+        width: 44px;
+        height: 44px;
     }
 
     .navbar {
