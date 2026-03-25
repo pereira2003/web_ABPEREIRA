@@ -1,12 +1,11 @@
 document.addEventListener('DOMContentLoaded', function () {
     const redirectHome = document.getElementById('redirect-home');
     const serviceSelect = document.getElementById('service');
+    const emailSubject = document.getElementById('email-subject');
+    const requestDate = document.getElementById('request-date');
     const form = document.querySelector('.contact-form');
     const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
     const subjectInput = document.getElementById('subject');
-    const commentsInput = document.getElementById('comments');
-    const phoneInput = document.getElementById('phone');
 
     if (!redirectHome || !serviceSelect) {
         return;
@@ -27,44 +26,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Format email submission with elegant structure
+    if (requestDate) {
+        requestDate.value = new Date().toLocaleString();
+    }
+
+    // Keep all form fields intact and generate a professional subject line.
     if (form) {
-        form.addEventListener('submit', function (e) {
-            // Collect all form data
-            const clientName = nameInput.value || 'Not provided';
-            const clientEmail = emailInput.value || 'Not provided';
-            const clientPhone = phoneInput.value || 'Not provided';
-            const selectedService = serviceSelect.value || 'Not specified';
-            const requestSubject = subjectInput.value || 'Service Request';
-            const clientComments = commentsInput.value || 'No additional details provided';
+        form.addEventListener('submit', function () {
+            if (!emailSubject) {
+                return;
+            }
 
-            // Create formatted message with clean structure
-            const formattedMessage = `
-═══════════════════════════════════
-       NEW SERVICE REQUEST
-═══════════════════════════════════
+            const clientName = nameInput && nameInput.value ? nameInput.value.trim() : 'Client';
+            const selectedService = serviceSelect && serviceSelect.value ? serviceSelect.value : 'General Inquiry';
+            const requestTopic = subjectInput && subjectInput.value ? subjectInput.value.trim() : 'Service Request';
 
-CLIENT INFORMATION
-─────────────────────────────────────
-Name:              ${clientName}
-Email:             ${clientEmail}
-Phone:             ${clientPhone}
-
-REQUEST DETAILS
-─────────────────────────────────────
-Service:           ${selectedService}
-Subject:           ${requestSubject}
-
-MESSAGE
-─────────────────────────────────────
-${clientComments}
-
-═══════════════════════════════════
-Sent from AB Pereira Company Contact Form
-===════════════════════════════════`;
-
-            // Replace comments with formatted message
-            commentsInput.value = formattedMessage;
+            emailSubject.value = 'New ' + selectedService + ' request | ' + clientName + ' | ' + requestTopic;
         });
     }
 });
