@@ -94,7 +94,8 @@
 
 .navbar a:hover,
 .navbar a:focus-visible {
-    background: var(--menu-accent);
+    background-color: var(--menu-accent);
+    opacity: 1;
     color: var(--menu-bg);
     outline: none;
     transform: translateY(-1px);
@@ -187,7 +188,8 @@
 
 .nav-overlay a:hover,
 .nav-overlay a:focus-visible {
-    background: var(--menu-accent);
+    background-color: var(--menu-accent);
+    opacity: 1;
     border-color: var(--menu-accent-strong);
     color: var(--menu-bg);
     outline: none;
@@ -325,6 +327,24 @@
 
 @media (hover: none) and (pointer: coarse) {
     .menu-toggle:hover {
+        transform: none;
+    }
+
+    .nav-overlay a:hover,
+    .nav-overlay a:active {
+        background-color: var(--menu-accent);
+        opacity: 1;
+        border-color: var(--menu-accent-strong);
+        color: var(--menu-bg);
+        transform: none;
+        box-shadow: 0 8px 18px rgba(190, 148, 93, 0.28);
+    }
+
+    .navbar a:hover,
+    .navbar a:active {
+        background-color: var(--menu-accent);
+        opacity: 1;
+        color: var(--menu-bg);
         transform: none;
     }
 }
