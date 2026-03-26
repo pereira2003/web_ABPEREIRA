@@ -72,6 +72,59 @@ a {
     outline-offset: 2px;
 }
 
+.home-toast {
+    position: fixed;
+    top: 1.2rem;
+    right: 1.2rem;
+    z-index: 220;
+    width: min(360px, calc(100% - 2rem));
+    display: grid;
+    gap: 0.5rem;
+    padding: 0.9rem 1rem;
+    border-radius: 18px;
+    border: 1px solid rgba(16, 35, 63, 0.18);
+    background: linear-gradient(145deg, rgba(12, 35, 66, 0.96) 0%, rgba(25, 63, 109, 0.95) 70%, rgba(190, 148, 93, 0.92) 100%);
+    color: #ffffff;
+    box-shadow: 0 18px 34px rgba(16, 35, 63, 0.28);
+    transform: translate3d(0, -14px, 0);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    backdrop-filter: blur(8px);
+}
+
+.home-toast-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+.home-toast-badge {
+    width: fit-content;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #10233f;
+    background: linear-gradient(145deg, #f1dfc4 0%, #be945d 100%);
+    border-radius: 999px;
+    padding: 0.24rem 0.55rem;
+}
+
+.home-toast p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.96);
+}
+
+@media (max-width: 640px) {
+    .home-toast {
+        top: auto;
+        bottom: 1rem;
+        right: 1rem;
+        border-radius: 16px;
+    }
+}
+
 .container {
     width: min(1180px, calc(100% - 2rem));
     margin: 0 auto;

@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const redirectHome = document.getElementById('redirect-home');
     const serviceSelect = document.getElementById('service');
     const emailSubject = document.getElementById('email-subject');
-    const requestDate = document.getElementById('request-date');
     const form = document.querySelector('.contact-form');
     const nameInput = document.getElementById('name');
     const subjectInput = document.getElementById('subject');
@@ -26,10 +25,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (matchingOption) {
             serviceSelect.value = serviceParam;
         }
-    }
-
-    if (requestDate) {
-        requestDate.value = new Date().toLocaleString();
     }
 
     function setStatus(message, state) {
@@ -86,10 +81,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .then(function () {
                     setStatus('Your request was sent successfully. Redirecting...', 'success');
-                    if (window.ContactAlerts && typeof window.ContactAlerts.showSuccessAlert === 'function') {
-                        window.ContactAlerts.showSuccessAlert('Formulario enviado correctamente.');
-                    } else {
-                        window.alert('Formulario enviado correctamente.');
+                    if (window.ContactAlerts && typeof window.ContactAlerts.markSuccessForHome === 'function') {
+                        window.ContactAlerts.markSuccessForHome('Formulario enviado correctamente.');
                     }
                     form.reset();
 
