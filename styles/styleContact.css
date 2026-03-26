@@ -210,6 +210,30 @@ textarea:focus {
     visibility: visible;
 }
 
+.form-actions .btn:disabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+}
+
+.form-status {
+    min-height: 1.2rem;
+    margin: -0.35rem 0 0;
+    font-size: 0.92rem;
+    font-weight: 600;
+}
+
+.form-status.pending {
+    color: #3b5f8d;
+}
+
+.form-status.success {
+    color: #1f7a42;
+}
+
+.form-status.error {
+    color: #b3261e;
+}
+
 @media (max-width: 991px) {
     .contact-shell {
         padding: 1.1rem 0 3rem;
