@@ -86,6 +86,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .then(function () {
                     setStatus('Your request was sent successfully. Redirecting...', 'success');
+                    if (window.ContactAlerts && typeof window.ContactAlerts.showSuccessAlert === 'function') {
+                        window.ContactAlerts.showSuccessAlert('Formulario enviado correctamente.');
+                    } else {
+                        window.alert('Formulario enviado correctamente.');
+                    }
                     form.reset();
 
                     window.setTimeout(function () {
