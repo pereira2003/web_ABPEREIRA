@@ -104,18 +104,18 @@
 
 .menu-toggle {
     display: none;
-    width: 46px;
-    height: 46px;
+    width: 50px;
+    height: 50px;
     padding: 0;
     border: 1px solid var(--menu-border);
-    border-radius: 14px;
+    border-radius: 16px;
     background: var(--menu-bg-strong);
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 5px;
+    gap: 6px;
     cursor: pointer;
-    transition: background-color var(--menu-transition), border-color var(--menu-transition), transform var(--menu-transition);
+    transition: background-color var(--menu-transition), border-color var(--menu-transition), transform var(--menu-transition), box-shadow var(--menu-transition);
 }
 
 .menu-toggle:hover,
@@ -126,8 +126,8 @@
 }
 
 .hamburger-line {
-    width: 20px;
-    height: 2px;
+    width: 24px;
+    height: 3px;
     background: var(--menu-text);
     border-radius: 999px;
     transition: transform var(--menu-transition), opacity var(--menu-transition);
@@ -135,7 +135,7 @@
 }
 
 .menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
+    transform: translateY(9px) rotate(45deg);
 }
 
 .menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(2) {
@@ -143,7 +143,17 @@
 }
 
 .menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+.menu-toggle[aria-expanded="true"] {
+    background: linear-gradient(145deg, var(--menu-accent-strong), var(--menu-accent));
+    border-color: var(--menu-accent-strong);
+    box-shadow: 0 10px 24px rgba(190, 148, 93, 0.34);
+}
+
+.menu-toggle[aria-expanded="true"] .hamburger-line {
+    background: var(--menu-bg);
 }
 
 .nav-overlay {
@@ -317,8 +327,8 @@
     }
 
     .menu-toggle {
-        width: 42px;
-        height: 42px;
+        width: 46px;
+        height: 46px;
         margin-right: 0.15rem;
     }
 
