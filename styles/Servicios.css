@@ -173,15 +173,21 @@ main {
 
 @keyframes zoomHintPulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(190, 148, 93, 0.34);
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 0 0 0 rgba(190, 148, 93, 0.5);
+    background: rgba(10, 26, 52, 0.36);
   }
 
-  70% {
-    box-shadow: 0 0 0 10px rgba(190, 148, 93, 0);
+  35% {
+    transform: translate(-50%, -50%) scale(1.14);
+    box-shadow: 0 0 0 10px rgba(190, 148, 93, 0.14);
+    background: rgba(10, 26, 52, 0.52);
   }
 
   100% {
+    transform: translate(-50%, -50%) scale(1);
     box-shadow: 0 0 0 0 rgba(190, 148, 93, 0);
+    background: rgba(10, 26, 52, 0.36);
   }
 }
 
@@ -556,7 +562,7 @@ main {
   .service-zoom-hint {
     opacity: 1;
     transform: translate(-50%, -50%);
-    animation: zoomHintPulse 2.3s ease-out infinite;
+    animation: zoomHintPulse 1.55s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
   }
 }
 
