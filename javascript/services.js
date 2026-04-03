@@ -124,6 +124,14 @@ document.addEventListener('DOMContentLoaded', function () {
         img.setAttribute('fetchpriority', 'low');
         img.setAttribute('decoding', 'async');
 
+        if (img.complete) {
+            img.classList.add('is-loaded');
+        } else {
+            img.addEventListener('load', function () {
+                img.classList.add('is-loaded');
+            }, { once: true });
+        }
+
         const serviceCard = img.closest('.service-card');
         const serviceDescription = serviceCard?.querySelector('.service-description')?.textContent?.trim() || '';
         const wrap = document.createElement('div');
@@ -148,10 +156,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // ── Pagination (4 services per page) ──
-    const cardsPerPage = 4;
-    const totalPages = Math.ceil(cardsArray.length / cardsPerPage);
+    // ── Pagination (6 desktop, 4 phone) ──
+    const MOBILE_QUERY = '(max-width: 640px)';
+    const getCardsPerPage = function () {
+        return window.matchMedia(MOBILE_QUERY).matches ? 4 : 6;
+    };
+
+    let cardsPerPage = getCardsPerPage();
+    let totalPages = Math.ceil(cardsArray.length / cardsPerPage);
     let currentPage = 1;
+    let pagination;
+    let pageStatus;
+    let paginationButtons = [];
 
     function setCardImagePriority(card, highPriority) {
         const img = card.querySelector('.service-image');
@@ -168,21 +184,30 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function renderPage(page, paginationButtons, pageStatus) {
+    function renderPage(page) {
+        cardsPerPage = getCardsPerPage();
+        totalPages = Math.ceil(cardsArray.length / cardsPerPage);
         currentPage = Math.min(Math.max(page, 1), totalPages);
         const start = (currentPage - 1) * cardsPerPage;
         const end = start + cardsPerPage;
 
+        let visibleOrder = 0;
         cardsArray.forEach(function (card, index) {
             const isVisible = index >= start && index < end;
 
             card.classList.toggle('service-card-hidden', !isVisible);
+            card.classList.remove('service-card-entering');
             card.setAttribute('aria-hidden', String(!isVisible));
             card.setAttribute('tabindex', isVisible ? '0' : '-1');
 
             if (!isVisible) {
                 const popover = card.querySelector('.popover');
                 popover?.classList.remove('visible');
+                card.style.animationDelay = '0ms';
+            } else {
+                card.style.animationDelay = String(visibleOrder * 70) + 'ms';
+                card.classList.add('service-card-entering');
+                visibleOrder += 1;
             }
 
             setCardImagePriority(card, isVisible && index < start + 2);
@@ -207,15 +232,16 @@ document.addEventListener('DOMContentLoaded', function () {
         pageStatus.textContent = 'Showing ' + from + '-' + to + ' of ' + cardsArray.length;
     }
 
-    if (servicesGrid && totalPages > 1) {
-        const pagination = document.createElement('nav');
-        pagination.className = 'services-pagination';
-        pagination.setAttribute('aria-label', 'Services pagination');
+    function buildPagination() {
+        if (!pagination) {
+            return;
+        }
 
-        const pageStatus = document.createElement('p');
-        pageStatus.className = 'services-page-status';
+        cardsPerPage = getCardsPerPage();
+        totalPages = Math.ceil(cardsArray.length / cardsPerPage);
+        pagination.innerHTML = '';
+        paginationButtons = [];
 
-        const paginationButtons = [];
         for (let page = 1; page <= totalPages; page += 1) {
             const button = document.createElement('button');
             button.type = 'button';
@@ -224,16 +250,38 @@ document.addEventListener('DOMContentLoaded', function () {
             button.textContent = String(page);
             button.setAttribute('aria-label', 'Go to page ' + page);
             button.addEventListener('click', function () {
-                renderPage(page, paginationButtons, pageStatus);
+                renderPage(page);
                 servicesGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
+
             paginationButtons.push(button);
             pagination.appendChild(button);
         }
+    }
+
+    if (servicesGrid && cardsArray.length > cardsPerPage) {
+        pagination = document.createElement('nav');
+        pagination.className = 'services-pagination';
+        pagination.setAttribute('aria-label', 'Services pagination');
+
+        pageStatus = document.createElement('p');
+        pageStatus.className = 'services-page-status';
 
         servicesGrid.insertAdjacentElement('afterend', pagination);
         pagination.insertAdjacentElement('afterend', pageStatus);
-        renderPage(1, paginationButtons, pageStatus);
+
+        buildPagination();
+        renderPage(1);
+
+        let wasMobile = window.matchMedia(MOBILE_QUERY).matches;
+        window.addEventListener('resize', function () {
+            const isMobile = window.matchMedia(MOBILE_QUERY).matches;
+            if (isMobile !== wasMobile) {
+                wasMobile = isMobile;
+                buildPagination();
+                renderPage(1);
+            }
+        });
     } else {
         cardsArray.forEach(function (card, index) {
             setCardImagePriority(card, index < 2);
