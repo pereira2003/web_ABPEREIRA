@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const servicesGrid = document.querySelector('.services-grid');
+    const isTouchDevice = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
     // ── Like buttons ──
     const likeButtons = document.querySelectorAll('.like-button');
@@ -61,8 +62,10 @@ document.addEventListener('DOMContentLoaded', function () {
     overlay.setAttribute('aria-label', 'Image preview');
     overlay.innerHTML =
         '<div class="lightbox-stage" role="document">' +
+        '<div class="lightbox-media">' +
         '<button class="lightbox-close" aria-label="Close image preview">&#x2715;</button>' +
         '<img class="lightbox-img" src="" alt="">' +
+        '</div>' +
         '<p class="lightbox-caption"></p>' +
         '<p class="lightbox-hint">Press Esc or tap image to close</p>' +
         '</div>';
@@ -143,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const zoomHint = document.createElement('span');
         zoomHint.className = 'service-zoom-hint';
         zoomHint.setAttribute('aria-hidden', 'true');
-        zoomHint.textContent = 'Tocar para ampliar';
+        zoomHint.textContent = isTouchDevice ? 'Toca para zoom' : 'Click para zoom';
 
         img.parentNode.insertBefore(wrap, img);
         wrap.appendChild(img);
