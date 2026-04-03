@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
+    const servicesGrid = document.querySelector('.services-grid');
+
     // ── Like buttons ──
     const likeButtons = document.querySelectorAll('.like-button');
     likeButtons.forEach(function (button) {
@@ -17,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Popover on card click ──
     const cards = document.querySelectorAll('.service-card');
+    const cardsArray = Array.from(cards);
     let activePopover = null;
     cards.forEach(function (card) {
         const popover = card.querySelector('.popover');
@@ -116,14 +119,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ── Wrap each service image for lightbox click ──
-    document.querySelectorAll('.service-image').forEach(function (img, index) {
-        if (index < 2) {
-            img.setAttribute('loading', 'eager');
-            img.setAttribute('fetchpriority', 'high');
-        } else {
-            img.setAttribute('loading', 'lazy');
-            img.setAttribute('fetchpriority', 'low');
-        }
+    document.querySelectorAll('.service-image').forEach(function (img) {
+        img.setAttribute('loading', 'lazy');
+        img.setAttribute('fetchpriority', 'low');
         img.setAttribute('decoding', 'async');
 
         const serviceCard = img.closest('.service-card');
@@ -149,4 +147,96 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+    // ── Pagination (4 services per page) ──
+    const cardsPerPage = 4;
+    const totalPages = Math.ceil(cardsArray.length / cardsPerPage);
+    let currentPage = 1;
+
+    function setCardImagePriority(card, highPriority) {
+        const img = card.querySelector('.service-image');
+        if (!img) {
+            return;
+        }
+
+        if (highPriority) {
+            img.setAttribute('loading', 'eager');
+            img.setAttribute('fetchpriority', 'high');
+        } else {
+            img.setAttribute('loading', 'lazy');
+            img.setAttribute('fetchpriority', 'low');
+        }
+    }
+
+    function renderPage(page, paginationButtons, pageStatus) {
+        currentPage = Math.min(Math.max(page, 1), totalPages);
+        const start = (currentPage - 1) * cardsPerPage;
+        const end = start + cardsPerPage;
+
+        cardsArray.forEach(function (card, index) {
+            const isVisible = index >= start && index < end;
+
+            card.classList.toggle('service-card-hidden', !isVisible);
+            card.setAttribute('aria-hidden', String(!isVisible));
+            card.setAttribute('tabindex', isVisible ? '0' : '-1');
+
+            if (!isVisible) {
+                const popover = card.querySelector('.popover');
+                popover?.classList.remove('visible');
+            }
+
+            setCardImagePriority(card, isVisible && index < start + 2);
+        });
+
+        if (activePopover && activePopover.classList.contains('visible')) {
+            const hostCard = activePopover.closest('.service-card');
+            if (hostCard && hostCard.classList.contains('service-card-hidden')) {
+                activePopover.classList.remove('visible');
+                activePopover = null;
+            }
+        }
+
+        paginationButtons.forEach(function (button) {
+            const isActive = Number(button.dataset.page) === currentPage;
+            button.classList.toggle('is-active', isActive);
+            button.setAttribute('aria-current', isActive ? 'page' : 'false');
+        });
+
+        const from = start + 1;
+        const to = Math.min(end, cardsArray.length);
+        pageStatus.textContent = 'Showing ' + from + '-' + to + ' of ' + cardsArray.length;
+    }
+
+    if (servicesGrid && totalPages > 1) {
+        const pagination = document.createElement('nav');
+        pagination.className = 'services-pagination';
+        pagination.setAttribute('aria-label', 'Services pagination');
+
+        const pageStatus = document.createElement('p');
+        pageStatus.className = 'services-page-status';
+
+        const paginationButtons = [];
+        for (let page = 1; page <= totalPages; page += 1) {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'services-page-btn';
+            button.dataset.page = String(page);
+            button.textContent = String(page);
+            button.setAttribute('aria-label', 'Go to page ' + page);
+            button.addEventListener('click', function () {
+                renderPage(page, paginationButtons, pageStatus);
+                servicesGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+            paginationButtons.push(button);
+            pagination.appendChild(button);
+        }
+
+        servicesGrid.insertAdjacentElement('afterend', pagination);
+        pagination.insertAdjacentElement('afterend', pageStatus);
+        renderPage(1, paginationButtons, pageStatus);
+    } else {
+        cardsArray.forEach(function (card, index) {
+            setCardImagePriority(card, index < 2);
+        });
+    }
 });
