@@ -55,6 +55,8 @@ main {
   box-shadow: var(--shadow-card);
   cursor: pointer;
   transition: transform 0.22s ease, box-shadow 0.22s ease;
+  content-visibility: auto;
+  contain-intrinsic-size: 520px;
 }
 
 .service-card:hover {
@@ -239,6 +241,8 @@ main {
   background: #ffffff;
   border: 1px solid var(--color-line);
   box-shadow: var(--shadow-card);
+  content-visibility: auto;
+  contain-intrinsic-size: 260px;
 }
 
 .services-note h2 {

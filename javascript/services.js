@@ -17,17 +17,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Popover on card click ──
     const cards = document.querySelectorAll('.service-card');
+    let activePopover = null;
     cards.forEach(function (card) {
         const popover = card.querySelector('.popover');
 
         card.addEventListener('click', function () {
-            document.querySelectorAll('.popover.visible').forEach(function (item) {
-                if (item !== popover) {
-                    item.classList.remove('visible');
-                }
-            });
+            if (activePopover && activePopover !== popover) {
+                activePopover.classList.remove('visible');
+            }
 
             popover.classList.toggle('visible');
+            activePopover = popover.classList.contains('visible') ? popover : null;
         });
 
         card.addEventListener('keydown', function (event) {
@@ -39,12 +39,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.addEventListener('click', function (event) {
-        cards.forEach(function (card) {
-            const popover = card.querySelector('.popover');
-            if (!card.contains(event.target)) {
-                popover.classList.remove('visible');
-            }
-        });
+        if (!activePopover) {
+            return;
+        }
+
+        const card = activePopover.closest('.service-card');
+        if (card && !card.contains(event.target)) {
+            activePopover.classList.remove('visible');
+            activePopover = null;
+        }
     });
 
     // ── Lightbox ──
@@ -113,7 +116,16 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ── Wrap each service image for lightbox click ──
-    document.querySelectorAll('.service-image').forEach(function (img) {
+    document.querySelectorAll('.service-image').forEach(function (img, index) {
+        if (index < 2) {
+            img.setAttribute('loading', 'eager');
+            img.setAttribute('fetchpriority', 'high');
+        } else {
+            img.setAttribute('loading', 'lazy');
+            img.setAttribute('fetchpriority', 'low');
+        }
+        img.setAttribute('decoding', 'async');
+
         const serviceCard = img.closest('.service-card');
         const serviceDescription = serviceCard?.querySelector('.service-description')?.textContent?.trim() || '';
         const wrap = document.createElement('div');
