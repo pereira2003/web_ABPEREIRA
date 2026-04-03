@@ -424,17 +424,29 @@ main {
   }
 
   .service-zoom-hint {
-    right: 0.4rem;
-    bottom: 0.4rem;
-    padding: 0.26rem 0.5rem;
-    font-size: 0.6rem;
-    letter-spacing: 0.03em;
+    left: 50%;
+    right: auto;
+    top: 50%;
+    bottom: auto;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0;
+    letter-spacing: 0;
+    opacity: 1;
+    background: rgba(10, 26, 52, 0.32);
+    border-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(3px);
   }
 
   .service-zoom-hint::before {
-    width: 16px;
-    height: 16px;
-    font-size: 0.78rem;
+    content: '';
+    width: 17px;
+    height: 17px;
+    border-radius: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3Cline x1='11' y1='8.3' x2='11' y2='13.7'/%3E%3Cline x1='8.3' y1='11' x2='13.7' y2='11'/%3E%3C/svg%3E") center / contain no-repeat;
   }
 
   .service-image-wrap::before {
@@ -543,7 +555,7 @@ main {
 @media (hover: none) and (pointer: coarse) {
   .service-zoom-hint {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate(-50%, -50%);
     animation: zoomHintPulse 2.3s ease-out infinite;
   }
 }
