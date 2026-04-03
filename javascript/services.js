@@ -139,8 +139,15 @@ document.addEventListener('DOMContentLoaded', function () {
         wrap.setAttribute('role', 'button');
         wrap.setAttribute('tabindex', '0');
         wrap.setAttribute('aria-label', 'View ' + img.alt + ' full size');
+
+        const zoomHint = document.createElement('span');
+        zoomHint.className = 'service-zoom-hint';
+        zoomHint.setAttribute('aria-hidden', 'true');
+        zoomHint.textContent = 'Tocar para ampliar';
+
         img.parentNode.insertBefore(wrap, img);
         wrap.appendChild(img);
+        wrap.appendChild(zoomHint);
 
         wrap.addEventListener('click', function (e) {
             e.stopPropagation();
