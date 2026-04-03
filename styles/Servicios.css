@@ -652,6 +652,7 @@ main {
   top: clamp(0.4rem, 1.6vw, 0.9rem);
   right: clamp(0.4rem, 1.6vw, 0.9rem);
   z-index: 2;
+  display: none;
   width: 52px;
   height: 52px;
   padding: 0;
@@ -702,6 +703,7 @@ main {
   }
 
   .lightbox-close {
+    display: flex;
     width: 46px;
     height: 46px;
     font-size: 1.45rem;
