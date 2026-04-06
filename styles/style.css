@@ -116,6 +116,68 @@ a {
     color: rgba(255, 255, 255, 0.96);
 }
 
+.page-transition {
+    position: fixed;
+    inset: 0;
+    z-index: 2600;
+    display: grid;
+    place-items: center;
+    gap: 0.9rem;
+    background:
+        radial-gradient(circle at 22% 24%, rgba(190, 148, 93, 0.22), transparent 44%),
+        radial-gradient(circle at 74% 78%, rgba(92, 141, 198, 0.2), transparent 42%),
+        rgba(7, 16, 36, 0.92);
+    backdrop-filter: blur(7px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.page-transition.is-active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.page-transition-spinner {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.22);
+    border-top-color: #f2d6ae;
+    border-right-color: #be945d;
+    animation: pageTransitionSpin 0.78s linear infinite;
+    box-shadow: 0 0 0 8px rgba(190, 148, 93, 0.1);
+}
+
+.page-transition-text {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.82rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+body.is-page-transitioning {
+    overflow: hidden;
+}
+
+@keyframes pageTransitionSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page-transition {
+        transition: none;
+    }
+
+    .page-transition-spinner {
+        animation: none;
+    }
+}
+
 @media (max-width: 640px) {
     .home-toast {
         top: auto;

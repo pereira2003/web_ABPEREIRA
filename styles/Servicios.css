@@ -675,7 +675,6 @@ main {
   font-size: 2rem;
   font-weight: 700;
   line-height: 1;
-  transform: translateY(-1px);
 }
 
 .lightbox-close:hover,
@@ -706,7 +705,6 @@ main {
     display: flex;
     width: 46px;
     height: 46px;
-    font-size: 1.45rem;
   }
 
   .lightbox-caption {

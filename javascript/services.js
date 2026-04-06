@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
     overlay.innerHTML =
         '<div class="lightbox-stage" role="document">' +
         '<div class="lightbox-media">' +
-        '<button class="lightbox-close" aria-label="Close image preview">&#x2715;</button>' +
+        '<button class="lightbox-close" aria-label="Close image preview"></button>' +
         '<img class="lightbox-img" src="" alt="">' +
         '</div>' +
         '<p class="lightbox-caption"></p>' +
