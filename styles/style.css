@@ -120,9 +120,12 @@ a {
     position: fixed;
     inset: 0;
     z-index: 2600;
-    display: grid;
-    place-items: center;
-    gap: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.72rem;
+    text-align: center;
     background:
         radial-gradient(circle at 22% 24%, rgba(190, 148, 93, 0.22), transparent 44%),
         radial-gradient(circle at 74% 78%, rgba(92, 141, 198, 0.2), transparent 42%),
@@ -147,15 +150,26 @@ a {
     border-right-color: #be945d;
     animation: pageTransitionSpin 0.78s linear infinite;
     box-shadow: 0 0 0 8px rgba(190, 148, 93, 0.1);
+    margin-bottom: 0.35rem;
 }
 
-.page-transition-text {
+.page-transition-brand {
     margin: 0;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.88rem;
-    letter-spacing: 0.09em;
-    text-transform: none;
+    color: #ffffff;
+    font-size: clamp(1.7rem, 2.2vw, 2.2rem);
+    letter-spacing: 0.05em;
+    line-height: 1.1;
     font-weight: 700;
+    text-transform: uppercase;
+}
+
+.page-transition-loading {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.84);
+    font-size: 0.92rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 600;
 }
 
 body.is-page-transitioning {

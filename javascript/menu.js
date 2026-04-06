@@ -8,6 +8,7 @@
 
     const body = document.body;
     const transitionLayer = createPageTransitionLayer();
+    activateInitialPageLoadTransition(transitionLayer);
     wirePageTransitions(transitionLayer);
 
     const menuToggle = document.getElementById('menuToggle');
@@ -99,7 +100,8 @@
         layer.setAttribute('aria-hidden', 'true');
         layer.innerHTML =
             '<div class="page-transition-spinner" aria-hidden="true"></div>' +
-            '<p class="page-transition-text">AB Pereira Company</p>';
+            '<p class="page-transition-brand">AB Pereira Company</p>' +
+            '<p class="page-transition-loading">Cargando</p>';
         body.appendChild(layer);
         return layer;
     }
@@ -107,6 +109,34 @@
     function activatePageTransition(layer) {
         body.classList.add('is-page-transitioning');
         layer.classList.add('is-active');
+    }
+
+    function deactivatePageTransition(layer) {
+        body.classList.remove('is-page-transitioning');
+        layer.classList.remove('is-active');
+    }
+
+    function activateInitialPageLoadTransition(layer) {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const minVisibleTime = prefersReducedMotion ? 80 : 460;
+        const startedAt = performance.now();
+
+        activatePageTransition(layer);
+
+        const finishInitialTransition = () => {
+            const elapsed = performance.now() - startedAt;
+            const remaining = Math.max(0, minVisibleTime - elapsed);
+            window.setTimeout(() => {
+                deactivatePageTransition(layer);
+            }, remaining);
+        };
+
+        if (document.readyState === 'complete') {
+            finishInitialTransition();
+            return;
+        }
+
+        window.addEventListener('load', finishInitialTransition, { once: true });
     }
 
     function wirePageTransitions(layer) {
@@ -176,8 +206,7 @@
         });
 
         window.addEventListener('pageshow', () => {
-            body.classList.remove('is-page-transitioning');
-            layer.classList.remove('is-active');
+            deactivatePageTransition(layer);
         });
     }
 
