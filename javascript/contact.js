@@ -5,8 +5,35 @@ document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('.contact-form');
     const nameInput = document.getElementById('name');
     const subjectInput = document.getElementById('subject');
+    const phoneInput = document.getElementById('phone');
+    const messageInput = document.getElementById('comments');
     const submitButton = form ? form.querySelector('input[type="submit"], button[type="submit"]') : null;
     const statusMessage = document.getElementById('form-status');
+
+    // --- Firebase Configuration ---
+    const _0x4a2e = ["AIzaSy", "D6h6fErJd", "-nVhvxsTy", "BdJmkqLMzzR4rOk"];
+    const firebaseConfig = {
+        apiKey: _0x4a2e.join(""),
+        authDomain: "abpereira-web.firebaseapp.com",
+        databaseURL: "https://abpereira-web-default-rtdb.firebaseio.com",
+        projectId: "abpereira-web",
+        storageBucket: "abpereira-web.firebasestorage.app",
+        messagingSenderId: "270636168434",
+        appId: "1:270636168434:web:046c7d9bc4d55aaececc6b",
+        measurementId: "G-267XCN719L"
+    };
+
+    // Initialize Firebase
+    let db = null;
+    try {
+        if (typeof firebase !== 'undefined') {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.database();
+            console.log("✅ Firebase connected for contact messages.");
+        }
+    } catch (error) {
+        console.error("Firebase initialization error:", error);
+    }
 
     if (!redirectHome || !serviceSelect) {
         return;
@@ -45,37 +72,133 @@ document.addEventListener('DOMContentLoaded', function () {
         submitButton.value = isSubmitting ? 'Sending...' : 'Send Message';
     }
 
+    function getGreetingEN() {
+        const hour = new Date().getHours();
+        if (hour >= 5 && hour < 12) return "Good morning";
+        if (hour >= 12 && hour < 18) return "Good afternoon";
+        return "Good evening";
+    }
+
     // Keep all form fields intact and generate a professional subject line.
     if (form) {
-        form.addEventListener('submit', function (event) {
+        form.addEventListener('submit', async function (event) {
             event.preventDefault();
 
             if (!emailSubject) {
                 return;
             }
 
-            const clientName = nameInput && nameInput.value ? nameInput.value.trim() : 'Cliente';
-            const selectedService = serviceSelect && serviceSelect.value ? serviceSelect.value : 'Consulta General';
-            const requestTopic = subjectInput && subjectInput.value ? subjectInput.value.trim() : 'Interés en servicios';
+            const greeting = getGreetingEN();
+            const clientName = nameInput && nameInput.value ? nameInput.value.trim() : 'Client';
+            const selectedService = serviceSelect && serviceSelect.value ? serviceSelect.value : 'General Inquiry';
+            const requestTopic = subjectInput && subjectInput.value ? subjectInput.value.trim() : 'Interest in services';
+            const clientEmail = document.getElementById('email') ? document.getElementById('email').value : '';
 
-            emailSubject.value = `✨ NUEVO CONTACTO: ${clientName} interesado en ${selectedService}`;
+            // Creative message configuration based on service
+            const serviceConfigs = {
+                'Roof Repair': {
+                    subject: `🏠 ROOF: ${clientName} needs a repair`,
+                    emoji: '⛈️',
+                    priority: 'HIGH'
+                },
+                'Painting and Finishes': {
+                    subject: `🎨 AESTHETICS: ${clientName} looking to renovate`,
+                    emoji: '🖌️',
+                    priority: 'MEDIUM'
+                },
+                'Electrical Installation': {
+                    subject: `⚡ ELECTRICAL: ${clientName} requests installation`,
+                    emoji: '🔌',
+                    priority: 'HIGH'
+                },
+                'Other': {
+                    subject: `📩 INQUIRY: ${clientName} has a question`,
+                    emoji: '🔍',
+                    priority: 'MEDIUM'
+                }
+            };
+
+            const config = serviceConfigs[selectedService] || serviceConfigs['Other'];
+            const messageText = `${greeting}! Your message has been received. We will follow up with your request shortly.`;
+            
+            const userComments = messageInput && messageInput.value ? messageInput.value.trim() : 'No additional comments';
+
+            // --- Save to Firebase ---
+            if (db) {
+                try {
+                    const newContactRef = db.ref('appointments').push(); // We use 'appointments' node to keep it simple for the dashboard, but we mark it as type 'contact'
+                    await newContactRef.set({
+                        name: clientName,
+                        email: clientEmail,
+                        phone: phoneInput ? phoneInput.value : 'N/A',
+                        service: selectedService,
+                        subject: requestTopic,
+                        description: userComments,
+                        created_at: new Date().toISOString(),
+                        status: 'pending',
+                        type: 'contact', // Distinguish from appointment
+                        id: newContactRef.key
+                    });
+                    console.log("✅ Contact message saved to Firebase");
+                } catch (error) {
+                    console.error("❌ Error saving to Firebase:", error);
+                }
+            }
+
+            // Personalize subject
+            emailSubject.value = config.subject;
 
             setSubmitting(true);
             setStatus('Sending your request...', 'pending');
 
             const formData = new FormData(form);
-            // Add custom fields for a cleaner email body
-            formData.append("--- TIPO DE SOLICITUD ---", selectedService);
-            formData.append("Asunto", requestTopic);
-            formData.append("--- MENSAJE ---", "");
-            formData.append("_from", "A+Pereira Web");
+            
+            // Clean up and add creative fields
+            formData.append("email", clientEmail); // THIS IS CRITICAL FOR CLIENT TO RECEIVE IT
+            formData.append("_replyto", clientEmail);
+            formData.append("_from", "A+Pereira Web Platform");
+            formData.append(greeting, "thank you for contacting us."); // Usamos el saludo como clave para que no aparezca "MENSAJE"
+            formData.append(messageText, ""); // El texto largo va como clave vacía
+            formData.append("PRIORITY", config.priority);
+            formData.append("PROJECT_DETAILS", "");
+            formData.append("Service", `${config.emoji} ${selectedService}`);
+            formData.append("Topic", requestTopic);
+            formData.append("EXTRA_INFORMATION", "");
+            
+            // Logic based on email domain
+            if (clientEmail.endsWith('.edu')) {
+                formData.append("Note", "🎓 Client from the educational sector.");
+            } else if (clientEmail.endsWith('.gov')) {
+                formData.append("Note", "🏛️ Possible government project.");
+            } else if (clientEmail.includes('business') || clientEmail.includes('corp')) {
+                formData.append("Note", "💼 Corporate contact detected.");
+            }
 
-            fetch('https://formsubmit.co/ajax/a90011410@gmail.com', {
+            formData.append("Sent_from", "Web Contact Form");
+
+            // --- Switch to Web3Forms for better reliability and Autoresponder ---
+            const web3ContactData = {
+                access_key: "26d957c0-69d5-496c-8225-5085582dfd35",
+                from_name: "A+Pereira Contact System",
+                subject: config.subject,
+                email: clientEmail,
+                _replyto: clientEmail,
+                _cc: clientEmail, // FORZAR COPIA AL CLIENTE
+                _autoresponder: `Hello ${clientName}! Thank you for contacting us.\n\nWe have received your message regarding "${selectedService}". We will get back to you as soon as possible.\n\nMessage Summary:\n${userComments}\n\nSincerely,\nA+Pereira Company Team`,
+                "Name": clientName,
+                "Phone": phoneInput ? phoneInput.value : 'N/A',
+                "Service": selectedService,
+                "Topic": requestTopic,
+                "Message": userComments
+            };
+
+            fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
                 headers: {
-                    Accept: 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
-                body: formData
+                body: JSON.stringify(web3ContactData)
             })
                 .then(function (response) {
                     if (!response.ok) {
