@@ -189,12 +189,12 @@ document.addEventListener('DOMContentLoaded', function () {
             // --- Switch to Web3Forms for better reliability and Autoresponder ---
             const web3ContactData = {
                 access_key: "26d957c0-69d5-496c-8225-5085582dfd35",
-                from_name: "A+Pereira Contact System",
+                from_name: "A⁺Pereira Contact System",
                 subject: config.subject,
                 email: clientEmail,
                 _replyto: clientEmail,
                 _cc: clientEmail, // FORZAR COPIA AL CLIENTE
-                _autoresponder: `Hello ${clientName}! Thank you for contacting us.\n\nWe have received your message regarding "${selectedService}". We will get back to you as soon as possible.\n\nMessage Summary:\n${userComments}\n\nSincerely,\nA+Pereira Company Team`,
+                _autoresponder: `Hello ${clientName}! Thank you for contacting us.\n\nWe have received your message regarding "${selectedService}". We will get back to you as soon as possible.\n\nMessage Summary:\n${userComments}\n\nSincerely,\nA⁺Pereira Company Team`,
                 "Name": clientName,
                 "Email": clientEmail,
                 "Phone": phoneInput ? phoneInput.value : 'N/A',
@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     setStatus('Your request was sent successfully. Opening iMessage...', 'success');
                     
                     // Construct iMessage / SMS content
-                    const smsBody = `New Contact Inquiry - A+Pereira Company\n\n` +
+                    const smsBody = `New Contact Inquiry - A⁺Pereira Company\n\n` +
                                     `Name: ${clientName}\n` +
                                     `Email: ${clientEmail}\n` +
                                     `Phone: ${phoneInput ? phoneInput.value : 'N/A'}\n` +

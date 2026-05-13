@@ -4,7 +4,7 @@
     <link rel="shortcut icon" href="../img/ABP.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | A<sup>+</sup>Pereira Company</title>
+    <title>Admin Dashboard | A⁺Pereira Company</title>
     <link rel="stylesheet" href="../styles/style.css">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -461,8 +461,8 @@
     <div class="dashboard-container">
         <div class="header">
             <div style="display: flex; align-items: center; gap: 1.5rem;">
-                <img src="../img/ABPEREIRA L.png" alt="A<sup>+</sup>Pereira Logo" style="width: 60px; height: auto; object-fit: contain;">
-                <h1>A<sup>+</sup>Pereira Management</h1>
+                <img src="../img/ABPEREIRA L.png" alt="A⁺Pereira Logo" style="width: 60px; height: auto; object-fit: contain;">
+                <h1>A⁺Pereira Management</h1>
             </div>
             <button class="btn-logout" onclick="logout()">Logout</button>
         </div>
@@ -692,15 +692,15 @@
 
             if (isSpecial) {
                 if (newStatus === 'accepted') {
-                    message = `${greeting} ${app.name}, this is A+Pereira Company. We are pleased to inform you that we now have availability for your ${app.service} request${dateInfo}${timeInfo}. Please let us know if you would like to proceed with confirming this appointment. Best regards.`;
+                    message = `${greeting} ${app.name}, this is A⁺Pereira Company. We are pleased to inform you that we now have availability for your ${app.service} request${dateInfo}${timeInfo}. Please let us know if you would like to proceed with confirming this appointment. Best regards.`;
                 } else {
-                    message = `${greeting} ${app.name}, this is A+Pereira Company. We are writing to formally notify you that your appointment for ${app.service}${dateInfo}${timeInfo} has been cancelled. We sincerely apologize for any inconvenience this may cause. Thank you for your understanding.`;
+                    message = `${greeting} ${app.name}, this is A⁺Pereira Company. We are writing to formally notify you that your appointment for ${app.service}${dateInfo}${timeInfo} has been cancelled. We sincerely apologize for any inconvenience this may cause. Thank you for your understanding.`;
                 }
             } else {
                 if (newStatus === 'accepted') {
-                    message = `${greeting} ${app.name}, this is A+Pereira Company. We are pleased to confirm your request for ${app.service}. Your appointment is officially scheduled for ${app.date || 'the agreed date'}${timeInfo || ' at the scheduled time'}. Please let us know if there are any further details we should be aware of. We look forward to serving you.`;
+                    message = `${greeting} ${app.name}, this is A⁺Pereira Company. We are pleased to confirm your request for ${app.service}. Your appointment is officially scheduled for ${app.date || 'the agreed date'}${timeInfo || ' at the scheduled time'}. Please let us know if there are any further details we should be aware of. We look forward to serving you.`;
                 } else {
-                    message = `${greeting} ${app.name}, this is A+Pereira Company. Thank you for your interest in our services. Regrettably, we do not have availability for ${app.date || 'your requested date'}${timeInfo || ' at your requested time'}. We kindly invite you to visit our website to view alternative dates. Thank you.`;
+                    message = `${greeting} ${app.name}, this is A⁺Pereira Company. Thank you for your interest in our services. Regrettably, we do not have availability for ${app.date || 'your requested date'}${timeInfo || ' at your requested time'}. We kindly invite you to visit our website to view alternative dates. Thank you.`;
                 }
             }
 
@@ -765,8 +765,8 @@
             const dateInfo = app.date ? ` on ${app.date}` : '';
             const timeInfo = app.time ? ` at ${app.time}` : '';
             let message = app.status === 'accepted'
-                ? `${greeting} ${app.name}, this is A+Pereira Company. We are writing to formally confirm that your request for ${app.service} has been accepted. Our team will arrive${dateInfo}${timeInfo}. Please let us know if you have any additional instructions. Best regards.`
-                : `${greeting} ${app.name}, this is A+Pereira Company. We are following up regarding your inquiry about ${app.service}. Would you be available for a brief discussion regarding your project? We look forward to hearing from you.`;
+                ? `${greeting} ${app.name}, this is A⁺Pereira Company. We are writing to formally confirm that your request for ${app.service} has been accepted. Our team will arrive${dateInfo}${timeInfo}. Please let us know if you have any additional instructions. Best regards.`
+                : `${greeting} ${app.name}, this is A⁺Pereira Company. We are following up regarding your inquiry about ${app.service}. Would you be available for a brief discussion regarding your project? We look forward to hearing from you.`;
             window.open(`https://wa.me/${app.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
         }
         function contactViaEmail(id) {
@@ -776,9 +776,9 @@
             const dateInfo = app.date || 'To be confirmed';
             const timeInfo = app.time || 'To be confirmed';
             let body = app.status === 'accepted'
-                ? `${greeting} ${app.name},\n\nThis is a formal confirmation of your appointment with A+Pereira Company.\n\nAppointment Details:\nService: ${app.service}\nDate: ${dateInfo}\nTime: ${timeInfo}\n\nWe look forward to serving you and appreciate your business.\n\nSincerely,\nThe A+Pereira Company Team`
-                : `${greeting} ${app.name},\n\nThank you for reaching out to A+Pereira Company. We are writing to follow up on your inquiry regarding ${app.service}.\n\nWe would like to discuss your requirements in more detail at your earliest convenience.\n\nSincerely,\nThe A+Pereira Company Team`;
-            window.location.href = `mailto:${app.email}?subject=${encodeURIComponent('Appointment Update - A+Pereira Company')}&body=${encodeURIComponent(body)}`;
+                ? `${greeting} ${app.name},\n\nThis is a formal confirmation of your appointment with A⁺Pereira Company.\n\nAppointment Details:\nService: ${app.service}\nDate: ${dateInfo}\nTime: ${timeInfo}\n\nWe look forward to serving you and appreciate your business.\n\nSincerely,\nThe A⁺Pereira Company Team`
+                : `${greeting} ${app.name},\n\nThank you for reaching out to A⁺Pereira Company. We are writing to follow up on your inquiry regarding ${app.service}.\n\nWe would like to discuss your requirements in more detail at your earliest convenience.\n\nSincerely,\nThe A⁺Pereira Company Team`;
+            window.location.href = `mailto:${app.email}?subject=${encodeURIComponent('Appointment Update - A⁺Pereira Company')}&body=${encodeURIComponent(body)}`;
         }
         function addToAdminCalendar(id) {
             const app = currentAppointments.find(a => (a.fbKey === id || a.created_at === id));
