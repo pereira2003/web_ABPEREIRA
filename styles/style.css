@@ -24,7 +24,7 @@ body {
     margin: 0;
     font-family: 'Manrope', sans-serif;
     color: var(--color-ink);
-    background: radial-gradient(circle at top left, rgba(190, 148, 93, 0.14), transparent 24%), linear-gradient(180deg, #fcfdff 0%, #f4f7fb 100%);
+    background: radial-gradient(circle at top left, rgba(16, 35, 63, 0.04), transparent 35%), linear-gradient(180deg, #fcfdff 0%, #f4f7fb 100%);
 }
 
 a {
@@ -127,7 +127,7 @@ a {
     gap: 0.72rem;
     text-align: center;
     background:
-        radial-gradient(circle at 22% 24%, rgba(190, 148, 93, 0.22), transparent 44%),
+        radial-gradient(circle at 22% 24%, rgba(16, 35, 63, 0.1), transparent 44%),
         radial-gradient(circle at 74% 78%, rgba(92, 141, 198, 0.2), transparent 42%),
         rgba(7, 16, 36, 0.92);
     backdrop-filter: blur(7px);

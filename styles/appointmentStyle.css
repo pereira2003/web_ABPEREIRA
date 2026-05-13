@@ -10,7 +10,7 @@
     position: absolute;
     inset: -40px -24px auto;
     height: 220px;
-    background: radial-gradient(circle at 15% 40%, rgba(190, 148, 93, 0.2), transparent 55%), radial-gradient(circle at 85% 10%, rgba(16, 35, 63, 0.12), transparent 60%);
+    background: transparent;
     pointer-events: none;
     z-index: 0;
 }
