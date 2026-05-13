@@ -209,15 +209,41 @@ document.addEventListener('DOMContentLoaded', function () {
                     return response.json();
                 })
                 .then(function () {
-                    setStatus('Your request was sent successfully. Redirecting...', 'success');
+                    setStatus('Your request was sent successfully. Opening iMessage...', 'success');
+                    
+                    // Construct iMessage / SMS content
+                    const smsBody = `New Contact Inquiry - A+Pereira Company\n\n` +
+                                    `Name: ${clientName}\n` +
+                                    `Email: ${clientEmail}\n` +
+                                    `Phone: ${phoneInput ? phoneInput.value : 'N/A'}\n` +
+                                    `Service: ${selectedService}\n` +
+                                    `Subject: ${requestTopic}\n` +
+                                    `Message: ${userComments}`;
+                    
+                    // The owner's phone number
+                    const ownerPhone = "+16319601989";
+                    
+                    // Detect iOS for specific sms: syntax
+                    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                    const smsUrl = isIOS 
+                        ? `sms:${ownerPhone}&body=${encodeURIComponent(smsBody)}` 
+                        : `sms:${ownerPhone}?body=${encodeURIComponent(smsBody)}`;
+
                     if (window.ContactAlerts && typeof window.ContactAlerts.markSuccessForHome === 'function') {
-                        window.ContactAlerts.markSuccessForHome('Formulario enviado correctamente.');
+                        window.ContactAlerts.markSuccessForHome('Form submitted. Redirecting to Messages...');
                     }
+                    
                     form.reset();
 
+                    // Open iMessage and redirect
                     window.setTimeout(function () {
-                        window.location.href = './index.html';
-                    }, 1200);
+                        window.location.href = smsUrl;
+                        
+                        // Small delay before returning home to allow the protocol to trigger
+                        window.setTimeout(function() {
+                            window.location.href = './index.html';
+                        }, 2000);
+                    }, 1000);
                 })
                 .catch(function () {
                     setStatus('We could not send the form right now. Please check your connection and try again.', 'error');
