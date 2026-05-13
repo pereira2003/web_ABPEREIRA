@@ -20,6 +20,13 @@
     box-sizing: border-box;
 }
 
+sup {
+    font-size: 0.6em;
+    vertical-align: 0.5em;
+    line-height: 0;
+    margin-left: 0.05em;
+}
+
 body {
     margin: 0;
     font-family: 'Manrope', sans-serif;
