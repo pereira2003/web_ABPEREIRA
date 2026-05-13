@@ -340,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Clean data for Web3Forms
                 const web3Data = {
-                    access_key: "0e8b41ce-71f9-492a-a031-14d33271f723",
+                    access_key: "26d957c0-69d5-496c-8225-5085582dfd35",
                     from_name: "A+Pereira Company",
                     subject: `🛠️ NEW APPOINTMENT: ${data.name} - ${data.date}`,
                     name: data.name,
