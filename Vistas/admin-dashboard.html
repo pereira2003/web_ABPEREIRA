@@ -383,16 +383,9 @@
                 const app = appointments[index];
                 app.status = newStatus;
 
-                // If rejected, free the date
-                if (newStatus === 'rejected') {
-                    let dates = JSON.parse(localStorage.getItem(DATES_KEY) || '[]');
-                    dates = dates.filter(d => d !== app.dateDB);
-                    localStorage.setItem(DATES_KEY, JSON.stringify(dates));
-                }
-
                 localStorage.setItem(DETAILS_KEY, JSON.stringify(appointments));
                 
-                // Notify Client via FormSubmit (Admin copy for record)
+                // Notify Client via Web3Forms (A+Pereira style)
                 await notifyClient(app, newStatus);
                 
                 loadAppointments();
@@ -435,14 +428,44 @@
             const app = appointments.find(a => a.created_at === createdAt);
             if (!app) return;
 
-            // Simplified link generation (Using current date logic from appointment.js)
-            const title = encodeURIComponent(`WORK: ${app.service} - ${app.name}`);
-            const location = encodeURIComponent(app.address);
-            const details = encodeURIComponent(`Phone: ${app.phone}\n${app.description}`);
+            // Helper to format dates for .ics (Apple Calendar)
+            function formatForICS(dateStr, timeStr) {
+                // dateStr: "YYYY-MM-DD", timeStr: "HH:MM AM/PM"
+                const [year, month, day] = app.dateDB.split('-');
+                let [hours, minutes] = timeStr.split(/:| /);
+                const ampm = timeStr.split(' ')[1];
+                
+                if (ampm === 'PM' && hours !== '12') hours = parseInt(hours) + 12;
+                if (ampm === 'AM' && hours === '12') hours = '00';
+                
+                return `${year}${month}${day}T${hours}${minutes}00`;
+            }
+
+            const start = formatForICS(app.dateDB, app.time);
+            const title = `TRABAJO: ${app.service} - ${app.name}`;
+            const description = `Cliente: ${app.name}\\nTel: ${app.phone}\\nDirección: ${app.address}\\nDescripción: ${app.description}`;
             
-            // Note: Date formatting would need the same helper as appointment.js
-            // For now, we open Google Calendar with basic info
-            window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&location=${location}&details=${details}`, '_blank');
+            const icsContent = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//A+Pereira Company//NONSGML v1.0//EN',
+                'BEGIN:VEVENT',
+                `DTSTART:${start}`,
+                `DTEND:${start}`,
+                `SUMMARY:${title}`,
+                `DESCRIPTION:${description}`,
+                `LOCATION:${app.address}`,
+                'END:VEVENT',
+                'END:VCALENDAR'
+            ].join('\n');
+
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.setAttribute('download', `Cita_${app.name.replace(/\s+/g, '_')}.ics`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         function logout() {

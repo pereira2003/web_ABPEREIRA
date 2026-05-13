@@ -18,9 +18,9 @@
     <header class="page-header">
         <!-- AB Pereira Company — Navigation Menu -->
         <div class="menu container" id="site-menu">
-            <a href="index.html" class="logo" aria-label="AB Pereira Company home">
-                <img src="../img/ABPEREIRA L.png" alt="AB Pereira Company logo" class="logo-img" decoding="async" fetchpriority="high">
-                <span>AB Pereira Company</span>
+            <a href="index.html" class="logo" aria-label="A+Pereira Company home">
+                <img src="../img/ABPEREIRA L.png" alt="A+Pereira Company logo" class="logo-img" decoding="async" fetchpriority="high">
+                <span>A+Pereira Company</span>
             </a>
 
             <button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false" aria-controls="navOverlay">
@@ -205,6 +205,32 @@
             <path d="M6.6 10.8a15.6 15.6 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24c1.1.36 2.3.56 3.5.56a1 1 0 0 1 1 1V21a1 1 0 0 1-1 1C10.1 22 2 13.9 2 4a1 1 0 0 1 1-1h4.5a1 1 0 0 1 1 1c0 1.2.2 2.4.56 3.5a1 1 0 0 1-.24 1l-2.22 2.3z"></path>
         </svg>
     </a>
+
+    <!-- Custom Confirmation Modal -->
+    <div id="confirmationModal" class="custom-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Appointment Confirmation</h3>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage">this date and this reservation:</p>
+                <div class="calendar-options">
+                    <p>Add to your calendar:</p>
+                    <div class="calendar-buttons">
+                        <button id="googleCalBtn" class="btn-cal google">
+                            <img src="https://www.google.com/favicon.ico" alt="Google"> Google Calendar
+                        </button>
+                        <button id="appleCalBtn" class="btn-cal apple">
+                            <img src="https://www.apple.com/favicon.ico" alt="Apple"> Apple Calendar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="closeModalBtn" class="btn-close">Close</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="../javascript/menu.js?v=12"></script>

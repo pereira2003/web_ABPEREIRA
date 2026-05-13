@@ -15,45 +15,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const LOCAL_DETAILS_KEY = 'abp_booked_details'; // Full info for Admin
 
     function getLocalBookedDates() {
-        const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
-        return stored ? JSON.parse(stored) : [];
+        // Only block dates that are explicitly ACCEPTED by the admin
+        const details = JSON.parse(localStorage.getItem(LOCAL_DETAILS_KEY) || '[]');
+        return details
+            .filter(app => app.status === 'accepted')
+            .map(app => app.dateDB);
     }
 
     function saveLocalBookedDate(date, fullData) {
-        // Save date for calendar blocking
-        const dates = getLocalBookedDates();
-        if (!dates.includes(date)) {
-            dates.push(date);
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dates));
-        }
-
-        // Save full details for Admin Dashboard
+        // Save full details for Admin Dashboard with 'pending' status
         const details = JSON.parse(localStorage.getItem(LOCAL_DETAILS_KEY) || '[]');
         details.push({
             ...fullData,
-            dateDB: date, // Keep original format for deletion
+            dateDB: date,
             created_at: new Date().toISOString(),
-            status: 'pending' // Default status
+            status: 'pending' // Initial status is pending, so date is NOT blocked yet
         });
         localStorage.setItem(LOCAL_DETAILS_KEY, JSON.stringify(details));
-        console.log('Saved appointment details to localStorage:', LOCAL_DETAILS_KEY);
     }
 
     // Initialize booked dates from local storage
     function fetchBookedDates() {
         bookedDates = getLocalBookedDates();
-
-        // FORCED CLEANUP: Ensure 12-15 are available (Run once)
-        const datesToFree = ['2026-05-12', '2026-05-13', '2026-05-14', '2026-05-15'];
-        if (bookedDates.some(d => datesToFree.includes(d))) {
-            bookedDates = bookedDates.filter(d => !datesToFree.includes(d));
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(bookedDates));
-            
-            let details = JSON.parse(localStorage.getItem(LOCAL_DETAILS_KEY) || '[]');
-            details = details.filter(app => !datesToFree.includes(app.dateDB));
-            localStorage.setItem(LOCAL_DETAILS_KEY, JSON.stringify(details));
-        }
-
         generateCalendar();
     }
 
@@ -318,17 +301,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 console.log('Email sent successfully via Web3Forms');
 
-                // 4. Success!
-                alert(`this date and this reservation: ${data.date} at ${data.time}`);
-                
-                // 5. Automatic Calendar Actions (without confirmation)
-                // Open Google Calendar in new tab
-                window.open(getGoogleCalendarLink(data, dateDB), '_blank');
-                // Download ICS for Apple/iCal
-                downloadICS(data, dateDB);
+                // 4. Show Custom Success Modal
+                const modal = document.getElementById('confirmationModal');
+                const modalMsg = document.getElementById('modalMessage');
+                const closeBtn = document.getElementById('closeModalBtn');
+                const googleBtn = document.getElementById('googleCalBtn');
+                const appleBtn = document.getElementById('appleCalBtn');
 
-                // 6. Redirect to Home immediately after the alert is closed
-                window.location.href = 'index.html';
+                if (modal && modalMsg) {
+                    modalMsg.innerHTML = `<strong>this date and this reservation:</strong><br>${data.date} at ${data.time}<br><br><span style="color: #2e7d32; font-weight: 600;">Su cita ya fue agendada, recibirá una verificación a su correo.</span>`;
+                    modal.style.display = 'flex';
+                    
+                    // Calendar Button Handlers
+                    googleBtn.onclick = () => window.open(getGoogleCalendarLink(data, dateDB), '_blank');
+                    appleBtn.onclick = () => downloadICS(data, dateDB);
+
+                    // Close Button Handler
+                    closeBtn.onclick = () => {
+                        modal.style.display = 'none';
+                        window.location.href = 'index.html';
+                    };
+                } else {
+                    // Fallback to alert if modal elements are missing
+                    alert(`this date and this reservation: ${data.date} at ${data.time}\n\nSu cita ya fue agendada, recibirá una verificación a su correo.`);
+                    window.location.href = 'index.html';
+                }
 
             } catch (err) {
                 console.error('Error during appointment submission:', err);
