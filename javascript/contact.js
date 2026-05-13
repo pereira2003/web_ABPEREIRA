@@ -191,16 +191,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 access_key: "26d957c0-69d5-496c-8225-5085582dfd35",
                 from_name: "A⁺Pereira Contact System",
                 subject: config.subject,
-                email: clientEmail,
-                _replyto: clientEmail,
-                _cc: clientEmail, // FORZAR COPIA AL CLIENTE
-                _autoresponder: `Hello ${clientName}! Thank you for contacting us.\n\nWe have received your message regarding "${selectedService}". We will get back to you as soon as possible.\n\nMessage Summary:\n${userComments}\n\nSincerely,\nA⁺Pereira Company Team`,
+                "MENSAJE_PARA_ADMIN": "👋 ¡Hola Admin! Has recibido una nueva consulta de contacto desde la web.",
                 "Name": clientName,
                 "Email": clientEmail,
                 "Phone": phoneInput ? phoneInput.value : 'N/A',
                 "Service": selectedService,
                 "Topic": requestTopic,
-                "Message": userComments
+                "Message": userComments,
+                "ACCESO_ADMIN": "⚙️ Gestionar esta solicitud: https://abpereira.com/Vistas/admin-login.html"
             };
 
             fetch('https://api.web3forms.com/submit', {
@@ -219,41 +217,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     return response.json();
                 })
                 .then(function () {
-                    setStatus('Your request was sent successfully. Opening iMessage...', 'success');
+                    setStatus('Your request was sent successfully. Redirecting...', 'success');
                     
-                    // Construct iMessage / SMS content
-                    const smsBody = `New Contact Inquiry - A⁺Pereira Company\n\n` +
-                                    `Name: ${clientName}\n` +
-                                    `Email: ${clientEmail}\n` +
-                                    `Phone: ${phoneInput ? phoneInput.value : 'N/A'}\n` +
-                                    `Service: ${selectedService}\n` +
-                                    `Subject: ${requestTopic}\n` +
-                                    `Message: ${userComments}`;
-                    
-                    // The owner's phone number
-                    const ownerPhone = "+16319601989";
-                    
-                    // Detect iOS for specific sms: syntax
-                    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                    const smsUrl = isIOS 
-                        ? `sms:${ownerPhone}&body=${encodeURIComponent(smsBody)}` 
-                        : `sms:${ownerPhone}?body=${encodeURIComponent(smsBody)}`;
-
                     if (window.ContactAlerts && typeof window.ContactAlerts.markSuccessForHome === 'function') {
-                        window.ContactAlerts.markSuccessForHome('Form submitted. Redirecting to Messages...');
+                        window.ContactAlerts.markSuccessForHome('Form submitted successfully.');
                     }
                     
                     form.reset();
 
-                    // Open iMessage and redirect
+                    // Redirect to home
                     window.setTimeout(function () {
-                        window.location.href = smsUrl;
-                        
-                        // Small delay before returning home to allow the protocol to trigger
-                        window.setTimeout(function() {
-                            window.location.href = './index.html';
-                        }, 2000);
-                    }, 1000);
+                        window.location.href = './index.html';
+                    }, 1500);
                 })
                 .catch(function () {
                     setStatus('We could not send the form right now. Please check your connection and try again.', 'error');
