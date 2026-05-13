@@ -246,6 +246,14 @@
         overflow: hidden;
     }
 
+    body.menu-open .communication-menu,
+    body.menu-open .whatsapp-float {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
     .menu.container {
         min-height: var(--menu-mobile-height);
         position: fixed;
