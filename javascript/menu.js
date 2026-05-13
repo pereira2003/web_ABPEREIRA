@@ -94,7 +94,7 @@
                 // Clean up the prev class after animation
                 setTimeout(() => {
                     icons[prevIndex].classList.remove('prev');
-                }, 500);
+                }, 600);
             }, 3000);
         }
     }
