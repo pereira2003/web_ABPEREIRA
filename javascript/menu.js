@@ -76,8 +76,14 @@
         const icons = document.querySelectorAll('.carousel-icon');
         let currentIconIndex = 0;
 
+        // Clear any existing interval to prevent duplicates
+        if (window.commMenuInterval) clearInterval(window.commMenuInterval);
+
         if (icons.length > 0) {
-            setInterval(() => {
+            window.commMenuInterval = setInterval(() => {
+                // If the menu is active (open), don't animate the carousel icons behind the close icon
+                if (commMenu.classList.contains('is-active')) return;
+
                 // Remove active class from current icon and add prev
                 icons[currentIconIndex].classList.remove('active');
                 icons[currentIconIndex].classList.add('prev');

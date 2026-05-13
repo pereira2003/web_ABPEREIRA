@@ -213,7 +213,7 @@ body.is-page-transitioning {
     position: fixed;
     right: 1.25rem;
     bottom: 1.25rem;
-    z-index: 1000;
+    z-index: 3000; /* Increased to ensure it's on top */
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -224,8 +224,8 @@ body.is-page-transitioning {
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background: #d5b082; /* Solid gold background */
-    color: #10233f; /* Ink color for contrast */
+    background: #d5b082;
+    color: #10233f;
     border: 1px solid rgba(16, 35, 63, 0.15);
     cursor: pointer;
     display: flex;
@@ -234,8 +234,13 @@ body.is-page-transitioning {
     box-shadow: 0 8px 24px rgba(0,0,0,0.2);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    z-index: 2;
-    overflow: hidden; /* This hides icons outside the circle */
+    z-index: 3002;
+    overflow: hidden;
+}
+
+/* Ensure no other floating buttons exist */
+.whatsapp-float {
+    display: none !important;
 }
 
 .icon-open {
