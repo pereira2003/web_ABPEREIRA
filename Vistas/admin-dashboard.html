@@ -685,19 +685,20 @@
             const phone = app.phone.replace(/\D/g, '');
             const greeting = getGreetingEN();
             const dateInfo = app.date ? ` on ${app.date}` : '';
+            const timeInfo = app.time ? ` at ${app.time}` : '';
             let message = "";
 
             if (isSpecial) {
                 if (newStatus === 'accepted') {
-                    message = `${greeting} ${app.name}, this is A+Pereira Company. We are pleased to inform you that we now have availability for your ${app.service} request${dateInfo}. Please let us know if you would like to proceed with confirming this appointment. Best regards.`;
+                    message = `${greeting} ${app.name}, this is A+Pereira Company. We are pleased to inform you that we now have availability for your ${app.service} request${dateInfo}${timeInfo}. Please let us know if you would like to proceed with confirming this appointment. Best regards.`;
                 } else {
-                    message = `${greeting} ${app.name}, this is A+Pereira Company. We are writing to formally notify you that your appointment for ${app.service}${dateInfo} has been cancelled. We sincerely apologize for any inconvenience this may cause. Thank you for your understanding.`;
+                    message = `${greeting} ${app.name}, this is A+Pereira Company. We are writing to formally notify you that your appointment for ${app.service}${dateInfo}${timeInfo} has been cancelled. We sincerely apologize for any inconvenience this may cause. Thank you for your understanding.`;
                 }
             } else {
                 if (newStatus === 'accepted') {
-                    message = `${greeting} ${app.name}, this is A+Pereira Company. We are pleased to confirm your request for ${app.service}. Your appointment is officially scheduled for ${app.date || 'the agreed date'} at ${app.time || 'the scheduled time'}. Please let us know if there are any further details we should be aware of. We look forward to serving you.`;
+                    message = `${greeting} ${app.name}, this is A+Pereira Company. We are pleased to confirm your request for ${app.service}. Your appointment is officially scheduled for ${app.date || 'the agreed date'}${timeInfo || ' at the scheduled time'}. Please let us know if there are any further details we should be aware of. We look forward to serving you.`;
                 } else {
-                    message = `${greeting} ${app.name}, this is A+Pereira Company. Thank you for your interest in our services. Regrettably, we do not have availability for ${app.date || 'your requested date'} at ${app.time || 'your requested time'}. We kindly invite you to visit our website to view alternative dates. Thank you.`;
+                    message = `${greeting} ${app.name}, this is A+Pereira Company. Thank you for your interest in our services. Regrettably, we do not have availability for ${app.date || 'your requested date'}${timeInfo || ' at your requested time'}. We kindly invite you to visit our website to view alternative dates. Thank you.`;
                 }
             }
 
