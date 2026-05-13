@@ -71,6 +71,32 @@
                 commMenu.classList.remove('is-active');
             }
         });
+
+        // Icon Carousel Animation
+        const icons = document.querySelectorAll('.carousel-icon');
+        let currentIconIndex = 0;
+
+        if (icons.length > 0) {
+            setInterval(() => {
+                // Remove active class from current icon and add prev
+                icons[currentIconIndex].classList.remove('active');
+                icons[currentIconIndex].classList.add('prev');
+                
+                const prevIndex = currentIconIndex;
+                
+                // Move to next icon
+                currentIconIndex = (currentIconIndex + 1) % icons.length;
+                
+                // Reset the new active icon position and add active class
+                icons[currentIconIndex].classList.remove('prev');
+                icons[currentIconIndex].classList.add('active');
+
+                // Clean up the prev class after animation
+                setTimeout(() => {
+                    icons[prevIndex].classList.remove('prev');
+                }, 500);
+            }, 3000);
+        }
     }
 
     document.addEventListener('keydown', event => {
