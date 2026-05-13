@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="shortcut icon" href="../img/ABP.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment | A+Pereira Company</title>
+    <link rel="preload" href="../styles/menu.css?v=20" as="style">
+    <link rel="stylesheet" href="../styles/menu.css?v=20">
+    <link rel="preload" href="../styles/style.css?v=23" as="style">
+    <link rel="stylesheet" href="../styles/style.css?v=23">
+    <link rel="preload" href="../styles/appointmentStyle.css?v=3" as="style">
+    <link rel="stylesheet" href="../styles/appointmentStyle.css?v=3">
+</head>
+
+<body>
+    <header class="page-header">
+        <!-- AB Pereira Company — Navigation Menu -->
+        <div class="menu container" id="site-menu">
+            <a href="index.html" class="logo" aria-label="AB Pereira Company home">
+                <img src="../img/ABPEREIRA L.png" alt="AB Pereira Company logo" class="logo-img" decoding="async" fetchpriority="high">
+                <span>AB Pereira Company</span>
+            </a>
+
+            <button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false" aria-controls="navOverlay">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+
+            <nav class="navbar" id="mainNav" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="Servicios.html">Services</a></li>
+                    <li><a href="Appointment.html">Book Appointment</a></li>
+                    <li><a href="Contact.html">Contact</a></li>
+                </ul>
+            </nav>
+
+            <!-- Full-screen mobile overlay -->
+            <div class="nav-overlay" id="navOverlay" aria-hidden="true">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="Servicios.html">Services</a></li>
+                    <li><a href="Appointment.html">Book Appointment</a></li>
+                    <li><a href="Contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main class="container appointment-shell">
+        <section class="appointment-section">
+            <div class="appointment-intro">
+                <p class="eyebrow">Schedule</p>
+                <div class="intro-copy">
+                    <h1>Book your appointment with us.</h1>
+                    <p>Select a date and time that works best for you. We will send a confirmation email to both you and our team to ensure your visit is properly scheduled.</p>
+                </div>
+
+                <div class="appointment-highlights">
+                    <div class="highlight-item">
+                        <span class="highlight-label">Easy scheduling</span>
+                        <span class="highlight-value">Pick your preferred date and time from our calendar.</span>
+                    </div>
+                    <div class="highlight-item">
+                        <span class="highlight-label">Email confirmation</span>
+                        <span class="highlight-value">You and our team will receive verification emails immediately.</span>
+                    </div>
+                    <div class="highlight-item">
+                        <span class="highlight-label">Synced calendar</span>
+                        <span class="highlight-value">Your appointment is added to our scheduling system automatically.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="appointment-content">
+                <!-- Calendar Section -->
+                <div class="calendar-wrapper">
+                    <div class="calendar-header">
+                        <button class="calendar-nav-btn" id="prevMonth" aria-label="Previous month">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+                        <div class="calendar-title">
+                            <span id="currentMonth">March 2025</span>
+                        </div>
+                        <button class="calendar-nav-btn" id="nextMonth" aria-label="Next month">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="calendar-weekdays">
+                        <div class="weekday">Sun</div>
+                        <div class="weekday">Mon</div>
+                        <div class="weekday">Tue</div>
+                        <div class="weekday">Wed</div>
+                        <div class="weekday">Thu</div>
+                        <div class="weekday">Fri</div>
+                        <div class="weekday">Sat</div>
+                    </div>
+
+                    <div class="calendar-days" id="calendarDays">
+                        <!-- Days will be generated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Appointment Form Section -->
+                <div class="appointment-form-wrapper">
+                    <form class="appointment-form" id="appointmentForm" action="https://api.web3forms.com/submit" method="POST">
+                        <!-- Web3Forms Configuration -->
+                        <input type="hidden" name="access_key" value="0e8b41ce-71f9-492a-a031-14d33271f723">
+                        <input type="hidden" name="from_name" value="A+Pereira Company">
+                        <input type="hidden" name="subject" value="🛠️ NUEVA SOLICITUD DE CITA | A+PEREIRA COMPANY">
+                        <input type="hidden" name="redirect" value="https://abpereira.com/Vistas/index.html">
+                        
+                        <!-- Custom Autoresponse (Web3Forms sends a copy to the user if email field is present) -->
+                        
+                        <div class="form-section-heading">
+                            <h2>Your Information</h2>
+                            <p>Complete the form with your details. You will receive a confirmation email with all the appointment details.</p>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="app-name">Full Name *</label>
+                                <input type="text" name="name" id="app-name" placeholder="Your full name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="app-phone">Phone Number *</label>
+                                <input type="tel" name="phone" id="app-phone" placeholder="Your phone number" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="app-email">Email *</label>
+                                <input type="email" name="email" id="app-email" placeholder="your@example.com" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="app-service">Service Type *</label>
+                                <select name="service" id="app-service" required>
+                                    <option value="" disabled selected>Select a service</option>
+                                    <option value="Roof Repair">Roof Repair</option>
+                                    <option value="Painting and Finishes">Painting and Finishes</option>
+                                    <option value="Electrical Installation">Electrical Installation</option>
+                                    <option value="Gutter Installation">Gutter Installation</option>
+                                    <option value="Inspection and Assessment">Inspection and Assessment</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Selected Date and Time Display -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="selected-date">Selected Date *</label>
+                                <input type="text" id="selected-date" name="date" placeholder="Click on calendar to select" readonly required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="selected-time">Preferred Time *</label>
+                                <select name="time" id="selected-time" required>
+                                    <option value="" disabled selected>Select a time</option>
+                                    <option value="09:00 AM">09:00 AM</option>
+                                    <option value="10:00 AM">10:00 AM</option>
+                                    <option value="11:00 AM">11:00 AM</option>
+                                    <option value="01:00 PM">01:00 PM</option>
+                                    <option value="02:00 PM">02:00 PM</option>
+                                    <option value="03:00 PM">03:00 PM</option>
+                                    <option value="04:00 PM">04:00 PM</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group form-group-full">
+                            <label for="app-address">Service Address *</label>
+                            <input type="text" name="address" id="app-address" placeholder="Where should we visit?" required>
+                        </div>
+
+                        <div class="form-group form-group-full">
+                            <label for="app-description">Brief Description of Work *</label>
+                            <textarea name="description" id="app-description" rows="4" placeholder="Briefly describe the work you need us to do..." required></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <input class="btn" type="submit" value="Confirm Appointment">
+                        </div>
+
+                        <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <a class="whatsapp-float" href="tel:+16319601989" aria-label="Call +1 (631) 960-1989">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M6.6 10.8a15.6 15.6 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24c1.1.36 2.3.56 3.5.56a1 1 0 0 1 1 1V21a1 1 0 0 1-1 1C10.1 22 2 13.9 2 4a1 1 0 0 1 1-1h4.5a1 1 0 0 1 1 1c0 1.2.2 2.4.56 3.5a1 1 0 0 1-.24 1l-2.22 2.3z"></path>
+        </svg>
+    </a>
+
+    <!-- Scripts -->
+    <script src="../javascript/menu.js?v=12"></script>
+    <script src="../javascript/appointment.js?v=3"></script>
+    <script src="../javascript/scroll-reveal.js?v=8"></script>
+</body>
+
+</html>

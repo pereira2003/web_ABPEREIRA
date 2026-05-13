@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" href="../img/ABP.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | A+Pereira Company</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <!-- Scripts -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("YOUR_PUBLIC_KEY");
+        })();
+    </script>
+    <style>
+        :root {
+            --primary: #0c3363;
+            --accent: #be945d;
+            --bg: #f4f7fa;
+            --card-bg: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #667;
+            --danger: #d32f2f;
+            --success: #2e7d32;
+            --warning: #ed6c02;
+        }
+
+        body {
+            background-color: var(--bg);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        .dashboard-container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            background: var(--primary);
+            padding: 1.5rem 2rem;
+            border-radius: 20px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(12, 51, 99, 0.2);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            flex: 1;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-card span {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .stat-card strong {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        .appointments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 2rem;
+        }
+
+        .appointment-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .appointment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        }
+
+        .status-strip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: #ddd;
+        }
+
+        .status-pending .status-strip { background: var(--warning); }
+        .status-accepted .status-strip { background: var(--success); }
+        .status-rejected .status-strip { background: var(--danger); }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.4rem;
+            color: var(--primary);
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .status-tag {
+            padding: 0.3rem 0.7rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .tag-pending { background: #fff4e5; color: var(--warning); }
+        .tag-accepted { background: #edf7ed; color: var(--success); }
+        .tag-rejected { background: #fdeded; color: var(--danger); }
+
+        .date-badge {
+            background: #e8f0fe;
+            color: var(--primary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+
+        .info-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .info-item svg {
+            width: 18px;
+            height: 18px;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .description-box {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #444;
+            margin-top: 1rem;
+            border-left: 3px solid #ddd;
+        }
+
+        .actions-grid {
+            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+
+        .btn-dash {
+            padding: 0.8rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-accept { background: #edf7ed; color: var(--success); border: 1px solid #c3e6cb; }
+        .btn-accept:hover { background: var(--success); color: white; }
+
+        .btn-reject { background: #fdeded; color: var(--danger); border: 1px solid #f5c6cb; }
+        .btn-reject:hover { background: var(--danger); color: white; }
+
+        .btn-calendar {
+            grid-column: span 2;
+            background: #fff8e1;
+            color: #b58105;
+            border: 1px solid #ffeeba;
+        }
+        .btn-calendar:hover { background: #ffecb3; }
+
+        .btn-logout {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 5rem;
+            color: var(--text-muted);
+        }
+
+        /* FormSubmit hidden helper */
+        #emailTrigger { display: none; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
+                <img src="../img/LOGO_AB.png" alt="Logo" style="width: 50px; filter: brightness(0) invert(1);">
+                <h1>A+Pereira Management</h1>
+            </div>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <span>Total Appointments</span>
+                <strong id="totalCount">0</strong>
+            </div>
+            <div class="stat-card">
+                <span>Pending Review</span>
+                <strong id="pendingCount">0</strong>
+            </div>
+        </div>
+
+        <div id="appointmentsList" class="appointments-grid">
+            <!-- Appointments loaded via JS -->
+        </div>
+    </div>
+
+    <!-- Hidden form for Email Notifications -->
+    <form id="emailTrigger" action="https://formsubmit.co/ajax/pereiraabrahan20@gmail.com" method="POST">
+        <input type="hidden" name="to_client" id="emailTo">
+        <input type="hidden" name="status_update" id="emailStatus">
+        <input type="hidden" name="date_info" id="emailDate">
+        <input type="hidden" name="_subject" id="emailSubject">
+    </form>
+
+    <script>
+        if (sessionStorage.getItem('isAdmin') !== 'true') {
+            window.location.href = 'admin-login.html';
+        }
+
+        const DETAILS_KEY = 'abp_booked_details';
+        const DATES_KEY = 'abp_booked_dates';
+
+        function loadAppointments() {
+            const list = document.getElementById('appointmentsList');
+            const appointments = JSON.parse(localStorage.getItem(DETAILS_KEY) || '[]');
+            
+            const pending = appointments.filter(a => !a.status || a.status === 'pending').length;
+            document.getElementById('totalCount').textContent = appointments.length;
+            document.getElementById('pendingCount').textContent = pending;
+
+            if (appointments.length === 0) {
+                list.innerHTML = '<div class="empty-state"><p>No appointments found.</p></div>';
+                return;
+            }
+
+            appointments.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            list.innerHTML = appointments.map((app) => {
+                const status = app.status || 'pending';
+                return `
+                <div class="appointment-card status-${status}">
+                    <div class="status-strip"></div>
+                    <div class="card-header">
+                        <div>
+                            <h3>${app.name}</h3>
+                            <span class="date-badge">${app.date}</span>
+                        </div>
+                        <span class="status-tag tag-${status}">${status}</span>
+                    </div>
+                    
+                    <div class="info-section">
+                        <div class="info-item">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span>${app.time}</span>
+                        </div>
+                        <div class="info-item">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            <span>${app.service}</span>
+                        </div>
+                        <div class="info-item">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                            <span>${app.phone}</span>
+                        </div>
+                        <div class="info-item">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                            <span>${app.address}</span>
+                        </div>
+                    </div>
+
+                    <div class="description-box"><strong>Description:</strong> ${app.description}</div>
+
+                    <div class="actions-grid">
+                        <button class="btn-dash btn-accept" onclick="updateStatus('${app.created_at}', 'accepted')">Accept</button>
+                        <button class="btn-dash btn-reject" onclick="updateStatus('${app.created_at}', 'rejected')">Reject</button>
+                        <button class="btn-dash btn-calendar" onclick="addToAdminCalendar('${app.created_at}')">Add to my Calendar</button>
+                    </div>
+                </div>
+            `;}).join('');
+        }
+
+        async function updateStatus(createdAt, newStatus) {
+            let appointments = JSON.parse(localStorage.getItem(DETAILS_KEY) || '[]');
+            const index = appointments.findIndex(a => a.created_at === createdAt);
+            
+            if (index !== -1) {
+                const app = appointments[index];
+                app.status = newStatus;
+
+                // If rejected, free the date
+                if (newStatus === 'rejected') {
+                    let dates = JSON.parse(localStorage.getItem(DATES_KEY) || '[]');
+                    dates = dates.filter(d => d !== app.dateDB);
+                    localStorage.setItem(DATES_KEY, JSON.stringify(dates));
+                }
+
+                localStorage.setItem(DETAILS_KEY, JSON.stringify(appointments));
+                
+                // Notify Client via FormSubmit (Admin copy for record)
+                await notifyClient(app, newStatus);
+                
+                loadAppointments();
+            }
+        }
+
+        async function notifyClient(app, status) {
+            const isAccepted = status === 'accepted';
+            const subject = isAccepted ? '✅ CONFIRMADO: Tu Cita con A+Pereira Company' : '❌ ACTUALIZACIÓN: Estado de tu Cita';
+            
+            const emailData = {
+                access_key: "0e8b41ce-71f9-492a-a031-14d33271f723",
+                from_name: "A+Pereira Company",
+                subject: subject,
+                "ESTADO": isAccepted ? "✅ ACEPTADA / CONFIRMADA" : "❌ RECHAZADA / CANCELADA",
+                "CLIENTE": app.name,
+                "SERVICIO": app.service,
+                "FECHA": app.date,
+                "HORA": app.time,
+                "UBICACIÓN": app.address,
+                "--- MENSAJE DE A+PEREIRA ---": isAccepted 
+                    ? "Tu cita ha sido confirmada con éxito. ¡Nos vemos pronto!" 
+                    : "Lamentamos informarte que no podemos cubrir esta fecha. Por favor, elige otro día o contáctanos por WhatsApp.",
+                "--- LEGAL ---": "© 2026 A+PEREIRA COMPANY. Todos los derechos reservados. Sujeto a términos y condiciones.",
+                "CONTACTO_WHATSAPP": "https://wa.me/16319601989"
+            };
+            
+            try {
+                await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify(emailData)
+                });
+                alert(`Notification sent to ${app.email} (${status})`);
+            } catch (e) { console.error('Email error', e); }
+        }
+
+        function addToAdminCalendar(createdAt) {
+            const appointments = JSON.parse(localStorage.getItem(DETAILS_KEY) || '[]');
+            const app = appointments.find(a => a.created_at === createdAt);
+            if (!app) return;
+
+            // Simplified link generation (Using current date logic from appointment.js)
+            const title = encodeURIComponent(`WORK: ${app.service} - ${app.name}`);
+            const location = encodeURIComponent(app.address);
+            const details = encodeURIComponent(`Phone: ${app.phone}\n${app.description}`);
+            
+            // Note: Date formatting would need the same helper as appointment.js
+            // For now, we open Google Calendar with basic info
+            window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&location=${location}&details=${details}`, '_blank');
+        }
+
+        function logout() {
+            sessionStorage.removeItem('isAdmin');
+            window.location.href = 'index.html';
+        }
+
+        loadAppointments();
+    </script>
+</body>
+</html>
