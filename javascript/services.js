@@ -174,6 +174,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Pagination (6 desktop, 4 phone) ──
     const MOBILE_QUERY = '(max-width: 640px)';
+
+    // ── Animated Slideshow for "And More" ──
+    function initSlideshow() {
+        const animatedCard = document.querySelector('.service-card-animated');
+        if (!animatedCard) return;
+
+        const images = animatedCard.querySelectorAll('.service-image');
+        if (images.length <= 1) return;
+
+        let currentIndex = 0;
+
+        setInterval(() => {
+            images[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % images.length;
+            images[currentIndex].classList.add('active');
+        }, 3000); // Change image every 3 seconds
+    }
+
+    initSlideshow();
+
     const getCardsPerPage = function () {
         return window.matchMedia(MOBILE_QUERY).matches ? 4 : 6;
     };

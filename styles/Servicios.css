@@ -292,6 +292,43 @@ main {
   filter: brightness(1.1);
 }
 
+/* Animated Service Card */
+.service-card-animated .service-image-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.service-card-animated .service-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+  z-index: 1;
+}
+
+.service-card-animated .service-image.active {
+  opacity: 1;
+  z-index: 2;
+}
+
+@media (max-width: 640px) {
+  .service-card-animated .service-image-container {
+    height: 140px; /* Matching mobile card image height */
+  }
+}
+
+.service-card-animated .service-image-wrap {
+  height: 100%;
+  width: 100%;
+  display: block;
+}
+
 .popover {
   position: absolute;
   left: 1.4rem;
