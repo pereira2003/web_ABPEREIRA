@@ -186,6 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 _cc: clientEmail, // FORZAR COPIA AL CLIENTE
                 _autoresponder: `Hello ${clientName}! Thank you for contacting us.\n\nWe have received your message regarding "${selectedService}". We will get back to you as soon as possible.\n\nMessage Summary:\n${userComments}\n\nSincerely,\nA+Pereira Company Team`,
                 "Name": clientName,
+                "Email": clientEmail,
                 "Phone": phoneInput ? phoneInput.value : 'N/A',
                 "Service": selectedService,
                 "Topic": requestTopic,
