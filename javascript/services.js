@@ -122,9 +122,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ── Wrap each service image for lightbox click ──
-    document.querySelectorAll('.service-image').forEach(function (img) {
-        img.setAttribute('loading', 'lazy');
-        img.setAttribute('fetchpriority', 'low');
+    document.querySelectorAll('.service-image').forEach(function (img, idx) {
+        // Priority for the first 4 images to load faster
+        if (idx < 4) {
+            img.setAttribute('loading', 'eager');
+            img.setAttribute('fetchpriority', 'high');
+        } else {
+            img.setAttribute('loading', 'lazy');
+            img.setAttribute('fetchpriority', 'low');
+        }
         img.setAttribute('decoding', 'async');
 
         if (img.complete) {
