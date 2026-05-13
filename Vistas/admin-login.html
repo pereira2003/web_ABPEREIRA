@@ -42,6 +42,31 @@
             width: 80px;
             margin-bottom: 1.5rem;
             filter: drop-shadow(0 0 10px rgba(190, 148, 93, 0.3));
+            background: transparent; /* Remove white background */
+            border-radius: 0;
+            padding: 0;
+        }
+
+        .btn-cancel {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         .login-card h1 {
@@ -138,6 +163,7 @@
                 <input type="password" id="password" placeholder="••••••••" required>
             </div>
             <button type="submit" class="btn-login">Unlock Dashboard</button>
+            <a href="index.html" class="btn-cancel">Cancel and Go Back</a>
         </form>
         <div id="error-msg">Invalid administrator credentials</div>
     </div>
