@@ -420,7 +420,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <strong>${greeting}! Your appointment has been scheduled:</strong>
                         <div style="margin: 0.5rem 0 1.5rem; color: #444;">${data.date} at ${data.time}</div>
                         <div style="color: #2e7d32; font-weight: 600; margin-bottom: 1rem;">
-                            A verification email will be sent to you shortly.
+                            A verification message will be sent to you shortly.
                         </div>
                     `;
                     modal.style.display = 'flex';
@@ -436,7 +436,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     };
                 } else {
                     // Fallback to alert if modal elements are missing
-                    alert(`Your appointment for ${data.date} at ${data.time} has been scheduled. You will receive a verification email shortly.`);
+                    alert(`Your appointment for ${data.date} at ${data.time} has been scheduled. You will receive a verification message shortly.`);
                     window.location.href = 'index.html';
                 }
 
