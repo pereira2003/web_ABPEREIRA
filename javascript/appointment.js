@@ -12,13 +12,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // You need to create a project in Firebase Console (https://console.firebase.google.com/)
     // and paste your configuration here.
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-        databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_PROJECT_ID.appspot.com",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
+        apiKey: "AIzaSyD6h6fErJd-nVhvxsTyBdJmkqLMzzR4rOk",
+        authDomain: "abpereira-web.firebaseapp.com",
+        databaseURL: "https://abpereira-web-default-rtdb.firebaseio.com",
+        projectId: "abpereira-web",
+        storageBucket: "abpereira-web.firebasestorage.app",
+        messagingSenderId: "270636168434",
+        appId: "1:270636168434:web:046c7d9bc4d55aaececc6b",
+        measurementId: "G-267XCN719L"
     };
 
     // Initialize Firebase if config is provided
