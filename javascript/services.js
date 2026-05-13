@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const animatedCard = document.querySelector('.service-card-animated');
         if (!animatedCard) return;
 
-        const images = animatedCard.querySelectorAll('.service-image');
+        const images = animatedCard.querySelectorAll('.slideshow-image');
         if (images.length <= 1) return;
 
         let currentIndex = 0;
@@ -207,16 +207,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function setCardImagePriority(card, highPriority) {
         const img = card.querySelector('.service-image');
-        if (!img) {
-            return;
+        const slideshowImages = card.querySelectorAll('.slideshow-image');
+
+        if (img) {
+            if (highPriority) {
+                img.setAttribute('loading', 'eager');
+                img.setAttribute('fetchpriority', 'high');
+            } else {
+                img.setAttribute('loading', 'lazy');
+                img.setAttribute('fetchpriority', 'low');
+            }
         }
 
-        if (highPriority) {
-            img.setAttribute('loading', 'eager');
-            img.setAttribute('fetchpriority', 'high');
-        } else {
-            img.setAttribute('loading', 'lazy');
-            img.setAttribute('fetchpriority', 'low');
+        if (slideshowImages.length > 0) {
+            slideshowImages.forEach((sImg, sIdx) => {
+                if (highPriority && sIdx < 2) {
+                    sImg.setAttribute('loading', 'eager');
+                    sImg.setAttribute('fetchpriority', 'high');
+                } else {
+                    sImg.setAttribute('loading', 'lazy');
+                    sImg.setAttribute('fetchpriority', 'low');
+                }
+            });
         }
     }
 
