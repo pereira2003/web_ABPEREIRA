@@ -32,9 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
         details.push({
             ...fullData,
             dateDB: date, // Keep original format for deletion
-            created_at: new Date().toISOString()
+            created_at: new Date().toISOString(),
+            status: 'pending' // Default status
         });
         localStorage.setItem(LOCAL_DETAILS_KEY, JSON.stringify(details));
+        console.log('Saved appointment details to localStorage:', LOCAL_DETAILS_KEY);
     }
 
     // Initialize booked dates from local storage

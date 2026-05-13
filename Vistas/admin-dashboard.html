@@ -43,29 +43,31 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             background: var(--primary);
-            padding: 1.5rem 2rem;
+            padding: 1.5rem;
             border-radius: 20px;
             color: white;
             box-shadow: 0 10px 30px rgba(12, 51, 99, 0.2);
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .header h1 {
             margin: 0;
             font-family: 'Cormorant Garamond', serif;
-            font-size: 2.2rem;
+            font-size: 1.8rem;
         }
 
         .stats-bar {
             display: flex;
-            gap: 2rem;
+            gap: 1rem;
             margin-bottom: 2rem;
         }
 
         .stat-card {
             background: white;
-            padding: 1.5rem;
+            padding: 1.2rem;
             border-radius: 15px;
             flex: 1;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -73,21 +75,44 @@
             flex-direction: column;
         }
 
-        .stat-card span {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-
         .stat-card strong {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             color: var(--primary);
         }
 
         .appointments-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 1rem;
+            }
+            .header {
+                flex-direction: column;
+                text-align: center;
+                justify-content: center;
+            }
+            .header div {
+                flex-direction: column;
+            }
+            .stats-bar {
+                flex-direction: row;
+            }
+            .appointments-grid {
+                grid-template-columns: 1fr;
+            }
+            .appointment-card {
+                padding: 1.5rem;
+            }
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+            .btn-calendar {
+                grid-column: span 1;
+            }
         }
 
         .appointment-card {
@@ -251,7 +276,7 @@
     <div class="dashboard-container">
         <div class="header">
             <div style="display: flex; align-items: center; gap: 1.5rem;">
-                <img src="../img/LOGO_AB.png" alt="Logo" style="width: 50px; filter: brightness(0) invert(1);">
+                <img src="../img/ABPEREIRA L.png" alt="A+Pereira Logo" style="width: 60px; height: auto; object-fit: contain;">
                 <h1>A+Pereira Management</h1>
             </div>
             <button class="btn-logout" onclick="logout()">Logout</button>
@@ -291,14 +316,17 @@
 
         function loadAppointments() {
             const list = document.getElementById('appointmentsList');
-            const appointments = JSON.parse(localStorage.getItem(DETAILS_KEY) || '[]');
+            const storedData = localStorage.getItem(DETAILS_KEY);
+            console.log('Loading appointments from:', DETAILS_KEY, storedData);
+            
+            const appointments = JSON.parse(storedData || '[]');
             
             const pending = appointments.filter(a => !a.status || a.status === 'pending').length;
             document.getElementById('totalCount').textContent = appointments.length;
             document.getElementById('pendingCount').textContent = pending;
 
             if (appointments.length === 0) {
-                list.innerHTML = '<div class="empty-state"><p>No appointments found.</p></div>';
+                list.innerHTML = '<div class="empty-state"><p>No appointments found. Make sure you have booked some appointments in the booking page.</p></div>';
                 return;
             }
 
