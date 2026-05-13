@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
             images[currentIndex].classList.remove('active');
             currentIndex = (currentIndex + 1) % images.length;
             images[currentIndex].classList.add('active');
-        }, 3000); // Change image every 3 seconds
+        }, 2000); // Cambiado a 2 segundos para que se aprecien más imágenes
     }
 
     initSlideshow();
