@@ -281,7 +281,7 @@ main {
 }
 
 .book-button {
-  background: #be945d;
+  background: #d5b082;
   color: #ffffff;
   flex: 1;
 }
@@ -430,7 +430,7 @@ main {
 
 .services-page-btn:hover,
 .services-page-btn:focus-visible {
-  border-color: #be945d;
+  border-color: #d5b082;
   transform: translateY(-1px);
   outline: none;
 }
@@ -589,7 +589,7 @@ main {
   }
 
   .book-button {
-    background: #be945d !important;
+    background: #d5b082 !important;
   }
 
   .like-button {
