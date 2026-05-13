@@ -684,20 +684,20 @@
 
             const phone = app.phone.replace(/\D/g, '');
             const greeting = getGreetingEN();
-            const dateInfo = app.date ? ` el ${app.date}` : '';
+            const dateInfo = app.date ? ` on ${app.date}` : '';
             let message = "";
 
             if (isSpecial) {
                 if (newStatus === 'accepted') {
-                    message = `${greeting} ${app.name}, le escribimos de A+Pereira Company. Nos complace informarle que la fecha${dateInfo} ya está disponible para su solicitud de ${app.service}. Por favor, háganos saber si desea confirmar esta cita.`;
+                    message = `${greeting} ${app.name}, this is A+Pereira Company. We are pleased to inform you that we now have availability for your ${app.service} request${dateInfo}. Please let us know if you would like to proceed with confirming this appointment. Best regards.`;
                 } else {
-                    message = `${greeting} ${app.name}, le escribimos de A+Pereira Company. Le notificamos formalmente que su cita para ${app.service}${dateInfo} ha sido cancelada. Lamentamos cualquier inconveniente.`;
+                    message = `${greeting} ${app.name}, this is A+Pereira Company. We are writing to formally notify you that your appointment for ${app.service}${dateInfo} has been cancelled. We sincerely apologize for any inconvenience this may cause. Thank you for your understanding.`;
                 }
             } else {
                 if (newStatus === 'accepted') {
-                    message = `${greeting} ${app.name}, le escribimos de A+Pereira Company. Nos complace confirmar su solicitud para ${app.service}. Su cita está programada para el ${app.date || 'día acordado'} a las ${app.time || 'la hora pactada'}. Por favor, infórmenos si hay algún detalle adicional que debamos considerar.`;
+                    message = `${greeting} ${app.name}, this is A+Pereira Company. We are pleased to confirm your request for ${app.service}. Your appointment is officially scheduled for ${app.date || 'the agreed date'} at ${app.time || 'the scheduled time'}. Please let us know if there are any further details we should be aware of. We look forward to serving you.`;
                 } else {
-                    message = `${greeting} ${app.name}, le escribimos de A+Pereira Company. Gracias por su interés en nuestros servicios. Lamentablemente, no tenemos disponibilidad para el ${app.date || ''} a las ${app.time || ''}. Le invitamos cordialmente a consultar nuestro sitio web para fechas alternativas.`;
+                    message = `${greeting} ${app.name}, this is A+Pereira Company. Thank you for your interest in our services. Regrettably, we do not have availability for ${app.date || 'your requested date'} at ${app.time || 'your requested time'}. We kindly invite you to visit our website to view alternative dates. Thank you.`;
                 }
             }
 
@@ -760,8 +760,8 @@
             if (!app) return;
             const greeting = getGreetingEN();
             let message = app.status === 'accepted'
-                ? `${greeting} ${app.name}, le escribimos de A+Pereira Company. Le confirmamos que su solicitud para ${app.service} ha sido aceptada. Estaremos allí el ${app.date || 'día acordado'} a las ${app.time || 'la hora pactada'}. Por favor, infórmenos si tiene alguna instrucción adicional.`
-                : `${greeting} ${app.name}, le escribimos de A+Pereira Company. Le damos seguimiento a su consulta sobre ${app.service}. ¿Estaría disponible para una breve charla?`;
+                ? `${greeting} ${app.name}, this is A+Pereira Company. We are writing to formally confirm that your request for ${app.service} has been accepted. Our team will arrive on ${app.date || 'the agreed date'} at ${app.time || 'the scheduled time'}. Please let us know if you have any additional instructions. Best regards.`
+                : `${greeting} ${app.name}, this is A+Pereira Company. We are following up regarding your inquiry about ${app.service}. Would you be available for a brief discussion regarding your project? We look forward to hearing from you.`;
             window.open(`https://wa.me/${app.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
         }
         function contactViaEmail(id) {
@@ -769,9 +769,9 @@
             if (!app) return;
             const greeting = getGreetingEN();
             let body = app.status === 'accepted'
-                ? `${greeting} ${app.name},\n\nEsta es una confirmación formal de su cita con A+Pereira Company.\n\nDetalles:\nServicio: ${app.service}\nFecha: ${app.date || 'Por confirmar'}\nHora: ${app.time || 'Por confirmar'}\n\nEsperamos poder servirle.\n\nAtentamente,\nEl equipo de A+Pereira Company`
-                : `${greeting} ${app.name},\n\nGracias por contactar a A+Pereira Company. Le escribimos para dar seguimiento a su consulta sobre ${app.service}.\n\nQuedamos a la espera de sus noticias.\n\nAtentamente,\nEl equipo de A+Pereira Company`;
-            window.location.href = `mailto:${app.email}?subject=${encodeURIComponent('Actualización de Cita - A+Pereira Company')}&body=${encodeURIComponent(body)}`;
+                ? `${greeting} ${app.name},\n\nThis is a formal confirmation of your appointment with A+Pereira Company.\n\nAppointment Details:\nService: ${app.service}\nDate: ${app.date || 'To be confirmed'}\nTime: ${app.time || 'To be confirmed'}\n\nWe look forward to serving you and appreciate your business.\n\nSincerely,\nThe A+Pereira Company Team`
+                : `${greeting} ${app.name},\n\nThank you for reaching out to A+Pereira Company. We are writing to follow up on your inquiry regarding ${app.service}.\n\nWe would like to discuss your requirements in more detail at your earliest convenience.\n\nSincerely,\nThe A+Pereira Company Team`;
+            window.location.href = `mailto:${app.email}?subject=${encodeURIComponent('Appointment Update - A+Pereira Company')}&body=${encodeURIComponent(body)}`;
         }
         function addToAdminCalendar(id) {
             const app = currentAppointments.find(a => (a.fbKey === id || a.created_at === id));
