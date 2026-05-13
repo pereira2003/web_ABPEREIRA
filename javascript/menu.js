@@ -55,6 +55,24 @@
         link.addEventListener('click', closeMenu);
     });
 
+    // Communication Floating Menu Toggle
+    const commMenu = document.getElementById('commMenu');
+    const commToggleBtn = document.getElementById('commToggleBtn');
+
+    if (commToggleBtn && commMenu) {
+        commToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            commMenu.classList.toggle('is-active');
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!commMenu.contains(e.target)) {
+                commMenu.classList.remove('is-active');
+            }
+        });
+    }
+
     document.addEventListener('keydown', event => {
         if (event.key === 'Escape' && isMenuOpen()) {
             closeMenu();
