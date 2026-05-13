@@ -379,7 +379,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     "Time": data.time,
                     "Address": data.address,
                     "DESCRIPTION": data.description || "No description provided",
-                    "ACCESO_ADMIN": "⚙️ Gestionar esta cita: https://abpereira.com/Vistas/admin-login.html"
+                    "ACCESO_ADMIN": "⚙️ Link para gestionar cita ⬇️",
+                    "ENLACE_LOGIN": "https://pereira2003.github.io/web_ABPEREIRA/Vistas/admin-login.html"
                 };
 
                 // Add special note based on email domain

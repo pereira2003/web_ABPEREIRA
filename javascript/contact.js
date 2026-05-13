@@ -198,7 +198,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 "Service": selectedService,
                 "Topic": requestTopic,
                 "Message": userComments,
-                "ACCESO_ADMIN": "⚙️ Gestionar esta solicitud: https://abpereira.com/Vistas/admin-login.html"
+                "ACCESO_ADMIN": "⚙️ Link para gestionar solicitud ⬇️",
+                "ENLACE_LOGIN": "https://pereira2003.github.io/web_ABPEREIRA/Vistas/admin-login.html"
             };
 
             fetch('https://api.web3forms.com/submit', {
