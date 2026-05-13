@@ -150,7 +150,7 @@
         layer.setAttribute('aria-hidden', 'true');
         layer.innerHTML =
             '<div class="page-transition-spinner" aria-hidden="true"></div>' +
-            '<p class="page-transition-brand">AB Pereira Company</p>' +
+            '<p class="page-transition-brand">A⁺Pereira Company</p>' +
             '<p class="page-transition-loading">Cargando</p>';
         body.appendChild(layer);
         return layer;
