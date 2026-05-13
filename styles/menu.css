@@ -290,6 +290,7 @@
 
     .nav-overlay {
         display: flex;
+        flex-direction: column; /* Cambiado a columna para acomodar el logo arriba */
         align-items: center;
         justify-content: center;
         inset: 0;
@@ -297,6 +298,28 @@
         box-sizing: border-box;
         background: var(--menu-bg);
         z-index: 1050;
+    }
+
+    .overlay-logo {
+        margin-bottom: 2.5rem;
+        animation: fadeInDown 0.5s ease forwards;
+    }
+
+    .overlay-logo img {
+        width: 100px;
+        height: auto;
+        filter: drop-shadow(0 0 15px rgba(190, 148, 93, 0.2));
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .nav-overlay ul {
