@@ -760,8 +760,10 @@
             const app = currentAppointments.find(a => (a.fbKey === id || a.created_at === id));
             if (!app) return;
             const greeting = getGreetingEN();
+            const dateInfo = app.date ? ` on ${app.date}` : '';
+            const timeInfo = app.time ? ` at ${app.time}` : '';
             let message = app.status === 'accepted'
-                ? `${greeting} ${app.name}, this is A+Pereira Company. We are writing to formally confirm that your request for ${app.service} has been accepted. Our team will arrive on ${app.date || 'the agreed date'} at ${app.time || 'the scheduled time'}. Please let us know if you have any additional instructions. Best regards.`
+                ? `${greeting} ${app.name}, this is A+Pereira Company. We are writing to formally confirm that your request for ${app.service} has been accepted. Our team will arrive${dateInfo}${timeInfo}. Please let us know if you have any additional instructions. Best regards.`
                 : `${greeting} ${app.name}, this is A+Pereira Company. We are following up regarding your inquiry about ${app.service}. Would you be available for a brief discussion regarding your project? We look forward to hearing from you.`;
             window.open(`https://wa.me/${app.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
         }
@@ -769,8 +771,10 @@
             const app = currentAppointments.find(a => (a.fbKey === id || a.created_at === id));
             if (!app) return;
             const greeting = getGreetingEN();
+            const dateInfo = app.date || 'To be confirmed';
+            const timeInfo = app.time || 'To be confirmed';
             let body = app.status === 'accepted'
-                ? `${greeting} ${app.name},\n\nThis is a formal confirmation of your appointment with A+Pereira Company.\n\nAppointment Details:\nService: ${app.service}\nDate: ${app.date || 'To be confirmed'}\nTime: ${app.time || 'To be confirmed'}\n\nWe look forward to serving you and appreciate your business.\n\nSincerely,\nThe A+Pereira Company Team`
+                ? `${greeting} ${app.name},\n\nThis is a formal confirmation of your appointment with A+Pereira Company.\n\nAppointment Details:\nService: ${app.service}\nDate: ${dateInfo}\nTime: ${timeInfo}\n\nWe look forward to serving you and appreciate your business.\n\nSincerely,\nThe A+Pereira Company Team`
                 : `${greeting} ${app.name},\n\nThank you for reaching out to A+Pereira Company. We are writing to follow up on your inquiry regarding ${app.service}.\n\nWe would like to discuss your requirements in more detail at your earliest convenience.\n\nSincerely,\nThe A+Pereira Company Team`;
             window.location.href = `mailto:${app.email}?subject=${encodeURIComponent('Appointment Update - A+Pereira Company')}&body=${encodeURIComponent(body)}`;
         }
