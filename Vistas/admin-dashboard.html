@@ -415,31 +415,53 @@
         }
 
         async function updateStatus(id, newStatus) {
-            // Update in Firebase
+            // If rejected, we notify and then delete from DB to free up the date
+            const isRejecting = newStatus === 'rejected';
+
+            // 1. Get app data first for notification
+            let app = null;
             if (db) {
-                try {
-                    await db.ref('appointments/' + id).update({ status: newStatus });
-                } catch (error) {
-                    console.error("Firebase update error:", error);
-                }
+                const snapshot = await db.ref('appointments/' + id).once('value');
+                app = snapshot.val();
             }
 
-            // Fallback/Sync with LocalStorage
-            let appointments = JSON.parse(localStorage.getItem(DETAILS_KEY) || '[]');
-            const index = appointments.findIndex(a => (a.fbKey === id || a.created_at === id));
-            
-            if (index !== -1) {
-                const app = appointments[index];
-                app.status = newStatus;
-                localStorage.setItem(DETAILS_KEY, JSON.stringify(appointments));
-                
-                // Notify Client via Web3Forms
+            if (!app) {
+                // Fallback to local storage if not in DB or DB not connected
+                let appointments = JSON.parse(localStorage.getItem(DETAILS_KEY) || '[]');
+                app = appointments.find(a => (a.fbKey === id || a.created_at === id));
+            }
+
+            if (app) {
+                // 2. Notify Client via Web3Forms
                 await notifyClient(app, newStatus);
-            } else if (db) {
-                // If not in local but in Firebase, we still need to notify
-                const snapshot = await db.ref('appointments/' + id).once('value');
-                const app = snapshot.val();
-                if (app) await notifyClient(app, newStatus);
+
+                // 3. Handle Database Update or Deletion
+                if (db) {
+                    try {
+                        if (isRejecting) {
+                            // If rejected, delete from Firebase to free the date
+                            await db.ref('appointments/' + id).remove();
+                        } else {
+                            // If accepted, just update status
+                            await db.ref('appointments/' + id).update({ status: newStatus });
+                        }
+                    } catch (error) {
+                        console.error("Firebase update error:", error);
+                    }
+                }
+
+                // 4. Sync with LocalStorage
+                let appointments = JSON.parse(localStorage.getItem(DETAILS_KEY) || '[]');
+                const index = appointments.findIndex(a => (a.fbKey === id || a.created_at === id));
+                
+                if (index !== -1) {
+                    if (isRejecting) {
+                        appointments.splice(index, 1); // Remove from local too
+                    } else {
+                        appointments[index].status = newStatus;
+                    }
+                    localStorage.setItem(DETAILS_KEY, JSON.stringify(appointments));
+                }
             }
             
             loadAppointments();
