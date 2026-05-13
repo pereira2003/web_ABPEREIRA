@@ -342,16 +342,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Clean data for Web3Forms
                 const web3Data = {
                     access_key: "26d957c0-69d5-496c-8225-5085582dfd35",
-                    from_name: "A+Pereira Company",
-                    subject: `🛠️ NEW APPOINTMENT: ${data.name} - ${data.date}`,
-                    name: data.name,
-                    email: data.email,
-                    phone: data.phone,
-                    service: data.service,
-                    date: data.date,
-                    time: data.time,
-                    address: data.address,
-                    description: data.description
+                    from_name: "A+Pereira Web System",
+                    subject: `🏠 NUEVO PROYECTO: ${data.service} para ${data.name}`,
+                    "--- DATOS DEL CLIENTE ---": "",
+                    "Nombre Completo": data.name,
+                    "Teléfono": data.phone,
+                    "Correo": data.email,
+                    "--- DETALLES DE LA CITA ---": "",
+                    "Servicio Solicitado": data.service,
+                    "Fecha": data.date,
+                    "Hora": data.time,
+                    "Dirección": data.address,
+                    "--- DESCRIPCIÓN ---": data.description,
+                    "---": "Este mensaje fue generado automáticamente desde abpereira.com"
                 };
 
                 const response = await fetch('https://api.web3forms.com/submit', {

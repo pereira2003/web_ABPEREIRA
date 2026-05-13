@@ -469,23 +469,25 @@
 
         async function notifyClient(app, status) {
             const isAccepted = status === 'accepted';
-            const subject = isAccepted ? '✅ CONFIRMADO: Tu Cita con A+Pereira Company' : '❌ ACTUALIZACIÓN: Estado de tu Cita';
+            const subject = isAccepted 
+                ? `🎊 ¡Confirmado! Tu cita con A+Pereira para ${app.service}` 
+                : `🙏 Actualización sobre tu solicitud con A+Pereira Company`;
             
             const emailData = {
                 access_key: "26d957c0-69d5-496c-8225-5085582dfd35",
-                from_name: "A+Pereira Company",
+                from_name: "A+Pereira Company Management",
                 subject: subject,
-                "ESTADO": isAccepted ? "✅ ACEPTADA / CONFIRMADA" : "❌ RECHAZADA / CANCELADA",
+                "ESTADO DE LA CITA": isAccepted ? "✅ CONFIRMADA Y AGENDADA" : "❌ NO DISPONIBLE / CANCELADA",
                 "CLIENTE": app.name,
                 "SERVICIO": app.service,
                 "FECHA": app.date,
                 "HORA": app.time,
-                "UBICACIÓN": app.address,
-                "--- MENSAJE DE A+PEREIRA ---": isAccepted 
-                    ? "Tu cita ha sido confirmada con éxito. ¡Nos vemos pronto!" 
-                    : "Lamentamos informarte que no podemos cubrir esta fecha. Por favor, elige otro día o contáctanos por WhatsApp.",
-                "--- LEGAL ---": "© 2026 A+PEREIRA COMPANY. Todos los derechos reservados. Sujeto a términos y condiciones.",
-                "CONTACTO_WHATSAPP": "https://wa.me/16319601989"
+                "LUGAR": app.address,
+                "--- NOTA DEL EQUIPO ---": isAccepted 
+                    ? "¡Excelente! Hemos reservado este espacio para ti. Nos vemos pronto para comenzar el proyecto." 
+                    : "Lamentamos no poder atenderte en esta fecha específica. Por favor, revisa el calendario en nuestra web para elegir otro día disponible.",
+                "CONTACTO DIRECTO": "https://wa.me/16319601989",
+                "---": "© 2026 A+Pereira Company. Calidad y Dependibilidad."
             };
             
             try {

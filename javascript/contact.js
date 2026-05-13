@@ -54,16 +54,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            const clientName = nameInput && nameInput.value ? nameInput.value.trim() : 'Client';
-            const selectedService = serviceSelect && serviceSelect.value ? serviceSelect.value : 'General Inquiry';
-            const requestTopic = subjectInput && subjectInput.value ? subjectInput.value.trim() : 'Service Request';
+            const clientName = nameInput && nameInput.value ? nameInput.value.trim() : 'Cliente';
+            const selectedService = serviceSelect && serviceSelect.value ? serviceSelect.value : 'Consulta General';
+            const requestTopic = subjectInput && subjectInput.value ? subjectInput.value.trim() : 'Interés en servicios';
 
-            emailSubject.value = 'New ' + selectedService + ' request | ' + clientName + ' | ' + requestTopic;
+            emailSubject.value = `✨ NUEVO CONTACTO: ${clientName} interesado en ${selectedService}`;
 
             setSubmitting(true);
             setStatus('Sending your request...', 'pending');
 
             const formData = new FormData(form);
+            // Add custom fields for a cleaner email body
+            formData.append("--- TIPO DE SOLICITUD ---", selectedService);
+            formData.append("Asunto", requestTopic);
+            formData.append("--- MENSAJE ---", "");
+            formData.append("_from", "A+Pereira Web");
 
             fetch('https://formsubmit.co/ajax/a90011410@gmail.com', {
                 method: 'POST',
