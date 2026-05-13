@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | A+Pereira Company</title>
     <link rel="stylesheet" href="../styles/style.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <!-- Scripts -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
@@ -311,15 +314,49 @@
             window.location.href = 'admin-login.html';
         }
 
+        // --- Firebase Configuration ---
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        let db = null;
+        if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.database();
+        }
+
         const DETAILS_KEY = 'abp_booked_details';
         const DATES_KEY = 'abp_booked_dates';
 
-        function loadAppointments() {
+        async function loadAppointments() {
             const list = document.getElementById('appointmentsList');
-            const storedData = localStorage.getItem(DETAILS_KEY);
-            console.log('Loading appointments from:', DETAILS_KEY, storedData);
-            
-            const appointments = JSON.parse(storedData || '[]');
+            let appointments = [];
+
+            if (db) {
+                try {
+                    const snapshot = await db.ref('appointments').once('value');
+                    const data = snapshot.val();
+                    if (data) {
+                        // Convert object to array and include Firebase keys as IDs
+                        appointments = Object.keys(data).map(key => ({
+                            ...data[key],
+                            fbKey: key
+                        }));
+                    }
+                } catch (error) {
+                    console.error("Firebase load error:", error);
+                    appointments = JSON.parse(localStorage.getItem(DETAILS_KEY) || '[]');
+                }
+            } else {
+                appointments = JSON.parse(localStorage.getItem(DETAILS_KEY) || '[]');
+            }
             
             const pending = appointments.filter(a => !a.status || a.status === 'pending').length;
             document.getElementById('totalCount').textContent = appointments.length;
@@ -334,6 +371,7 @@
 
             list.innerHTML = appointments.map((app) => {
                 const status = app.status || 'pending';
+                const id = app.fbKey || app.created_at;
                 return `
                 <div class="appointment-card status-${status}">
                     <div class="status-strip"></div>
@@ -367,29 +405,43 @@
                     <div class="description-box"><strong>Description:</strong> ${app.description}</div>
 
                     <div class="actions-grid">
-                        <button class="btn-dash btn-accept" onclick="updateStatus('${app.created_at}', 'accepted')">Accept</button>
-                        <button class="btn-dash btn-reject" onclick="updateStatus('${app.created_at}', 'rejected')">Reject</button>
-                        <button class="btn-dash btn-calendar" onclick="addToAdminCalendar('${app.created_at}')">Add to my Calendar</button>
+                        <button class="btn-dash btn-accept" onclick="updateStatus('${id}', 'accepted')">Accept</button>
+                        <button class="btn-dash btn-reject" onclick="updateStatus('${id}', 'rejected')">Reject</button>
+                        <button class="btn-dash btn-calendar" onclick="addToAdminCalendar('${id}')">Add to my Calendar</button>
                     </div>
                 </div>
             `;}).join('');
         }
 
-        async function updateStatus(createdAt, newStatus) {
+        async function updateStatus(id, newStatus) {
+            // Update in Firebase
+            if (db) {
+                try {
+                    await db.ref('appointments/' + id).update({ status: newStatus });
+                } catch (error) {
+                    console.error("Firebase update error:", error);
+                }
+            }
+
+            // Fallback/Sync with LocalStorage
             let appointments = JSON.parse(localStorage.getItem(DETAILS_KEY) || '[]');
-            const index = appointments.findIndex(a => a.created_at === createdAt);
+            const index = appointments.findIndex(a => (a.fbKey === id || a.created_at === id));
             
             if (index !== -1) {
                 const app = appointments[index];
                 app.status = newStatus;
-
                 localStorage.setItem(DETAILS_KEY, JSON.stringify(appointments));
                 
-                // Notify Client via Web3Forms (A+Pereira style)
+                // Notify Client via Web3Forms
                 await notifyClient(app, newStatus);
-                
-                loadAppointments();
+            } else if (db) {
+                // If not in local but in Firebase, we still need to notify
+                const snapshot = await db.ref('appointments/' + id).once('value');
+                const app = snapshot.val();
+                if (app) await notifyClient(app, newStatus);
             }
+            
+            loadAppointments();
         }
 
         async function notifyClient(app, status) {

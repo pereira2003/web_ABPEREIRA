@@ -205,16 +205,18 @@ h1 {
 }
 
 .calendar-day.booked {
-    background: #ffe8e8;
-    color: #d32f2f;
-    border-color: #ffcdd2;
-    cursor: not-allowed;
+    background: #ffe8e8 !important;
+    color: #d32f2f !important;
+    border-color: #ffcdd2 !important;
+    cursor: not-allowed !important;
+    opacity: 1 !important;
+    font-weight: 600 !important;
 }
 
 .calendar-day.booked:hover {
-    transform: none;
-    border-color: #ffcdd2;
-    background: #ffe8e8;
+    transform: none !important;
+    background: #ffe8e8 !important;
+    border-color: #ffcdd2 !important;
 }
 
 .calendar-day.selected {

@@ -8,18 +8,80 @@ document.addEventListener('DOMContentLoaded', function() {
     const appointmentForm = document.querySelector('.appointment-form');
     const formStatus = document.getElementById('form-status');
 
+    // --- Firebase Configuration (Shared Database) ---
+    // You need to create a project in Firebase Console (https://console.firebase.google.com/)
+    // and paste your configuration here.
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase if config is provided
+    let db = null;
+    if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.database();
+        console.log("✅ Firebase connected for shared reservations.");
+    } else {
+        console.warn("⚠️ Firebase not configured. Reservations will be LOCAL ONLY to this browser.");
+    }
+
     let bookedDates = [];
 
     // Local storage for keeping track of appointments in the current browser
     const LOCAL_STORAGE_KEY = 'abp_booked_dates';
     const LOCAL_DETAILS_KEY = 'abp_booked_details'; // Full info for Admin
 
+    async function getSharedBookedDates() {
+        if (!db) return getLocalBookedDates();
+
+        try {
+            const snapshot = await db.ref('appointments').once('value');
+            const data = snapshot.val();
+            if (!data) return [];
+
+            const appointments = Object.values(data);
+            return appointments
+                .filter(app => app.status === 'accepted' || app.status === 'pending')
+                .map(app => app.dateDB);
+        } catch (error) {
+            console.error("Error fetching shared dates:", error);
+            return getLocalBookedDates();
+        }
+    }
+
     function getLocalBookedDates() {
-        // Only block dates that are explicitly ACCEPTED by the admin
+        // Block dates that are ACCEPTED or PENDING to avoid double booking
         const details = JSON.parse(localStorage.getItem(LOCAL_DETAILS_KEY) || '[]');
         return details
-            .filter(app => app.status === 'accepted')
+            .filter(app => app.status === 'accepted' || app.status === 'pending')
             .map(app => app.dateDB);
+    }
+
+    async function saveSharedBookedDate(date, fullData) {
+        // Save to Local Storage first (for offline/redundancy)
+        saveLocalBookedDate(date, fullData);
+
+        // Save to Firebase (Shared Database)
+        if (db) {
+            try {
+                const newAppRef = db.ref('appointments').push();
+                await newAppRef.set({
+                    ...fullData,
+                    dateDB: date,
+                    created_at: new Date().toISOString(),
+                    status: 'pending',
+                    id: newAppRef.key
+                });
+            } catch (error) {
+                console.error("Error saving to Firebase:", error);
+            }
+        }
     }
 
     function saveLocalBookedDate(date, fullData) {
@@ -34,9 +96,10 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem(LOCAL_DETAILS_KEY, JSON.stringify(details));
     }
 
-    // Initialize booked dates from local storage
-    function fetchBookedDates() {
-        bookedDates = getLocalBookedDates();
+    // Initialize booked dates from shared database or local storage
+    async function fetchBookedDates() {
+        bookedDates = await getSharedBookedDates();
+        console.log("Booked dates loaded:", bookedDates);
         generateCalendar();
     }
 
@@ -118,18 +181,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Check if date is today
     function isToday(date) {
-        const todayDate = new Date();
-        return date.getDate() === todayDate.getDate() &&
-               date.getMonth() === todayDate.getMonth() &&
-               date.getFullYear() === todayDate.getFullYear();
+        const now = new Date();
+        return date.getDate() === now.getDate() &&
+               date.getMonth() === now.getMonth() &&
+               date.getFullYear() === now.getFullYear();
     }
 
     // Check if date is in the past
     function isPast(date) {
-        const todayDate = new Date();
-        todayDate.setHours(0, 0, 0, 0);
-        date.setHours(0, 0, 0, 0);
-        return date < todayDate;
+        const now = new Date();
+        const todayAtMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const compareDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        return compareDate < todayAtMidnight;
     }
 
     // Check if date is already booked
@@ -141,6 +204,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Generate calendar for current month
     function generateCalendar() {
         calendarDaysElement.innerHTML = '';
+        console.log("Generating calendar for:", monthNames[currentDate.getMonth()], currentDate.getFullYear());
+        console.log("Current booked dates:", bookedDates);
 
         // Update month display
         currentMonthElement.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
@@ -165,39 +230,43 @@ document.addEventListener('DOMContentLoaded', function() {
             dayDiv.textContent = day;
 
             const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+            const dateStr = formatDateDB(date);
+            
+            const past = isPast(date);
+            const booked = bookedDates.includes(dateStr);
+            const today = isToday(date);
 
-            // Check if it's past date or already booked
-            if (isPast(date) || isBooked(date)) {
+            // 1. Priority: Booked dates (RED)
+            if (booked) {
+                dayDiv.classList.add('booked');
+                dayDiv.classList.add('disabled');
+                dayDiv.title = 'Already booked';
+                dayDiv.setAttribute('data-disabled', 'true');
+            } 
+            // 2. Secondary: Past dates (GREY)
+            else if (past) {
                 dayDiv.classList.add('disabled');
                 dayDiv.setAttribute('data-disabled', 'true');
-                if (isBooked(date)) {
-                    dayDiv.title = 'Already booked';
-                    dayDiv.classList.add('booked');
-                }
-            } else {
-                // Check if it's today
-                if (isToday(date)) {
-                    dayDiv.classList.add('today');
-                }
+            }
 
-                // Add click handler for available dates
+            // 3. Highlight today
+            if (today) {
+                dayDiv.classList.add('today');
+            }
+
+            // 4. Add click handler only if available
+            if (!past && !booked) {
                 dayDiv.addEventListener('click', function() {
-                    // Remove previous selection
                     document.querySelectorAll('.calendar-day.selected').forEach(el => {
                         el.classList.remove('selected');
                     });
-
-                    // Add selection to clicked day
                     dayDiv.classList.add('selected');
-
-                    // Update input with selected date
                     selectedDateInput.value = formatDate(date);
-                    selectedDateInput.dataset.dbDate = formatDateDB(date);
-
-                    // Trigger change event for form validation
+                    selectedDateInput.dataset.dbDate = dateStr;
                     selectedDateInput.dispatchEvent(new Event('change', { bubbles: true }));
                 });
             }
+
             calendarDaysElement.appendChild(dayDiv);
         }
 
@@ -254,17 +323,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             try {
-                // 1. Check local availability
-                const localDates = getLocalBookedDates();
-                if (localDates.includes(dateDB)) {
+                // 1. Check shared availability
+                const sharedDates = await getSharedBookedDates();
+                if (sharedDates.includes(dateDB)) {
                     alert('Sorry, this date is already booked. Please select another date.');
                     submitBtn.disabled = false;
                     submitBtn.value = 'Confirm Appointment';
                     return;
                 }
 
-                // 2. Save locally
-                saveLocalBookedDate(dateDB, data);
+                // 2. Save sharedly (Firebase + Local)
+                await saveSharedBookedDate(dateDB, data);
 
                 // 3. Send emails via Web3Forms (Professional)
                 console.log('Sending emails via Web3Forms...');
