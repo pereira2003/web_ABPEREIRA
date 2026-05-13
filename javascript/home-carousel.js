@@ -36,21 +36,22 @@ document.addEventListener('DOMContentLoaded', function () {
         visibleSlides = getVisibleSlides();
 
         if (index < 0) {
-            currentIndex = getMaxIndex();
-        } else if (index > getMaxIndex()) {
+            currentIndex = slides.length - 1;
+        } else if (index >= slides.length) {
             currentIndex = 0;
         } else {
             currentIndex = index;
         }
 
-        const targetSlide = slides[currentIndex];
+        let visualIndex = Math.min(currentIndex, getMaxIndex());
+        const targetSlide = slides[visualIndex];
         const offset = targetSlide ? targetSlide.offsetLeft : 0;
         track.style.transform = 'translate3d(-' + offset + 'px, 0, 0)';
 
         slides.forEach(function (slide, slideIndex) {
-            const isActive = slideIndex >= currentIndex && slideIndex < currentIndex + visibleSlides;
+            const isActive = slideIndex === currentIndex;
             slide.classList.toggle('active', isActive);
-            slide.setAttribute('aria-hidden', String(slideIndex < currentIndex || slideIndex >= currentIndex + visibleSlides));
+            slide.setAttribute('aria-hidden', String(slideIndex < visualIndex || slideIndex >= visualIndex + visibleSlides));
         });
 
         dots.forEach(function (dot, dotIndex) {
