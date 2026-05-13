@@ -470,24 +470,24 @@
         async function notifyClient(app, status) {
             const isAccepted = status === 'accepted';
             const subject = isAccepted 
-                ? `🎊 ¡Confirmado! Tu cita con A+Pereira para ${app.service}` 
-                : `🙏 Actualización sobre tu solicitud con A+Pereira Company`;
+                ? `🎊 Confirmed! Your appointment with A+Pereira for ${app.service}` 
+                : `🙏 Update regarding your request with A+Pereira Company`;
             
             const emailData = {
                 access_key: "26d957c0-69d5-496c-8225-5085582dfd35",
                 from_name: "A+Pereira Company Management",
                 subject: subject,
-                "ESTADO DE LA CITA": isAccepted ? "✅ CONFIRMADA Y AGENDADA" : "❌ NO DISPONIBLE / CANCELADA",
-                "CLIENTE": app.name,
-                "SERVICIO": app.service,
-                "FECHA": app.date,
-                "HORA": app.time,
-                "LUGAR": app.address,
-                "--- NOTA DEL EQUIPO ---": isAccepted 
-                    ? "¡Excelente! Hemos reservado este espacio para ti. Nos vemos pronto para comenzar el proyecto." 
-                    : "Lamentamos no poder atenderte en esta fecha específica. Por favor, revisa el calendario en nuestra web para elegir otro día disponible.",
-                "CONTACTO DIRECTO": "https://wa.me/16319601989",
-                "---": "© 2026 A+Pereira Company. Calidad y Dependibilidad."
+                "APPOINTMENT STATUS": isAccepted ? "✅ CONFIRMED & SCHEDULED" : "❌ NOT AVAILABLE / CANCELLED",
+                "CLIENT": app.name,
+                "SERVICE": app.service,
+                "DATE": app.date,
+                "TIME": app.time,
+                "LOCATION": app.address,
+                "--- MESSAGE FROM TEAM ---": isAccepted 
+                    ? "Excellent! We have reserved this time slot for you. See you soon to start the project." 
+                    : "We regret that we cannot assist you on this specific date. Please check the calendar on our website to choose another available day.",
+                "DIRECT CONTACT": "https://wa.me/16319601989",
+                "---": "© 2026 A+Pereira Company. Quality and Dependability."
             };
             
             try {
