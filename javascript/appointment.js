@@ -351,11 +351,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Creative configuration for appointments
                 const appointmentConfigs = {
-                    'Roof Repair': { emoji: '🏠', tag: 'ROOF', msg: 'Roofing inspection request.' },
-                    'Painting and Finishes': { emoji: '🎨', tag: 'AESTHETICS', msg: 'Painting and finishes project.' },
-                    'Electrical Installation': { emoji: '⚡', tag: 'ELECTRICAL', msg: 'Electrical service requirement.' },
-                    'Gutter Installation': { emoji: '💧', tag: 'GUTTERS', msg: 'Gutter installation or maintenance.' },
-                    'Inspection and Assessment': { emoji: '📋', tag: 'INSPECTION', msg: 'Technical evaluation appointment.' },
+                    'Gutters': { emoji: '💧', tag: 'GUTTERS', msg: 'Gutter installation or maintenance.' },
+                    'Wood, PVC & Trex': { emoji: '🪵', tag: 'MATERIALS', msg: 'Project involving Wood, PVC, or Trex.' },
+                    'Decks': { emoji: '🏗️', tag: 'DECKS', msg: 'Deck construction or repair.' },
+                    'Windows and Doors': { emoji: '🪟', tag: 'ENTRANCE', msg: 'Windows and doors project.' },
+                    'Painting': { emoji: '🎨', tag: 'AESTHETICS', msg: 'Painting and finishes project.' },
                     'Other': { emoji: '🛠️', tag: 'GENERAL', msg: 'Custom service requested.' }
                 };
 

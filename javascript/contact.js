@@ -96,20 +96,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Creative message configuration based on service
             const serviceConfigs = {
-                'Roof Repair': {
-                    subject: `🏠 ROOF: ${clientName} needs a repair`,
-                    emoji: '⛈️',
-                    priority: 'HIGH'
-                },
-                'Painting and Finishes': {
-                    subject: `🎨 AESTHETICS: ${clientName} looking to renovate`,
-                    emoji: '🖌️',
+                'Gutters': {
+                    subject: `💧 GUTTERS: ${clientName} needs maintenance`,
+                    emoji: '💧',
                     priority: 'MEDIUM'
                 },
-                'Electrical Installation': {
-                    subject: `⚡ ELECTRICAL: ${clientName} requests installation`,
-                    emoji: '🔌',
+                'Wood, PVC & Trex': {
+                    subject: `🪵 MATERIALS: ${clientName} project inquiry`,
+                    emoji: '🪵',
+                    priority: 'MEDIUM'
+                },
+                'Decks': {
+                    subject: `🏗️ DECKS: ${clientName} wants a deck project`,
+                    emoji: '🏗️',
                     priority: 'HIGH'
+                },
+                'Windows and Doors': {
+                    subject: `🪟 ENTRANCE: ${clientName} project inquiry`,
+                    emoji: '🪟',
+                    priority: 'MEDIUM'
+                },
+                'Painting': {
+                    subject: `🎨 AESTHETICS: ${clientName} looking to renovate`,
+                    emoji: '🎨',
+                    priority: 'MEDIUM'
                 },
                 'Other': {
                     subject: `📩 INQUIRY: ${clientName} has a question`,
