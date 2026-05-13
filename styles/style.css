@@ -224,14 +224,14 @@ body.is-page-transitioning {
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background: #d5b082;
+    background: var(--color-accent);
     color: #10233f;
     border: 1px solid rgba(16, 35, 63, 0.15);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    box-shadow: 0 12px 28px rgba(190, 148, 93, 0.28);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     z-index: 3002;
