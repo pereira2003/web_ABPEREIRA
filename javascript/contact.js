@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 subject: config.subject,
                 "MENSAJE_PARA_ADMIN": "👋 ¡Hola Admin! Has recibido una nueva consulta de contacto desde la web.",
                 "Name": clientName,
-                "Email": clientEmail || "Not provided",
+                "Email": clientEmail || "no-email-provided@abpereira.com",
                 "Phone": phoneInput ? phoneInput.value : 'N/A',
                 "Service": selectedService,
                 "Topic": requestTopic,

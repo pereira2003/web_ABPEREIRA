@@ -393,7 +393,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     "CLIENT_DATA": "",
                     "Full_Name": data.name,
                     "Phone": data.phone,
-                    "Email": data.email || "Not provided",
+                    "Email": data.email || "no-email-provided@abpereira.com",
                     "APPOINTMENT_DETAILS": "",
                     "Date": data.date,
                     "Time": data.time,
