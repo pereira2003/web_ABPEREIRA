@@ -48,15 +48,33 @@ document.addEventListener('DOMContentLoaded', function () {
         if (db) {
             const serviceRef = db.ref('likes/' + serviceTitle.replace(/[.#$[\]]/g, '_'));
             serviceRef.on('value', (snapshot) => {
-                const data = snapshot.val() || { count: 0 };
-                button.totalCount = data.count || 0;
-                countDisplay.textContent = button.totalCount;
+                const val = snapshot.val();
+                let count = 0;
+                
+                if (typeof val === 'number') {
+                    count = val;
+                } else if (val && typeof val.count === 'number') {
+                    count = val.count;
+                } else if (val && val.count !== undefined) {
+                    count = parseInt(val.count) || 0;
+                }
+                
+                button.totalCount = count;
+                countDisplay.textContent = count;
+                
+                // Visual feedback when count changes
+                countDisplay.style.transform = 'scale(1.2)';
+                countDisplay.style.color = '#d35252';
+                setTimeout(() => {
+                    countDisplay.style.transform = 'scale(1)';
+                    countDisplay.style.color = '';
+                }, 200);
             });
         }
 
         button.addEventListener('click', function (event) {
             event.stopPropagation();
-            if (!db) return; // Need Firebase to sync
+            if (!db) return;
 
             button.liked = !button.liked;
             const serviceRef = db.ref('likes/' + serviceTitle.replace(/[.#$[\]]/g, '_'));
@@ -64,12 +82,17 @@ document.addEventListener('DOMContentLoaded', function () {
             if (button.liked) {
                 // Increment in Firebase
                 serviceRef.transaction((currentData) => {
-                    if (currentData) {
-                        currentData.count = (currentData.count || 0) + 1;
-                    } else {
-                        currentData = { count: 1 };
+                    if (currentData === null) {
+                        return { count: 1 };
                     }
-                    return currentData;
+                    if (typeof currentData === 'number') {
+                        return currentData + 1;
+                    }
+                    if (currentData && typeof currentData === 'object') {
+                        currentData.count = (parseInt(currentData.count) || 0) + 1;
+                        return currentData;
+                    }
+                    return { count: 1 };
                 });
                 
                 // Save locally
@@ -81,8 +104,13 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 // Decrement in Firebase
                 serviceRef.transaction((currentData) => {
-                    if (currentData) {
-                        currentData.count = Math.max(0, (currentData.count || 0) - 1);
+                    if (currentData === null) return null;
+                    if (typeof currentData === 'number') {
+                        return Math.max(0, currentData - 1);
+                    }
+                    if (currentData && typeof currentData === 'object') {
+                        currentData.count = Math.max(0, (parseInt(currentData.count) || 0) - 1);
+                        return currentData;
                     }
                     return currentData;
                 });

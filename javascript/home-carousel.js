@@ -97,6 +97,38 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
+            // 4. Update STATIC slides with likes if possible
+            slides.forEach(slide => {
+                const caption = slide.querySelector('.carousel-caption h3')?.textContent.trim();
+                const eyebrow = slide.querySelector('.carousel-caption span')?.textContent.trim();
+                
+                // Mapping static captions to service titles
+                let matchedService = null;
+                if (eyebrow === "Exterior Finish") matchedService = "Painting";
+                if (eyebrow === "Interior Upgrade") matchedService = "Painting";
+                if (eyebrow === "Roofing") matchedService = "Gutters"; // Best match
+                
+                if (matchedService && globalLikes[matchedService]) {
+                    const count = globalLikes[matchedService].count || 0;
+                    let statsDiv = slide.querySelector('.carousel-stats');
+                    if (!statsDiv) {
+                        statsDiv = document.createElement('div');
+                        statsDiv.className = 'carousel-stats';
+                        const eyebrowSpan = slide.querySelector('.carousel-caption span');
+                        eyebrowSpan.parentNode.insertBefore(statsDiv, eyebrowSpan);
+                        statsDiv.appendChild(eyebrowSpan);
+                        
+                        const likesSpan = document.createElement('span');
+                        likesSpan.className = 'carousel-likes';
+                        likesSpan.innerHTML = `
+                            <svg viewBox="0 0 24 24" fill="currentColor" style="width:12px; height:12px; margin-right:4px;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+                            ${count}
+                        `;
+                        statsDiv.appendChild(likesSpan);
+                    }
+                }
+            });
+
             // Refresh UI
             slides = Array.from(track.querySelectorAll('.carousel-slide'));
             dots = Array.from(dotsContainer.querySelectorAll('.carousel-dot'));
