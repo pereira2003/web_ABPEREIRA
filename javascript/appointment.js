@@ -381,45 +381,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const config = appointmentConfigs[data.service] || appointmentConfigs['Other'];
 
-                // Clean data for Web3Forms
-                const web3Data = {
-                    access_key: "26d957c0-69d5-496c-8225-5085582dfd35",
-                    from_name: "A⁺Pereira Web System",
-                    subject: `${config.emoji} ${config.tag}: ${data.name} for ${data.service}`,
-                    "MENSAJE_PARA_ADMIN": "👋 ¡Hola Admin! Se ha solicitado una nueva cita desde la página web. Detalles a continuación:",
-                    "PROJECT_SUMMARY": "",
-                    "Service_Type": `${config.emoji} ${data.service}`,
-                    "Short_Description": config.msg,
-                    "CLIENT_DATA": "",
-                    "Full_Name": data.name,
-                    "Phone": data.phone,
-                    "Email": data.email || "contact.abpereira@gmail.com",
-                    "APPOINTMENT_DETAILS": "",
-                    "Date": data.date,
-                    "Time": data.time,
-                    "Address": data.address,
-                    "DESCRIPTION": data.description || "No description provided",
-                    "ACCESO_ADMIN": "⚙️ Link para gestionar cita ⬇️",
-                    "ENLACE_LOGIN": "https://pereira2003.github.io/web_ABPEREIRA/Vistas/admin-login.html"
-                };
+                // Use FormData instead of JSON for better compatibility with Web3Forms security
+                const web3FormData = new FormData();
+                web3FormData.append("access_key", "26d957c0-69d5-496c-8225-5085582dfd35");
+                web3FormData.append("from_name", "A⁺Pereira Web System");
+                web3FormData.append("subject", `${config.emoji} ${config.tag}: ${data.name} for ${data.service}`);
+                
+                // Formatted message for admin
+                web3FormData.append("Admin_Notification", "👋 New appointment request received from the website.");
+                web3FormData.append("Service_Type", `${config.emoji} ${data.service}`);
+                web3FormData.append("Service_Note", config.msg);
+                web3FormData.append("Client_Name", data.name);
+                web3FormData.append("Client_Phone", data.phone);
+                web3FormData.append("Client_Email", data.email || "No email provided");
+                web3FormData.append("Appointment_Date", data.date);
+                web3FormData.append("Appointment_Time", data.time);
+                web3FormData.append("Service_Address", data.address);
+                web3FormData.append("Job_Description", data.description || "No description provided");
+                web3FormData.append("Admin_Dashboard", "https://pereira2003.github.io/web_ABPEREIRA/Vistas/admin-login.html");
 
                 // Add special note based on email domain
-                if (data.email && data.email.endsWith('.edu')) web3Data["SPECIAL_NOTE"] = "🎓 Client from the educational sector.";
-                if (data.email && data.email.endsWith('.gov')) web3Data["SPECIAL_NOTE"] = "🏛️ Government/Institutional interest.";
+                if (data.email && data.email.endsWith('.edu')) web3FormData.append("Special_Note", "🎓 Client from the educational sector.");
+                if (data.email && data.email.endsWith('.gov')) web3FormData.append("Special_Note", "🏛️ Government/Institutional interest.");
 
                 const response = await fetch('https://api.web3forms.com/submit', {
                     method: 'POST',
+                    body: web3FormData,
                     headers: {
-                        'Content-Type': 'application/json',
                         'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(web3Data)
+                    }
                 });
 
                 const result = await response.json();
 
                 if (!result.success) {
-                    throw new Error(result.message || 'Unknown Web3Forms error');
+                    console.error('Web3Forms Error:', result);
+                    throw new Error(result.message || 'Could not verify form security. Please try again.');
                 }
 
                 console.log('Email sent successfully via Web3Forms');

@@ -203,28 +203,26 @@ document.addEventListener('DOMContentLoaded', function () {
             formData.append("Sent_from", "Web Contact Form");
 
             // --- Switch to Web3Forms for better reliability and Autoresponder ---
-            const web3ContactData = {
-                access_key: "26d957c0-69d5-496c-8225-5085582dfd35",
-                from_name: "A⁺Pereira Contact System",
-                subject: config.subject,
-                "MENSAJE_PARA_ADMIN": "👋 ¡Hola Admin! Has recibido una nueva consulta de contacto desde la web.",
-                "Name": clientName,
-                "Email": clientEmail || "contact.abpereira@gmail.com",
-                "Phone": phoneInput ? phoneInput.value : 'N/A',
-                "Service": selectedService,
-                "Topic": requestTopic,
-                "Message": userComments,
-                "ACCESO_ADMIN": "⚙️ Link para gestionar solicitud ⬇️",
-                "ENLACE_LOGIN": "https://pereira2003.github.io/web_ABPEREIRA/Vistas/admin-login.html"
-            };
+            const web3ContactFormData = new FormData();
+            web3ContactFormData.append("access_key", "26d957c0-69d5-496c-8225-5085582dfd35");
+            web3ContactFormData.append("from_name", "A⁺Pereira Contact System");
+            web3ContactFormData.append("subject", config.subject);
+            
+            web3ContactFormData.append("Admin_Notification", "👋 New contact inquiry received from the website.");
+            web3ContactFormData.append("Name", clientName);
+            web3ContactFormData.append("Email", clientEmail || "No email provided");
+            web3ContactFormData.append("Phone", phoneInput ? phoneInput.value : 'N/A');
+            web3ContactFormData.append("Service", selectedService);
+            web3ContactFormData.append("Topic", requestTopic);
+            web3ContactFormData.append("Message", userComments);
+            web3ContactFormData.append("Admin_Dashboard", "https://pereira2003.github.io/web_ABPEREIRA/Vistas/admin-login.html");
 
             fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
+                body: web3ContactFormData,
                 headers: {
-                    'Content-Type': 'application/json',
                     'Accept': 'application/json'
-                },
-                body: JSON.stringify(web3ContactData)
+                }
             })
                 .then(function (response) {
                     if (!response.ok) {
