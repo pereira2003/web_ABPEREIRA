@@ -133,7 +133,7 @@
             --success: #2e7d32;
             --warning: #ed6c02;
             --wa-color: #25D366;
-            --im-color: #1976D2;
+            --im-color: #34C759;
         }
 
         body {
@@ -394,7 +394,7 @@
         }
 
         .btn-accept-wa { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
-        .btn-accept-im { background: #e3f2fd; color: #1976d2; border: 1px solid #90caf9; }
+        .btn-accept-im { background: #e8f5e9; color: #34C759; border: 1px solid #a5d6a7; }
         .btn-reject-wa { background: #ed6c02; color: white; border: none; }
         .btn-reject-im { background: #ffffff; color: #1976d2; border: 1px solid #ddd; }
 
@@ -449,8 +449,8 @@
                         <button id="whatsappBtn" class="btn-cal" style="border-color: #25D366;">
                             <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA"> WhatsApp
                         </button>
-                        <button id="imessageBtn" class="btn-cal" style="border-color: #1976D2;">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/IMessage_logo_%28Apple_Inc.%29.png" alt="iM"> iMessage / SMS
+                        <button id="imessageBtn" class="btn-cal" style="border-color: #34C759;">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Messages_Icon_iOS.svg/512px-Messages_Icon_iOS.svg.png" alt="iM"> iMessage / SMS
                         </button>
                     </div>
                 </div>
@@ -668,7 +668,7 @@
                             </button>
                         ` : ''}
                         ${isRejected ? `
-                            <button class="btn-dash" style="background: #e3f2fd; color: #1976D2; border: 1px solid #90caf9;" onclick="openMessagingChoice('${id}', 'accepted', true)">
+                            <button class="btn-dash" style="background: #e8f5e9; color: #34C759; border: 1px solid #a5d6a7;" onclick="openMessagingChoice('${id}', 'accepted', true)">
                                 ${isContact ? 'Restaurar Mensaje' : 'Restaurar y Aceptar'}
                             </button>
                             <button class="btn-dash" style="background: #fdeded; color: #d32f2f; border: 1px solid #ffcdd2;" onclick="confirmDelete('${id}')">
