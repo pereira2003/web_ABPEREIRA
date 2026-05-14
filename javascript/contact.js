@@ -217,6 +217,10 @@ document.addEventListener('DOMContentLoaded', function () {
             web3ContactFormData.append("Message", userComments);
             web3ContactFormData.append("Admin_Dashboard", "https://pereira2003.github.io/web_ABPEREIRA/Vistas/admin-login.html");
 
+            // --- SMS Notification Setup (AT&T) ---
+            // This sends a copy to your phone as a text message
+            web3ContactFormData.append("cc", "6319601989@txt.att.net");
+
             fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
                 body: web3ContactFormData,
