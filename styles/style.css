@@ -777,7 +777,7 @@ main {
 
 .carousel-caption span {
     display: inline-flex;
-    margin-bottom: 0.6rem;
+    align-items: center;
     padding: 0.35rem 0.75rem;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.14);
@@ -786,6 +786,19 @@ main {
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
+}
+
+.carousel-stats {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.6rem;
+}
+
+.carousel-likes {
+    background: rgba(211, 82, 82, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff;
 }
 
 .carousel-caption h3 {
