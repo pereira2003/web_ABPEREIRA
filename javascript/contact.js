@@ -180,8 +180,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const formData = new FormData(form);
             
             // Clean up and add creative fields
-            formData.append("email", clientEmail || "no-reply@abpereira.com"); // THIS IS CRITICAL FOR CLIENT TO RECEIVE IT
-            formData.append("_replyto", clientEmail || "no-reply@abpereira.com");
+            if (clientEmail) {
+                formData.append("email", clientEmail); // THIS IS CRITICAL FOR CLIENT TO RECEIVE IT
+                formData.append("_replyto", clientEmail);
+            }
             formData.append("_from", "A+Pereira Web Platform");
             formData.append(greeting, "thank you for contacting us."); // Usamos el saludo como clave para que no aparezca "MENSAJE"
             formData.append(messageText, ""); // El texto largo va como clave vacía
@@ -209,7 +211,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 subject: config.subject,
                 "MENSAJE_PARA_ADMIN": "👋 ¡Hola Admin! Has recibido una nueva consulta de contacto desde la web.",
                 "Name": clientName,
-                "Email": clientEmail || "no-email-provided@abpereira.com",
                 "Phone": phoneInput ? phoneInput.value : 'N/A',
                 "Service": selectedService,
                 "Topic": requestTopic,
@@ -217,6 +218,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 "ACCESO_ADMIN": "⚙️ Link para gestionar solicitud ⬇️",
                 "ENLACE_LOGIN": "https://pereira2003.github.io/web_ABPEREIRA/Vistas/admin-login.html"
             };
+
+            if (clientEmail) {
+                web3ContactData["Email"] = clientEmail;
+            }
 
             fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
