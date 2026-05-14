@@ -399,10 +399,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 web3FormData.append("Service_Address", data.address);
                 web3FormData.append("Job_Description", data.description || "No description provided");
                 web3FormData.append("Admin_Dashboard", "https://pereira2003.github.io/web_ABPEREIRA/Vistas/admin-login.html");
-                
-                // --- SMS Notification Setup (AT&T) ---
-                // This sends a copy to your phone as a text message
-                web3FormData.append("cc", "6319601989@txt.att.net");
 
                 // Add special note based on email domain
                 if (data.email && data.email.endsWith('.edu')) web3FormData.append("Special_Note", "🎓 Client from the educational sector.");
