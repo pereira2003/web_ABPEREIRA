@@ -482,8 +482,8 @@ body.is-page-transitioning {
 }
 
 .hero h1 {
-    max-width: 11ch;
-    font-size: clamp(3.5rem, 7vw, 6.6rem);
+    max-width: 15ch;
+    font-size: clamp(2.5rem, 5vw, 4.2rem);
     margin-bottom: 1.3rem;
 }
 
