@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const savedCounts = JSON.parse(localStorage.getItem('serviceCounts') || '{}');
         const likedEntries = Object.values(savedLikes);
         
-        // Define what "many likes" means (e.g., at least 1 like)
-        const LIKE_THRESHOLD = 1;
+        // Define what "many likes" means (e.g., at least 20 likes)
+         const LIKE_THRESHOLD = 20;
 
         likedEntries.forEach(service => {
             const currentCount = savedCounts[service.title] || 0;
