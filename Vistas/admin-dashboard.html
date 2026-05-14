@@ -792,7 +792,6 @@
                                     <div class="progress-bar" id="uploadProgressBar"></div>
                                 </div>
                             </div>
-                            <input type="url" id="sImage" placeholder="O pega una URL de imagen directamente..." style="margin-top: 0.5rem; font-size: 0.8rem;">
                         </div>
                         <button type="submit" class="btn-submit" id="btnSaveService">Guardar Servicio</button>
                         <button type="button" class="btn-cancel-edit" id="btnCancelEdit" onclick="resetServiceForm()">Cancelar Edición</button>
@@ -858,7 +857,6 @@
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('sImageFile');
         const imgPreview = document.getElementById('imgPreview');
-        const urlInput = document.getElementById('sImage');
 
         uploadArea.addEventListener('click', () => fileInput.click());
 
@@ -893,7 +891,6 @@
                 imgPreview.style.display = 'block';
                 uploadArea.querySelector('svg').style.display = 'none';
                 uploadArea.querySelector('p').style.display = 'none';
-                urlInput.value = ""; // Clear URL if file is selected
             };
             reader.readAsDataURL(file);
         }
@@ -993,15 +990,15 @@
             btnSave.textContent = "Procesando...";
 
             try {
-                // 1. Handle image (Upload if file selected, otherwise use URL)
-                let finalImageUrl = document.getElementById('sImage').value;
+                // 1. Handle image (Upload if file selected, otherwise use existing from preview)
+                let finalImageUrl = imgPreview.src;
                 
                 if (selectedFile) {
                     finalImageUrl = await uploadImage();
                 }
 
-                if (!finalImageUrl) {
-                    alert("Por favor selecciona una imagen o proporciona una URL.");
+                if (!finalImageUrl || finalImageUrl === window.location.href) {
+                    alert("Por favor selecciona una imagen.");
                     btnSave.disabled = false;
                     btnSave.textContent = originalBtnText;
                     return;
@@ -1049,7 +1046,6 @@
             document.getElementById('sPricing').value = s.pricing_note;
             document.getElementById('sDesc').value = s.description;
             document.getElementById('sFullDesc').value = s.full_description || '';
-            document.getElementById('sImage').value = s.image;
             
             // Show current image in preview
             imgPreview.src = s.image;
