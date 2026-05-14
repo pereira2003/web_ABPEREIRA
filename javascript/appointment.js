@@ -468,6 +468,26 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Auto-scroll al calendario cuando se hace clic en el campo de fecha (solo móviles)
+    selectedDateInput.addEventListener('click', function() {
+        if (window.innerWidth <= 768) {
+            try {
+                const calendarWrapper = document.querySelector('.calendar-wrapper');
+                if (calendarWrapper) {
+                    calendarWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const originalShadow = calendarWrapper.style.boxShadow;
+                    calendarWrapper.style.transition = 'box-shadow 0.4s ease';
+                    calendarWrapper.style.boxShadow = '0 0 20px rgba(188, 160, 93, 0.8)';
+                    setTimeout(() => {
+                        if (calendarWrapper) calendarWrapper.style.boxShadow = originalShadow;
+                    }, 2000);
+                }
+            } catch (e) {
+                console.error("Scroll no soportado:", e);
+            }
+        }
+    });
+
     // Add smooth scrolling for form on mobile when date is selected
     selectedDateInput.addEventListener('change', function() {
         if (window.innerWidth <= 768) {
