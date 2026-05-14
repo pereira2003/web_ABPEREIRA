@@ -142,6 +142,7 @@
             font-family: 'Inter', sans-serif;
             margin: 0;
             color: var(--text-main);
+            overflow-y: scroll; /* Force scrollbar to prevent layout shift */
         }
 
         .dashboard-container {
@@ -219,6 +220,12 @@
             scrollbar-width: none; /* Firefox */
             -ms-overflow-style: none;  /* IE and Edge */
             -webkit-overflow-scrolling: touch;
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            z-index: 1000;
+            padding-top: 1rem;
+            margin-top: -1rem;
         }
 
         .tabs-nav::-webkit-scrollbar {
@@ -260,11 +267,13 @@
 
         .tab-pane {
             display: none;
-            animation: fadeIn 0.3s ease-out;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .tab-pane.active {
             display: block;
+            opacity: 1;
         }
 
         /* --- SERVICES MANAGEMENT UI --- */
@@ -276,11 +285,11 @@
 
         .service-form-card {
             background: white;
-            padding: 2rem;
-            border-radius: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+            padding: 2.5rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.04);
             border: 1px solid rgba(0,0,0,0.05);
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
             width: 100%;
             box-sizing: border-box;
@@ -290,11 +299,27 @@
             margin-top: 0;
             font-family: 'Cormorant Garamond', serif;
             color: var(--primary);
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1.2rem;
+            }
         }
 
         .form-group {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-group label {
@@ -980,26 +1005,33 @@
                 <h2 id="serviceFormTitle">Agregar Nuevo Servicio</h2>
                 <form id="serviceForm">
                     <input type="hidden" id="editServiceId">
-                    <div class="form-group">
-                        <label for="sTitle">Título del Servicio</label>
-                        <input type="text" id="sTitle" placeholder="Ej: Gutters" required>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sTitle">Título del Servicio</label>
+                            <input type="text" id="sTitle" placeholder="Ej: Gutters" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="sTag">Categoría / Etiqueta</label>
+                            <input type="text" id="sTag" placeholder="Ej: Exterior">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="sTag">Categoría / Etiqueta</label>
-                        <input type="text" id="sTag" placeholder="Ej: Exterior">
-                    </div>
+
                     <div class="form-group">
                         <label for="sPricing">Nota de Precio</label>
                         <input type="text" id="sPricing" placeholder="Ej: For pricing, contact us...">
                     </div>
+
                     <div class="form-group">
-                        <label for="sDesc">Descripción Corta</label>
-                        <textarea id="sDesc" rows="3" placeholder="Descripción para la tarjeta..."></textarea>
+                        <label for="sDesc">Descripción Corta (Tarjeta)</label>
+                        <textarea id="sDesc" rows="2" placeholder="Breve resumen para la tarjeta del servicio..."></textarea>
                     </div>
+
                     <div class="form-group">
                         <label for="sFullDesc">Descripción Detallada (Popover)</label>
-                        <textarea id="sFullDesc" rows="3" placeholder="Descripción completa para el modal..."></textarea>
+                        <textarea id="sFullDesc" rows="3" placeholder="Descripción completa que aparecerá al hacer clic en el servicio..."></textarea>
                     </div>
+
                     <div class="form-group">
                         <label>Imagen del Servicio</label>
                         <div class="upload-area" id="uploadArea">
@@ -1012,8 +1044,11 @@
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn-submit" id="btnSaveService">Guardar Servicio</button>
-                    <button type="button" class="btn-cancel-edit" id="btnCancelEdit" onclick="resetServiceForm()">Cancelar Edición</button>
+
+                    <div class="form-row">
+                        <button type="submit" class="btn-submit" id="btnSaveService">Guardar Servicio</button>
+                        <button type="button" class="btn-cancel-edit" id="btnCancelEdit" onclick="resetServiceForm()">Cancelar</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -1151,17 +1186,22 @@
         }
 
         // --- TAB SWITCHING ---
-        function switchTab(tab) {
-            // Remove active class from all panes and buttons
-            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            
-            // Add active class to the target pane
-            const targetPane = document.getElementById(`tab-${tab}`);
-            if (targetPane) targetPane.classList.add('active');
-
-            // Find and activate the correct button using a data attribute or specific check
+        function switchTab(tab, smooth = true) {
+            const panes = document.querySelectorAll('.tab-pane');
             const buttons = document.querySelectorAll('.tab-btn');
+            
+            panes.forEach(p => {
+                p.classList.remove('active');
+                if (!smooth) p.style.transition = 'none';
+            });
+            buttons.forEach(b => b.classList.remove('active'));
+            
+            const targetPane = document.getElementById(`tab-${tab}`);
+            if (targetPane) {
+                targetPane.classList.add('active');
+                if (!smooth) setTimeout(() => targetPane.style.transition = '', 50);
+            }
+
             buttons.forEach(btn => {
                 const btnText = btn.textContent.toLowerCase();
                 if (
@@ -1638,20 +1678,34 @@
         .driver-popover {
             border-radius: 15px;
             font-family: 'Inter', sans-serif;
-            padding: 15px;
-            animation: softPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2) !important;
+            padding: 12px;
+            animation: softPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.25) !important;
+            max-width: 320px !important;
         }
         .driver-popover-title {
             color: var(--primary);
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+            margin-bottom: 0.3rem;
+            line-height: 1.2;
         }
         .driver-popover-description {
-            color: #555;
-            font-size: 0.95rem;
-            line-height: 1.5;
+            color: #444;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        @media (max-width: 640px) {
+            .driver-popover {
+                max-width: 280px !important;
+                padding: 10px;
+            }
+            .driver-popover-title {
+                font-size: 1.15rem;
+            }
+            .driver-popover-description {
+                font-size: 0.85rem;
+            }
         }
         .driver-popover-next-btn, .driver-popover-prev-btn {
             border-radius: 8px !important;
@@ -1688,15 +1742,22 @@
                 doneBtnText: '¡Entendido!',
                 progressText: 'Paso {{current}} de {{total}}',
                 allowClose: true,
+                stagePadding: 5,
                 onHighlightStarted: (element, step) => {
-                    // Detectar a qué pestaña pertenece el elemento resaltado
-                    if (step.element === '#tab-registrar') {
-                        switchTab('registrar');
-                    } else if (step.element === '#tab-servicios') {
-                        switchTab('servicios');
-                    } else if (step.element === '#tab-citas' || step.element === '#appointmentsList' || step.element === '.stats-bar') {
-                        switchTab('citas');
+                    const el = step.element;
+                    if (typeof el === 'string') {
+                        if (el.includes('registrar') || el.includes('service-form')) {
+                            switchTab('registrar', false);
+                        } else if (el.includes('servicios') || el.includes('services-list')) {
+                            switchTab('servicios', false);
+                        } else if (el.includes('appointment') || el.includes('stats-bar') || el.includes('info-section') || el.includes('actions-grid')) {
+                            switchTab('citas', false);
+                        }
                     }
+                    // Ajuste de scroll para compensar la navegación fija
+                    setTimeout(() => {
+                        window.scrollBy({ top: -100, behavior: 'smooth' });
+                    }, 100);
                 },
                 onPopoverRender: (popover, { config, state }) => {
                     if (!popover.footer.querySelector('.driver-skip-btn')) {
@@ -1730,7 +1791,7 @@
                         element: '.stats-bar', 
                         popover: { 
                             title: 'Resumen y Filtros', 
-                            description: 'Estas tarjetas te muestran el volumen de solicitudes actuales. Además, ¡funcionan como filtros! Haz clic en cualquiera de ellas para ver únicamente las citas Pendientes, Aceptadas o Rechazadas.', 
+                            description: 'Estas tarjetas te muestran el volumen de solicitudes actuales. Además, ¡funcionan como filtros! Haz clic en cualquiera de ellas para ver únicamente las citas.', 
                             side: "bottom", 
                             align: 'center' 
                         }
@@ -1739,26 +1800,26 @@
                         element: '.tabs-nav', 
                         popover: { 
                             title: 'Navegación por Pestañas', 
-                            description: 'Ahora tienes tres secciones: <b>Registros Citas</b> para tus solicitudes, <b>Registrar Servicios</b> para subir nuevos trabajos, y <b>Ajuste de Servicios</b> para gestionar lo existente.', 
+                            description: 'Ahora tienes tres secciones: <b>Registros Citas</b>, <b>Registrar Servicios</b> y <b>Ajuste de Servicios</b>. La navegación ahora es fija para que nunca te pierdas.', 
                             side: "bottom", 
                             align: 'center' 
                         }
                     },
                     { 
-                        element: '#tab-registrar', 
+                        element: '.service-form-card', 
                         popover: { 
                             title: 'Crea Nuevos Servicios', 
-                            description: 'En esta pestaña puedes agregar títulos, categorías y descripciones. ¡No olvides que ahora puedes <b>arrastrar tus imágenes</b> directamente aquí!', 
-                            side: "top", 
+                            description: 'En esta pestaña puedes agregar títulos, categorías y descripciones. ¡Ahora con un diseño más organizado y soporte para <b>arrastrar imágenes</b>!', 
+                            side: "bottom", 
                             align: 'center' 
                         }
                     },
                     { 
-                        element: '#tab-servicios', 
+                        element: '.services-list-container', 
                         popover: { 
                             title: 'Gestiona tu Catálogo', 
-                            description: 'Aquí verás todos tus servicios con el mismo estilo que tus clientes. Puedes <b>Editar</b> para cambiar detalles o <b>Eliminar</b> si ya no los ofreces.', 
-                            side: "top", 
+                            description: 'Aquí verás todos tus servicios registrados. Puedes <b>Editar</b> para cambiar detalles o <b>Eliminar</b> si ya no los ofreces.', 
+                            side: "bottom", 
                             align: 'center' 
                         }
                     },
@@ -1772,10 +1833,28 @@
                         }
                     },
                     {
+                        element: '.appointment-card:first-child .date-badge',
+                        popover: {
+                            title: 'Información de la Cita',
+                            description: 'Puedes ver rápidamente el tipo de solicitud y la fecha programada.',
+                            side: "top",
+                            align: 'center'
+                        }
+                    },
+                    {
+                        element: '.appointment-card:first-child .info-section',
+                        popover: {
+                            title: 'Detalles del Cliente',
+                            description: 'Aquí tienes el teléfono, el servicio solicitado y la dirección del cliente de forma rápida.',
+                            side: "top",
+                            align: 'center'
+                        }
+                    },
+                    {
                         element: '.appointment-card:first-child .address-link',
                         popover: {
                             title: 'Navegación Inteligente',
-                            description: 'Si el cliente incluyó su dirección, al hacer clic en este enlace se abrirá automáticamente en Google Maps o Apple Maps para que veas la ubicación exacta.',
+                            description: 'Si el cliente incluyó su dirección, al hacer clic aquí se abrirá en Google Maps para ver la ubicación exacta.',
                             side: "top",
                             align: 'center'
                         }
@@ -1783,8 +1862,8 @@
                     {
                         element: '.appointment-card:first-child .actions-grid',
                         popover: {
-                            title: 'Botones de Acción y Estado',
-                            description: 'Con estos botones puedes Aceptar o Rechazar rápidamente la solicitud. Una vez aceptada, te permitirá notificar al cliente directamente a su WhatsApp o iMessage con un solo clic.',
+                            title: 'Acciones Rápidas',
+                            description: 'Acepta o rechaza solicitudes y notifica a tus clientes vía WhatsApp o iMessage con un solo toque.',
                             side: "bottom",
                             align: 'center'
                         }
@@ -1792,8 +1871,8 @@
                     {
                         element: '.appointment-card:first-child .btn-calendar',
                         popover: {
-                            title: 'Sincronizar Calendario',
-                            description: '¡Nunca olvides una cita! Este botón exporta los datos y te permite agregar el evento automáticamente a tu calendario personal (Google Calendar, Outlook o Apple Calendar).',
+                            title: 'Sincronización',
+                            description: 'Exporta la cita directamente a tu calendario personal para no perder ningún compromiso.',
                             side: "top",
                             align: 'center'
                         }
