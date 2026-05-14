@@ -327,25 +327,31 @@ document.addEventListener('DOMContentLoaded', function() {
             const dateDB = selectedDateInput.dataset.dbDate;
 
             if (!dateDB) {
+                // Restablecer el botón primero para evitar que se quede "cargando" si hay un error
+                submitBtn.disabled = false;
+                submitBtn.value = 'Confirm Appointment';
+                
                 alert('Please select a date on the calendar first.');
                 
                 // Hacer scroll hacia arriba al calendario solo en teléfonos
                 if (window.innerWidth <= 768) {
-                    const calendarWrapper = document.querySelector('.calendar-wrapper');
-                    if (calendarWrapper) {
-                        calendarWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        // Resaltado temporal para llamar la atención
-                        const originalShadow = calendarWrapper.style.boxShadow;
-                        calendarWrapper.style.transition = 'box-shadow 0.4s ease';
-                        calendarWrapper.style.boxShadow = '0 0 20px rgba(188, 160, 93, 0.8)';
-                        setTimeout(() => {
-                            calendarWrapper.style.boxShadow = originalShadow;
-                        }, 2000);
+                    try {
+                        const calendarWrapper = document.querySelector('.calendar-wrapper');
+                        if (calendarWrapper) {
+                            calendarWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            // Resaltado temporal para llamar la atención
+                            const originalShadow = calendarWrapper.style.boxShadow;
+                            calendarWrapper.style.transition = 'box-shadow 0.4s ease';
+                            calendarWrapper.style.boxShadow = '0 0 20px rgba(188, 160, 93, 0.8)';
+                            setTimeout(() => {
+                                if (calendarWrapper) calendarWrapper.style.boxShadow = originalShadow;
+                            }, 2000);
+                        }
+                    } catch (e) {
+                        console.error("Scroll no soportado:", e);
                     }
                 }
 
-                submitBtn.disabled = false;
-                submitBtn.value = 'Confirm Appointment';
                 return;
             }
 
