@@ -583,80 +583,73 @@
         .btn-admin-edit:hover { background: #082547; transform: translateY(-2px); }
         .btn-admin-delete:hover { background: #fcdcdc; transform: translateY(-2px); }
 
-        /* Mobile adjustments for Admin List (Match public mobile) */
         @media (max-width: 640px) {
             .services-list-admin {
                 grid-template-columns: 1fr;
-                gap: 0.8rem;
+                gap: 1rem;
             }
 
             .service-card-admin {
-                flex-direction: row;
-                border-radius: 16px;
-                min-height: 120px;
+                flex-direction: column; /* Cambiamos a vertical en móviles muy pequeños para evitar deformación */
+                border-radius: 20px;
+                min-height: auto;
             }
 
             .admin-service-img-wrap {
-                width: 112px;
-                height: auto;
+                width: 100%;
+                height: 180px;
                 flex-shrink: 0;
             }
 
             .admin-service-img-wrap img {
                 height: 100%;
                 width: 100%;
-                position: absolute;
-                inset: 0;
-            }
-
-            .service-card-admin {
-                position: relative;
-            }
-
-            .admin-service-img-wrap {
-                position: relative;
-                min-height: 112px;
+                position: relative; /* Cambiamos de absolute a relative */
+                inset: auto;
             }
 
             .admin-service-content {
-                padding: 0.8rem 1rem;
-                gap: 0.3rem;
+                padding: 1.2rem;
+                gap: 0.5rem;
             }
 
             .admin-service-title {
-                font-size: 1.1rem;
+                font-size: 1.3rem;
             }
 
             .admin-service-desc {
-                display: none;
+                display: -webkit-box; /* Volvemos a mostrar la descripción pero limitada */
+                -webkit-line-clamp: 2;
+                font-size: 0.8rem;
             }
 
             .admin-service-tag {
-                font-size: 0.6rem;
-                padding: 0.15rem 0.5rem;
-                margin-bottom: 0.1rem;
+                font-size: 0.65rem;
+                padding: 0.2rem 0.6rem;
             }
 
             .admin-service-actions {
-                padding-top: 0.4rem;
-                gap: 0.4rem;
+                padding-top: 0.8rem;
+                gap: 0.6rem;
+                grid-template-columns: 1fr 1fr;
             }
 
             .btn-admin-edit, .btn-admin-delete {
-                padding: 0.4rem;
-                font-size: 0.7rem;
-                border-radius: 8px;
+                padding: 0.6rem;
+                font-size: 0.8rem;
+                border-radius: 10px;
             }
+            
             .service-form-card {
-                padding: 1.5rem;
-                border-radius: 20px;
+                padding: 1.2rem;
+                border-radius: 24px;
             }
             .form-group label {
-                font-size: 0.8rem;
+                font-size: 0.85rem;
             }
             .form-group input, .form-group textarea {
-                padding: 0.7rem;
-                font-size: 0.9rem;
+                padding: 0.8rem;
+                font-size: 0.95rem;
             }
         }
 
@@ -676,63 +669,71 @@
         }
 
         @media (max-width: 768px) {
-            .dashboard-container { padding: 1rem; }
+            .dashboard-container { padding: 0.8rem; }
             .header { 
                 flex-direction: column; 
                 text-align: center; 
-                padding: 1.5rem 1rem;
-                gap: 1.2rem;
+                padding: 1.2rem 1rem;
+                gap: 1rem;
                 border-radius: 24px;
             }
             .header div { 
                 flex-direction: column;
-                gap: 0.6rem !important;
+                gap: 0.5rem !important;
             }
             .header img {
-                width: 50px !important;
+                width: 45px !important;
             }
             .header h1 {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
             }
             .btn-logout {
                 width: 100%;
-                max-width: 150px;
+                max-width: 120px;
+                padding: 0.5rem;
+                font-size: 0.85rem;
             }
             .stats-bar { 
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
-                gap: 0.6rem;
+                gap: 0.5rem;
+                margin-bottom: 1.5rem;
             }
             .stat-card {
                 padding: 0.8rem;
-                border-radius: 12px;
-                min-height: 80px;
+                border-radius: 16px;
+                min-height: 70px;
                 justify-content: center;
+                text-align: center;
             }
             .stat-card span {
-                font-size: 0.75rem;
+                font-size: 0.7rem;
+                margin-bottom: 0.2rem;
             }
             .stat-card strong {
-                font-size: 1.1rem;
+                font-size: 1rem;
             }
             .appointments-grid { 
                 grid-template-columns: 1fr; 
                 gap: 1rem;
             }
             .appointment-card { 
-                padding: 1.2rem; 
-                border-radius: 20px;
+                padding: 1.4rem; 
+                border-radius: 24px;
             }
             .card-header h3 {
                 font-size: 1.2rem;
+            }
+            .info-item {
+                font-size: 0.9rem;
             }
             .actions-grid { 
                 grid-template-columns: 1fr; 
                 gap: 0.6rem;
             }
             .btn-dash {
-                padding: 1rem;
-                font-size: 0.9rem;
+                padding: 0.9rem;
+                font-size: 0.85rem;
             }
             .btn-calendar { 
                 grid-column: span 1; 
