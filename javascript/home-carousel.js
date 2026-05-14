@@ -29,40 +29,43 @@ document.addEventListener('DOMContentLoaded', function () {
         db = firebase.database();
     }
 
+    // Helper to create a safe Firebase key
+    function getServiceKey(title) {
+        return title.toLowerCase().trim().replace(/\s+/g, '_').replace(/[.#$[\/]]/g, '');
+    }
+
     // ── Add Liked Services to Carousel ──
-    async function injectLikedServices() {
+    function injectLikedServices() {
         if (!track || !dotsContainer || !db) return;
 
-        try {
-            // 1. Fetch ALL likes from Firebase (Global)
-            const snapshot = await db.ref('likes').once('value');
+        // Listen for ALL likes from Firebase (Real-time)
+        db.ref('likes').on('value', (snapshot) => {
             const globalLikes = snapshot.val() || {};
             
-            // 2. Define threshold (20 likes)
+            // Define threshold (20 likes)
             const LIKE_THRESHOLD = 20;
 
-            // 3. Static mapping of services to images (for those that meet the threshold)
-            // We need this because Firebase only stores the count, not the image path
+            // Static mapping of services to images (using normalized keys)
             const serviceImages = {
-                "Gutters": "../img/Galeria 14.png",
-                "Wood PVC Trex": "../img/Galeria 8.png",
-                "Decks": "../img/Galeria 17.png",
-                "Windows and doors": "../img/Galeria 6.png",
-                "Painting": "../img/Galeria 7.png",
-                "and more": "../img/Galeria 1.png" // Default or first gallery image
+                [getServiceKey("Gutters")]: "../img/Galeria 14.png",
+                [getServiceKey("Wood PVC Trex")]: "../img/Galeria 8.png",
+                [getServiceKey("Decks")]: "../img/Galeria 17.png",
+                [getServiceKey("Windows and doors")]: "../img/Galeria 6.png",
+                [getServiceKey("Painting")]: "../img/Galeria 7.png",
+                [getServiceKey("and more")]: "../img/Galeria 1.png"
             };
 
-            Object.keys(globalLikes).forEach(serviceTitleKey => {
-                const count = globalLikes[serviceTitleKey].count || 0;
+            let changesMade = false;
+
+            Object.keys(globalLikes).forEach(serviceKey => {
+                const val = globalLikes[serviceKey];
+                let count = 0;
+                if (typeof val === 'number') count = val;
+                else if (val && typeof val.count === 'number') count = val.count;
                 
-                // Reconstruct original title from key (underscores back to spaces if needed)
-                // Actually the keys were saved with underscores for Firebase compatibility
-                const originalTitle = serviceTitleKey.replace(/_/g, ' ');
-
-                if (count >= LIKE_THRESHOLD) {
-                    const imagePath = serviceImages[originalTitle];
-                    if (!imagePath) return;
-
+                const imagePath = serviceImages[serviceKey];
+                
+                if (count >= LIKE_THRESHOLD && imagePath) {
                     // Check if already in carousel
                     const exists = slides.some(slide => {
                         const img = slide.querySelector('img');
@@ -70,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
 
                     if (!exists) {
+                        const originalTitle = serviceKey.replace(/_/g, ' ');
                         const newSlide = document.createElement('article');
                         newSlide.className = 'carousel-slide';
                         newSlide.setAttribute('aria-hidden', 'true');
@@ -80,10 +84,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                     <span>Featured Work</span>
                                     <span class="carousel-likes">
                                         <svg viewBox="0 0 24 24" fill="currentColor" style="width:12px; height:12px; margin-right:4px;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
-                                        ${count}
+                                        <span class="count-val">${count}</span>
                                     </span>
                                 </div>
-                                <h3>${originalTitle}</h3>
+                                <h3 style="text-transform: capitalize;">${originalTitle}</h3>
                             </div>
                         `;
                         track.appendChild(newSlide);
@@ -93,23 +97,33 @@ document.addEventListener('DOMContentLoaded', function () {
                         newDot.type = 'button';
                         newDot.setAttribute('aria-label', `Show slide ${slides.length + 1}`);
                         dotsContainer.appendChild(newDot);
+                        changesMade = true;
+                    } else {
+                        // Update existing slide's count
+                        const slide = slides.find(s => {
+                            const img = s.querySelector('img');
+                            return img && img.src.includes(imagePath.split('/').pop());
+                        });
+                        if (slide) {
+                            const countVal = slide.querySelector('.count-val');
+                            if (countVal) countVal.textContent = count;
+                        }
                     }
                 }
             });
 
-            // 4. Update STATIC slides with likes if possible
+            // Update STATIC slides with likes
             slides.forEach(slide => {
-                const caption = slide.querySelector('.carousel-caption h3')?.textContent.trim();
                 const eyebrow = slide.querySelector('.carousel-caption span')?.textContent.trim();
                 
-                // Mapping static captions to service titles
-                let matchedService = null;
-                if (eyebrow === "Exterior Finish") matchedService = "Painting";
-                if (eyebrow === "Interior Upgrade") matchedService = "Painting";
-                if (eyebrow === "Roofing") matchedService = "Gutters"; // Best match
+                let matchedKey = null;
+                if (eyebrow === "Exterior Finish" || eyebrow === "Interior Upgrade") matchedKey = getServiceKey("Painting");
+                if (eyebrow === "Roofing") matchedKey = getServiceKey("Gutters");
                 
-                if (matchedService && globalLikes[matchedService]) {
-                    const count = globalLikes[matchedService].count || 0;
+                if (matchedKey && globalLikes[matchedKey]) {
+                    const val = globalLikes[matchedKey];
+                    const count = (typeof val === 'number') ? val : (val.count || 0);
+                    
                     let statsDiv = slide.querySelector('.carousel-stats');
                     if (!statsDiv) {
                         statsDiv = document.createElement('div');
@@ -122,21 +136,22 @@ document.addEventListener('DOMContentLoaded', function () {
                         likesSpan.className = 'carousel-likes';
                         likesSpan.innerHTML = `
                             <svg viewBox="0 0 24 24" fill="currentColor" style="width:12px; height:12px; margin-right:4px;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
-                            ${count}
+                            <span class="count-val">${count}</span>
                         `;
                         statsDiv.appendChild(likesSpan);
+                    } else {
+                        const countVal = statsDiv.querySelector('.count-val');
+                        if (countVal) countVal.textContent = count;
                     }
                 }
             });
 
-            // Refresh UI
-            slides = Array.from(track.querySelectorAll('.carousel-slide'));
-            dots = Array.from(dotsContainer.querySelectorAll('.carousel-dot'));
-            updateCarousel(0); // Restart with new slides
-
-        } catch (error) {
-            console.error("Error syncing featured services:", error);
-        }
+            if (changesMade) {
+                slides = Array.from(track.querySelectorAll('.carousel-slide'));
+                dots = Array.from(dotsContainer.querySelectorAll('.carousel-dot'));
+                updateCarousel(currentIndex);
+            }
+        });
     }
 
     injectLikedServices();

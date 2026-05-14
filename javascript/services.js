@@ -24,6 +24,11 @@ document.addEventListener('DOMContentLoaded', function () {
         db = firebase.database();
     }
 
+    // Helper to create a safe Firebase key
+    function getServiceKey(title) {
+        return title.toLowerCase().trim().replace(/\s+/g, '_').replace(/[.#$[\/]]/g, '');
+    }
+
     // ── Like buttons ──
     const likeButtons = document.querySelectorAll('.like-button');
     
@@ -33,12 +38,13 @@ document.addEventListener('DOMContentLoaded', function () {
     likeButtons.forEach(function (button) {
         const serviceCard = button.closest('.service-card');
         const serviceTitle = serviceCard.querySelector('.service-title').textContent.trim();
+        const serviceKey = getServiceKey(serviceTitle);
         const serviceImage = serviceCard.querySelector('.service-image')?.src || 
                            serviceCard.querySelector('.slideshow-image')?.src;
         const countDisplay = button.querySelector('.like-count');
         
         // 1. Initial UI state from Local Storage (only for the heart color)
-        button.liked = !!localLikes[serviceTitle];
+        button.liked = !!localLikes[serviceKey] || !!localLikes[serviceTitle]; 
         if (button.liked) {
             button.classList.add('liked');
             button.setAttribute('aria-pressed', 'true');
@@ -46,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 2. Real-time Synchronization with Firebase
         if (db) {
-            const serviceRef = db.ref('likes/' + serviceTitle.replace(/[.#$[\]]/g, '_'));
+            const serviceRef = db.ref('likes/' + serviceKey);
             serviceRef.on('value', (snapshot) => {
                 const val = snapshot.val();
                 let count = 0;
@@ -63,12 +69,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 countDisplay.textContent = count;
                 
                 // Visual feedback when count changes
-                countDisplay.style.transform = 'scale(1.2)';
+                countDisplay.style.transition = 'transform 0.2s ease, color 0.2s ease';
+                countDisplay.style.transform = 'scale(1.3)';
                 countDisplay.style.color = '#d35252';
                 setTimeout(() => {
                     countDisplay.style.transform = 'scale(1)';
                     countDisplay.style.color = '';
-                }, 200);
+                }, 300);
             });
         }
 
@@ -77,45 +84,37 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!db) return;
 
             button.liked = !button.liked;
-            const serviceRef = db.ref('likes/' + serviceTitle.replace(/[.#$[\]]/g, '_'));
+            const serviceRef = db.ref('likes/' + serviceKey);
 
             if (button.liked) {
                 // Increment in Firebase
                 serviceRef.transaction((currentData) => {
-                    if (currentData === null) {
-                        return { count: 1 };
-                    }
-                    if (typeof currentData === 'number') {
-                        return currentData + 1;
-                    }
+                    if (currentData === null) return { count: 1 };
+                    if (typeof currentData === 'number') return { count: currentData + 1 };
                     if (currentData && typeof currentData === 'object') {
-                        currentData.count = (parseInt(currentData.count) || 0) + 1;
-                        return currentData;
+                        return { count: (parseInt(currentData.count) || 0) + 1 };
                     }
                     return { count: 1 };
                 });
                 
                 // Save locally
-                localLikes[serviceTitle] = {
+                localLikes[serviceKey] = {
                     title: serviceTitle,
-                    image: serviceImage,
-                    description: serviceCard.querySelector('.service-description')?.textContent.trim() || ''
+                    image: serviceImage
                 };
             } else {
                 // Decrement in Firebase
                 serviceRef.transaction((currentData) => {
                     if (currentData === null) return null;
-                    if (typeof currentData === 'number') {
-                        return Math.max(0, currentData - 1);
-                    }
-                    if (currentData && typeof currentData === 'object') {
-                        currentData.count = Math.max(0, (parseInt(currentData.count) || 0) - 1);
-                        return currentData;
-                    }
-                    return currentData;
+                    let currentCount = 0;
+                    if (typeof currentData === 'number') currentCount = currentData;
+                    else if (currentData && typeof currentData === 'object') currentCount = parseInt(currentData.count) || 0;
+                    
+                    return { count: Math.max(0, currentCount - 1) };
                 });
                 
                 // Remove locally
+                delete localLikes[serviceKey];
                 delete localLikes[serviceTitle];
             }
             
@@ -229,53 +228,65 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ── Wrap each service image for lightbox click ──
-    document.querySelectorAll('.service-image').forEach(function (img, idx) {
-        // Priority for the first 4 images to load faster
-        if (idx < 4) {
-            img.setAttribute('loading', 'eager');
-            img.setAttribute('fetchpriority', 'high');
-        } else {
-            img.setAttribute('loading', 'lazy');
-            img.setAttribute('fetchpriority', 'low');
-        }
-        img.setAttribute('decoding', 'async');
+    const imageSelectors = ['.service-image', '.slideshow-container'];
+    imageSelectors.forEach(selector => {
+        document.querySelectorAll(selector).forEach(function (element, idx) {
+            const isSlideshow = element.classList.contains('slideshow-container');
+            const img = isSlideshow ? element.querySelector('.slideshow-image.active') : element;
+            
+            if (!img && !isSlideshow) return;
 
-        if (img.complete) {
-            img.classList.add('is-loaded');
-        } else {
-            img.addEventListener('load', function () {
-                img.classList.add('is-loaded');
-            }, { once: true });
-        }
+            // Handle regular image loading
+            if (!isSlideshow) {
+                if (idx < 4) {
+                    img.setAttribute('loading', 'eager');
+                    img.setAttribute('fetchpriority', 'high');
+                } else {
+                    img.setAttribute('loading', 'lazy');
+                    img.setAttribute('fetchpriority', 'low');
+                }
+                img.setAttribute('decoding', 'async');
 
-        const serviceCard = img.closest('.service-card');
-        const serviceDescription = serviceCard?.querySelector('.service-description')?.textContent?.trim() || '';
-        const wrap = document.createElement('div');
-        wrap.className = 'service-image-wrap';
-        wrap.setAttribute('role', 'button');
-        wrap.setAttribute('tabindex', '0');
-        wrap.setAttribute('aria-label', 'View ' + img.alt + ' full size');
-
-        const zoomHint = document.createElement('span');
-        zoomHint.className = 'service-zoom-hint';
-        zoomHint.setAttribute('aria-hidden', 'true');
-        zoomHint.textContent = isTouchDevice ? 'Toca para zoom' : 'Click para zoom';
-
-        img.parentNode.insertBefore(wrap, img);
-        wrap.appendChild(img);
-        wrap.appendChild(zoomHint);
-
-        wrap.addEventListener('click', function (e) {
-            e.stopPropagation();
-            openLightbox(img.src, img.alt, serviceDescription);
-        });
-
-        wrap.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                e.stopPropagation();
-                openLightbox(img.src, img.alt, serviceDescription);
+                if (img.complete) {
+                    img.classList.add('is-loaded');
+                } else {
+                    img.addEventListener('load', function () {
+                        img.classList.add('is-loaded');
+                    }, { once: true });
+                }
             }
+
+            const serviceCard = element.closest('.service-card');
+            const serviceDescription = serviceCard?.querySelector('.service-description')?.textContent?.trim() || '';
+            const wrap = document.createElement('div');
+            wrap.className = 'service-image-wrap';
+            wrap.setAttribute('role', 'button');
+            wrap.setAttribute('tabindex', '0');
+            wrap.setAttribute('aria-label', 'View ' + (isSlideshow ? 'gallery' : img.alt) + ' full size');
+
+            const zoomHint = document.createElement('span');
+            zoomHint.className = 'service-zoom-hint';
+            zoomHint.setAttribute('aria-hidden', 'true');
+            zoomHint.textContent = isTouchDevice ? 'Toca para zoom' : 'Click para zoom';
+
+            element.parentNode.insertBefore(wrap, element);
+            wrap.appendChild(element);
+            wrap.appendChild(zoomHint);
+
+            wrap.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const currentImg = isSlideshow ? element.querySelector('.slideshow-image.active') : element;
+                openLightbox(currentImg.src, currentImg.alt, serviceDescription);
+            });
+
+            wrap.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const currentImg = isSlideshow ? element.querySelector('.slideshow-image.active') : element;
+                    openLightbox(currentImg.src, currentImg.alt, serviceDescription);
+                }
+            });
         });
     });
 
