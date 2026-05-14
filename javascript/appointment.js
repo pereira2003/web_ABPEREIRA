@@ -8,6 +8,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const appointmentForm = document.querySelector('.appointment-form');
     const formStatus = document.getElementById('form-status');
 
+    // Make description required if 'Other' service is selected
+    const serviceSelect = document.getElementById('app-service');
+    const descriptionInput = document.getElementById('app-description');
+    
+    if (serviceSelect && descriptionInput) {
+        const descriptionLabel = document.querySelector('label[for="app-description"]');
+        serviceSelect.addEventListener('change', function() {
+            if (this.value === 'Other') {
+                descriptionInput.required = true;
+                if (descriptionLabel) descriptionLabel.innerHTML = 'Brief Description of Work *';
+                descriptionInput.placeholder = 'Please describe the custom service you need...';
+            } else {
+                descriptionInput.required = false;
+                if (descriptionLabel) descriptionLabel.innerHTML = 'Brief Description of Work (Optional)';
+                descriptionInput.placeholder = 'Briefly describe the work you need us to do...';
+            }
+        });
+    }
     // --- Firebase Configuration (Shared Database) ---
     // Clave ofuscada para evitar alertas automáticas de bots
     const _0x4a2e = ["AIzaSy", "D6h6fErJd", "-nVhvxsTy", "BdJmkqLMzzR4rOk"];
