@@ -1687,6 +1687,16 @@
                 doneBtnText: '¡Entendido!',
                 progressText: 'Paso {{current}} de {{total}}',
                 allowClose: true,
+                onHighlightStarted: (element, step) => {
+                    // Detectar a qué pestaña pertenece el elemento resaltado
+                    if (step.element === '#tab-registrar') {
+                        switchTab('registrar');
+                    } else if (step.element === '#tab-servicios') {
+                        switchTab('servicios');
+                    } else if (step.element === '#tab-citas' || step.element === '#appointmentsList' || step.element === '.stats-bar') {
+                        switchTab('citas');
+                    }
+                },
                 onPopoverRender: (popover, { config, state }) => {
                     if (!popover.footer.querySelector('.driver-skip-btn')) {
                         const skipBtn = document.createElement('button');
