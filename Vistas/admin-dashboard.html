@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | A⁺Pereira Company</title>
-    <link rel="stylesheet" href="../styles/style.css?v=126">
+    <link rel="stylesheet" href="../styles/style.css?v=127">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -1709,19 +1709,20 @@
         @media (max-width: 640px) {
             .driver-popover {
                 max-width: calc(100vw - 40px) !important;
-                padding: 15px;
+                padding: 12px;
                 border-radius: 16px;
                 margin: 0 20px !important;
             }
             .driver-popover-title {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
             }
             .driver-popover-description {
-                font-size: 0.85rem;
+                font-size: 0.8rem;
+                line-height: 1.3;
             }
             .driver-popover-next-btn, .driver-popover-prev-btn {
-                padding: 8px 12px !important;
-                font-size: 0.8rem !important;
+                padding: 6px 10px !important;
+                font-size: 0.75rem !important;
             }
         }
         .driver-popover-next-btn, .driver-popover-prev-btn {
@@ -1774,9 +1775,11 @@
                         }
                     }
                     
-                    // Ajuste de scroll instantáneo para evitar efectos de movimiento
+                    // Ajuste de scroll instantáneo para evitar que la barra del buscador del teléfono tape la info
                     setTimeout(() => {
-                        const offset = isMobile ? -160 : -100;
+                        // Un offset menos negativo (-60) hace que el elemento quede más arriba en la pantalla
+                        // evitando que la barra inferior de los navegadores móviles (Safari/Chrome) lo tape.
+                        const offset = isMobile ? -60 : -100;
                         window.scrollBy({ top: offset, behavior: 'auto' });
                     }, 0);
                 },
