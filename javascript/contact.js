@@ -79,6 +79,22 @@ document.addEventListener('DOMContentLoaded', function () {
         return "Good evening";
     }
 
+    // Make comments required if 'Other' service is selected
+    if (serviceSelect && messageInput) {
+        const commentsLabel = document.querySelector('label[for="comments"]');
+        serviceSelect.addEventListener('change', function() {
+            if (this.value === 'Other') {
+                messageInput.required = true;
+                if (commentsLabel) commentsLabel.innerHTML = 'Comments *';
+                messageInput.placeholder = 'Please describe the custom service you need...';
+            } else {
+                messageInput.required = false;
+                if (commentsLabel) commentsLabel.innerHTML = 'Comments (Optional)';
+                messageInput.placeholder = 'Write a brief description of the job or service you need';
+            }
+        });
+    }
+
     // Keep all form fields intact and generate a professional subject line.
     if (form) {
         form.addEventListener('submit', async function (event) {
