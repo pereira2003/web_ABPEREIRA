@@ -175,7 +175,7 @@
             const user = document.getElementById('username').value;
             const pass = document.getElementById('password').value;
 
-            if (user === 'admin' && pass === 'abp2026') {
+            if ((user === 'admin' || user === 'admin2') && pass === 'abp2026') {
                 sessionStorage.setItem('isAdmin', 'true');
                 window.location.href = 'admin-dashboard.html';
             } else {

@@ -638,7 +638,7 @@
                         ${app.address ? `
                         <div class="info-item">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(app.address)}" target="_blank" style="color: inherit; text-decoration: underline;">
+                            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(app.address)}" target="_blank" class="address-link" style="color: inherit; text-decoration: underline;">
                                 ${app.address}
                             </a>
                         </div>
@@ -803,6 +803,149 @@
         }
         function logout() { sessionStorage.removeItem('isAdmin'); window.location.href = 'index.html'; }
         loadAppointments();
+    </script>
+    <!-- Tutorial Interactivo (Driver.js) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    <style>
+        @keyframes softPop {
+            0% { opacity: 0; transform: translateY(10px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .driver-popover {
+            border-radius: 15px;
+            font-family: 'Inter', sans-serif;
+            padding: 15px;
+            animation: softPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2) !important;
+        }
+        .driver-popover-title {
+            color: var(--primary);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .driver-popover-description {
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .driver-popover-next-btn, .driver-popover-prev-btn {
+            border-radius: 8px !important;
+            text-shadow: none !important;
+            font-weight: bold !important;
+            transition: all 0.3s ease !important;
+        }
+        .driver-popover-next-btn {
+            background-color: var(--primary) !important;
+            color: white !important;
+            border: none !important;
+        }
+        .driver-popover-next-btn:hover {
+            background-color: #082547 !important;
+            transform: translateY(-2px);
+        }
+        .driver-popover-close-btn {
+            color: #999;
+            transition: color 0.3s;
+        }
+        .driver-popover-close-btn:hover {
+            color: #333;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const driver = window.driver.js.driver;
+            
+            const driverObj = driver({
+                showProgress: true,
+                animate: true,
+                nextBtnText: 'Siguiente ➔',
+                prevBtnText: '⬅ Anterior',
+                doneBtnText: '¡Entendido!',
+                progressText: 'Paso {{current}} de {{total}}',
+                allowClose: true,
+                onPopoverRender: (popover, { config, state }) => {
+                    if (!popover.footer.querySelector('.driver-skip-btn')) {
+                        const skipBtn = document.createElement('button');
+                        skipBtn.className = 'driver-skip-btn';
+                        skipBtn.innerText = 'Omitir';
+                        skipBtn.style.cssText = 'background: transparent; border: none; color: #999; font-weight: 600; cursor: pointer; padding: 0.5rem; margin-right: auto; font-size: 0.9rem; text-decoration: underline;';
+                        skipBtn.onclick = () => { driverObj.destroy(); };
+                        popover.footer.style.display = 'flex';
+                        popover.footer.style.alignItems = 'center';
+                        popover.footer.insertBefore(skipBtn, popover.footer.firstChild);
+                    }
+                },
+                steps: [
+                    { 
+                        popover: { 
+                            title: 'Bienvenido al Panel Administrador', 
+                            description: 'Este es tu centro de control de A⁺Pereira. Vamos a dar un rápido recorrido para que conozcas todas las herramientas disponibles.' 
+                        } 
+                    },
+                    { 
+                        element: '.header', 
+                        popover: { 
+                            title: 'Cabecera Principal', 
+                            description: 'Aquí puedes ver el logo de la empresa y tienes el botón para cerrar la sesión de forma segura cuando termines.', 
+                            side: "bottom", 
+                            align: 'start' 
+                        }
+                    },
+                    { 
+                        element: '.stats-bar', 
+                        popover: { 
+                            title: 'Resumen y Filtros', 
+                            description: 'Estas tarjetas te muestran el volumen de solicitudes actuales. Además, ¡funcionan como filtros! Haz clic en cualquiera de ellas para ver únicamente las citas Pendientes, Aceptadas o Rechazadas.', 
+                            side: "bottom", 
+                            align: 'center' 
+                        }
+                    },
+                    { 
+                        element: '#appointmentsList', 
+                        popover: { 
+                            title: 'Gestión de Citas', 
+                            description: 'Aquí aparecerán las tarjetas con los datos de los clientes. Vamos a ver las herramientas disponibles para cada una.', 
+                            side: "top", 
+                            align: 'start' 
+                        }
+                    },
+                    {
+                        element: '.appointment-card:first-child .address-link',
+                        popover: {
+                            title: 'Navegación Inteligente',
+                            description: 'Si el cliente incluyó su dirección, al hacer clic en este enlace se abrirá automáticamente en Google Maps o Apple Maps para que veas la ubicación exacta.',
+                            side: "top",
+                            align: 'center'
+                        }
+                    },
+                    {
+                        element: '.appointment-card:first-child .actions-grid',
+                        popover: {
+                            title: 'Botones de Acción y Estado',
+                            description: 'Con estos botones puedes Aceptar o Rechazar rápidamente la solicitud. Una vez aceptada, te permitirá notificar al cliente directamente a su WhatsApp o iMessage con un solo clic.',
+                            side: "bottom",
+                            align: 'center'
+                        }
+                    },
+                    {
+                        element: '.appointment-card:first-child .btn-calendar',
+                        popover: {
+                            title: 'Sincronizar Calendario',
+                            description: '¡Nunca olvides una cita! Este botón exporta los datos y te permite agregar el evento automáticamente a tu calendario personal (Google Calendar, Outlook o Apple Calendar).',
+                            side: "top",
+                            align: 'center'
+                        }
+                    }
+                ]
+            });
+
+            // Dar un pequeño tiempo para que el DOM (como citas cacheadas) se asiente
+            setTimeout(() => {
+                driverObj.drive();
+            }, 800);
+        });
     </script>
 </body>
 </html>
