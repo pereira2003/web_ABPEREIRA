@@ -393,6 +393,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     "CLIENT_DATA": "",
                     "Full_Name": data.name,
                     "Phone": data.phone,
+                    "Email": data.email || "no-reply@gmail.com",
                     "APPOINTMENT_DETAILS": "",
                     "Date": data.date,
                     "Time": data.time,
@@ -401,10 +402,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     "ACCESO_ADMIN": "⚙️ Link para gestionar cita ⬇️",
                     "ENLACE_LOGIN": "https://pereira2003.github.io/web_ABPEREIRA/Vistas/admin-login.html"
                 };
-
-                if (data.email) {
-                    web3Data["Email"] = data.email;
-                }
 
                 // Add special note based on email domain
                 if (data.email && data.email.endsWith('.edu')) web3Data["SPECIAL_NOTE"] = "🎓 Client from the educational sector.";
