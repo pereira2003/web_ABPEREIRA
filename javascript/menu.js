@@ -242,16 +242,19 @@
 
         document.querySelectorAll('form').forEach(form => {
             form.addEventListener('submit', event => {
-                if (event.defaultPrevented) {
-                    return;
-                }
+                // Defer to let other scripts call preventDefault() first
+                setTimeout(() => {
+                    if (event.defaultPrevented) {
+                        return;
+                    }
 
-                const target = form.getAttribute('target');
-                if (target && target !== '_self') {
-                    return;
-                }
+                    const target = form.getAttribute('target');
+                    if (target && target !== '_self') {
+                        return;
+                    }
 
-                activatePageTransition(layer);
+                    activatePageTransition(layer);
+                }, 0);
             });
         });
 
