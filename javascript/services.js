@@ -2,12 +2,33 @@ document.addEventListener('DOMContentLoaded', function () {
     const servicesGrid = document.querySelector('.services-grid');
     const isTouchDevice = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
+    // --- Firebase Configuration ---
+    const _0x4a2e = ["AIzaSy", "D6h6fErJd", "-nVhvxsTy", "BdJmkqLMzzR4rOk"];
+    const firebaseConfig = {
+        apiKey: _0x4a2e.join(""),
+        authDomain: "abpereira-web.firebaseapp.com",
+        databaseURL: "https://abpereira-web-default-rtdb.firebaseio.com",
+        projectId: "abpereira-web",
+        storageBucket: "abpereira-web.firebasestorage.app",
+        messagingSenderId: "270636168434",
+        appId: "1:270636168434:web:046c7d9bc4d55aaececc6b",
+        measurementId: "G-267XCN719L"
+    };
+
+    // Initialize Firebase
+    let db = null;
+    if (typeof firebase !== 'undefined') {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        db = firebase.database();
+    }
+
     // ── Like buttons ──
     const likeButtons = document.querySelectorAll('.like-button');
     
-    // Load likes and counts from localStorage
-    const savedLikes = JSON.parse(localStorage.getItem('serviceLikes') || '{}');
-    const savedCounts = JSON.parse(localStorage.getItem('serviceCounts') || '{}');
+    // Load local likes (to know if THIS user liked it)
+    const localLikes = JSON.parse(localStorage.getItem('serviceLikes') || '{}');
 
     likeButtons.forEach(function (button) {
         const serviceCard = button.closest('.service-card');
@@ -16,49 +37,63 @@ document.addEventListener('DOMContentLoaded', function () {
                            serviceCard.querySelector('.slideshow-image')?.src;
         const countDisplay = button.querySelector('.like-count');
         
-        // Initial count from HTML or localStorage
-        const initialHTMLCount = parseInt(countDisplay.textContent) || 0;
-        
-        // If we have a saved count, use it, otherwise use HTML count
-        if (savedCounts[serviceTitle] === undefined) {
-            savedCounts[serviceTitle] = initialHTMLCount;
-        }
-
-        button.liked = !!savedLikes[serviceTitle];
-        
-        // If liked, the count should be at least what's in savedCounts
-        button.count = savedCounts[serviceTitle];
-
+        // 1. Initial UI state from Local Storage (only for the heart color)
+        button.liked = !!localLikes[serviceTitle];
         if (button.liked) {
             button.classList.add('liked');
             button.setAttribute('aria-pressed', 'true');
         }
-        countDisplay.textContent = button.count;
+
+        // 2. Real-time Synchronization with Firebase
+        if (db) {
+            const serviceRef = db.ref('likes/' + serviceTitle.replace(/[.#$[\]]/g, '_'));
+            serviceRef.on('value', (snapshot) => {
+                const data = snapshot.val() || { count: 0 };
+                button.totalCount = data.count || 0;
+                countDisplay.textContent = button.totalCount;
+            });
+        }
 
         button.addEventListener('click', function (event) {
             event.stopPropagation();
+            if (!db) return; // Need Firebase to sync
+
             button.liked = !button.liked;
-            
+            const serviceRef = db.ref('likes/' + serviceTitle.replace(/[.#$[\]]/g, '_'));
+
             if (button.liked) {
-                button.count++;
-                savedLikes[serviceTitle] = {
+                // Increment in Firebase
+                serviceRef.transaction((currentData) => {
+                    if (currentData) {
+                        currentData.count = (currentData.count || 0) + 1;
+                    } else {
+                        currentData = { count: 1 };
+                    }
+                    return currentData;
+                });
+                
+                // Save locally
+                localLikes[serviceTitle] = {
                     title: serviceTitle,
                     image: serviceImage,
                     description: serviceCard.querySelector('.service-description')?.textContent.trim() || ''
                 };
             } else {
-                button.count = Math.max(0, button.count - 1);
-                delete savedLikes[serviceTitle];
+                // Decrement in Firebase
+                serviceRef.transaction((currentData) => {
+                    if (currentData) {
+                        currentData.count = Math.max(0, (currentData.count || 0) - 1);
+                    }
+                    return currentData;
+                });
+                
+                // Remove locally
+                delete localLikes[serviceTitle];
             }
             
             button.classList.toggle('liked', button.liked);
             button.setAttribute('aria-pressed', String(button.liked));
-            countDisplay.textContent = button.count;
-
-            // Save to localStorage
-            savedCounts[serviceTitle] = button.count;
-            localStorage.setItem('serviceLikes', JSON.stringify(savedLikes));
-            localStorage.setItem('serviceCounts', JSON.stringify(savedCounts));
+            localStorage.setItem('serviceLikes', JSON.stringify(localLikes));
         });
     });
 
