@@ -207,6 +207,202 @@
             color: var(--accent);
         }
 
+        /* --- TAB SYSTEM --- */
+        .tabs-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e1e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -0.7rem;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* --- SERVICES MANAGEMENT UI --- */
+        .services-manager {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+        }
+
+        .service-form-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.05);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .service-form-card h2 {
+            margin-top: 0;
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1.5px solid #e1e8f0;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            background: #082547;
+        }
+
+        .btn-cancel-edit {
+            width: 100%;
+            padding: 0.8rem;
+            background: #f1f3f5;
+            color: #495057;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .services-list-admin {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .service-admin-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-admin-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            background: #f1f3f5;
+        }
+
+        .service-admin-info {
+            padding: 1.2rem;
+            flex-grow: 1;
+        }
+
+        .service-admin-info h3 {
+            margin: 0 0 0.5rem 0;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .service-admin-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .service-admin-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 0.8rem;
+            gap: 0.5rem;
+            background: #f8fafd;
+            border-top: 1px solid #e1e8f0;
+        }
+
+        @media (max-width: 1024px) {
+            .services-manager {
+                grid-template-columns: 1fr;
+            }
+            .service-form-card {
+                position: static;
+            }
+        }
+
         .appointments-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -468,27 +664,83 @@
             <button class="btn-logout" onclick="logout()">Logout</button>
         </div>
 
-        <div class="stats-bar">
-            <div class="stat-card active" id="filterAll" onclick="setFilter('all')">
-                <span>Total Solicitudes</span>
-                <strong id="totalCount">0</strong>
+        <nav class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('citas')">Registros Citas</button>
+            <button class="tab-btn" onclick="switchTab('servicios')">Ajuste de Servicios</button>
+        </nav>
+
+        <!-- Pestaña: Registros Citas -->
+        <div id="tab-citas" class="tab-pane active">
+            <div class="stats-bar">
+                <div class="stat-card active" id="filterAll" onclick="setFilter('all')">
+                    <span>Total Solicitudes</span>
+                    <strong id="totalCount">0</strong>
+                </div>
+                <div class="stat-card" id="filterPending" onclick="setFilter('pending')">
+                    <span>Pendientes</span>
+                    <strong id="pendingCount">0</strong>
+                </div>
+                <div class="stat-card" id="filterAccepted" onclick="setFilter('accepted')">
+                    <span>Completadas/Aceptadas</span>
+                    <strong id="acceptedCount">0</strong>
+                </div>
+                <div class="stat-card" id="filterRejected" onclick="setFilter('rejected')">
+                    <span>Rechazadas/Archivadas</span>
+                    <strong id="rejectedCount">0</strong>
+                </div>
             </div>
-            <div class="stat-card" id="filterPending" onclick="setFilter('pending')">
-                <span>Pendientes</span>
-                <strong id="pendingCount">0</strong>
-            </div>
-            <div class="stat-card" id="filterAccepted" onclick="setFilter('accepted')">
-                <span>Completadas/Aceptadas</span>
-                <strong id="acceptedCount">0</strong>
-            </div>
-            <div class="stat-card" id="filterRejected" onclick="setFilter('rejected')">
-                <span>Rechazadas/Archivadas</span>
-                <strong id="rejectedCount">0</strong>
+
+            <div id="appointmentsList" class="appointments-grid">
+                <!-- Appointments loaded via JS -->
             </div>
         </div>
 
-        <div id="appointmentsList" class="appointments-grid">
-            <!-- Appointments loaded via JS -->
+        <!-- Pestaña: Ajuste de Servicios -->
+        <div id="tab-servicios" class="tab-pane">
+            <div class="services-manager">
+                <div class="service-form-card">
+                    <h2 id="serviceFormTitle">Agregar Nuevo Servicio</h2>
+                    <form id="serviceForm">
+                        <input type="hidden" id="editServiceId">
+                        <div class="form-group">
+                            <label for="sTitle">Título del Servicio</label>
+                            <input type="text" id="sTitle" placeholder="Ej: Gutters" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="sTag">Categoría / Etiqueta</label>
+                            <input type="text" id="sTag" placeholder="Ej: Exterior">
+                        </div>
+                        <div class="form-group">
+                            <label for="sPricing">Nota de Precio</label>
+                            <input type="text" id="sPricing" placeholder="Ej: For pricing, contact us...">
+                        </div>
+                        <div class="form-group">
+                            <label for="sDesc">Descripción Corta</label>
+                            <textarea id="sDesc" rows="3" placeholder="Descripción para la tarjeta..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="sFullDesc">Descripción Detallada (Popover)</label>
+                            <textarea id="sFullDesc" rows="3" placeholder="Descripción completa para el modal..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="sImage">URL de la Imagen</label>
+                            <input type="url" id="sImage" placeholder="https://ejemplo.com/imagen.png" required>
+                        </div>
+                        <button type="submit" class="btn-submit" id="btnSaveService">Guardar Servicio</button>
+                        <button type="button" class="btn-cancel-edit" id="btnCancelEdit" onclick="resetServiceForm()">Cancelar Edición</button>
+                    </form>
+                </div>
+                
+                <div class="services-list-container">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="font-family: 'Cormorant Garamond', serif; color: var(--primary); margin: 0;">Servicios Registrados</h2>
+                        <button id="btnSeed" class="btn-dash" style="background: #f8fafd; border: 1px solid #ddd; font-size: 0.7rem;" onclick="seedInitialServices()">Cargar Datos Iniciales</button>
+                    </div>
+                    <div id="servicesListAdmin" class="services-list-admin">
+                        <!-- Services loaded via JS -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -529,6 +781,151 @@
         const DATES_KEY = 'abp_booked_dates';
         let currentAppointments = []; // Global store for loaded appointments
         let currentFilter = 'all'; // Global filter state
+        let currentServices = []; // Global store for services
+
+        // --- TAB SWITCHING ---
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.textContent.toLowerCase().includes(tab));
+            if (btn) btn.classList.add('active');
+
+            if (tab === 'servicios') loadServices();
+        }
+
+        // --- SERVICES MANAGEMENT ---
+        async function loadServices() {
+            if (!db) return;
+            try {
+                const snapshot = await db.ref('services_catalog').once('value');
+                const data = snapshot.val();
+                currentServices = data ? Object.keys(data).map(key => ({ ...data[key], id: key })) : [];
+                renderServices();
+            } catch (error) {
+                console.error("Error loading services:", error);
+            }
+        }
+
+        function renderServices() {
+            const list = document.getElementById('servicesListAdmin');
+            if (currentServices.length === 0) {
+                list.innerHTML = '<div class="empty-state"><p>No hay servicios registrados.</p></div>';
+                return;
+            }
+
+            list.innerHTML = currentServices.map(s => `
+                <div class="service-admin-card">
+                    <img src="${s.image}" class="service-admin-img" alt="${s.title}" onerror="this.src='../img/placeholder.png'">
+                    <div class="service-admin-info">
+                        <h3>${s.title}</h3>
+                        <p>${s.description}</p>
+                        <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--accent); font-weight: 700;">
+                            ${s.tag} | ${s.pricing_note}
+                        </div>
+                    </div>
+                    <div class="service-admin-actions">
+                        <button class="btn-dash" style="background: #e8f0fe; color: var(--primary);" onclick="editService('${s.id}')">Editar</button>
+                        <button class="btn-dash" style="background: #fdeded; color: var(--danger);" onclick="deleteService('${s.id}')">Eliminar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        const serviceForm = document.getElementById('serviceForm');
+        serviceForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!db) return;
+
+            const id = document.getElementById('editServiceId').value;
+            const serviceData = {
+                title: document.getElementById('sTitle').value,
+                tag: document.getElementById('sTag').value,
+                pricing_note: document.getElementById('sPricing').value,
+                description: document.getElementById('sDesc').value,
+                full_description: document.getElementById('sFullDesc').value,
+                image: document.getElementById('sImage').value,
+                updated_at: new Date().toISOString()
+            };
+
+            try {
+                if (id) {
+                    await db.ref(`services_catalog/${id}`).update(serviceData);
+                    alert("Servicio actualizado correctamente.");
+                } else {
+                    serviceData.created_at = new Date().toISOString();
+                    await db.ref('services_catalog').push(serviceData);
+                    alert("Servicio agregado correctamente.");
+                }
+                resetServiceForm();
+                loadServices();
+            } catch (error) {
+                console.error("Error saving service:", error);
+                alert("Error al guardar el servicio.");
+            }
+        });
+
+        function editService(id) {
+            const s = currentServices.find(srv => srv.id === id);
+            if (!s) return;
+
+            document.getElementById('serviceFormTitle').textContent = "Editar Servicio";
+            document.getElementById('editServiceId').value = s.id;
+            document.getElementById('sTitle').value = s.title;
+            document.getElementById('sTag').value = s.tag;
+            document.getElementById('sPricing').value = s.pricing_note;
+            document.getElementById('sDesc').value = s.description;
+            document.getElementById('sFullDesc').value = s.full_description || '';
+            document.getElementById('sImage').value = s.image;
+            
+            document.getElementById('btnSaveService').textContent = "Actualizar Servicio";
+            document.getElementById('btnCancelEdit').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function deleteService(id) {
+            if (!confirm("¿Seguro que deseas eliminar este servicio?")) return;
+            try {
+                await db.ref(`services_catalog/${id}`).remove();
+                loadServices();
+            } catch (error) {
+                console.error("Error deleting service:", error);
+            }
+        }
+
+        function resetServiceForm() {
+            document.getElementById('serviceFormTitle').textContent = "Agregar Nuevo Servicio";
+            document.getElementById('editServiceId').value = "";
+            serviceForm.reset();
+            document.getElementById('btnSaveService').textContent = "Guardar Servicio";
+            document.getElementById('btnCancelEdit').style.display = 'none';
+        }
+
+        async function seedInitialServices() {
+            if (!db) return;
+            if (!confirm("Esto cargará los servicios predeterminados (Gutters, Decks, etc.). ¿Continuar?")) return;
+            
+            const initialServices = [
+                { title: "Gutters", tag: "Exterior", pricing_note: "For pricing, contact us or book your appointment.", description: "Professional gutter systems designed for proper water management and property protection.", full_description: "Complete gutter solutions including installation, repair, and maintenance to protect your home's foundation.", image: "../img/Galeria 14.png" },
+                { title: "Wood PVC Trex", tag: "Exterior & Interior", pricing_note: "For pricing, contact us or book your appointment.", description: "Expert installation and repair using high-quality Wood, PVC, and Trex materials for lasting durability.", full_description: "Specialized carpentry and exterior work using modern materials like PVC and Trex for weather resistance.", image: "../img/Galeria 8.png" },
+                { title: "Decks", tag: "Exterior", pricing_note: "For pricing, contact us or book your appointment.", description: "Professional deck construction, repair, and refinishing to create beautiful outdoor living spaces.", full_description: "Custom deck solutions including new builds, structural repairs, and staining for a refreshed look.", image: "../img/Galeria 17.png" },
+                { title: "Windows and doors", tag: "Exterior & Interior", pricing_note: "For pricing, contact us or book your appointment.", description: "Expert installation and replacement of windows and doors to improve energy efficiency and security.", full_description: "Full window and door services including framing, sealing, and professional hardware installation.", image: "../img/Galeria 6.png" },
+                { title: "Painting", tag: "Interior & Exterior", pricing_note: "For pricing, contact us or book your appointment.", description: "Careful preparation and clean application for a professional finish that elevates your space.", full_description: "Interior and exterior painting services with high-quality finishes and attention to detail.", image: "../img/Galeria 7.png" },
+                { title: "and more", tag: "General", pricing_note: "For pricing, contact us or book your appointment.", description: "Need something else? We handle various home repairs and technical services tailored to your needs.", full_description: "Contact us for any custom project or home repair not listed here. We are happy to help!", image: "../img/Galeria 1.png" }
+            ];
+
+            try {
+                for (const s of initialServices) {
+                    s.created_at = new Date().toISOString();
+                    await db.ref('services_catalog').push(s);
+                }
+                alert("Servicios iniciales cargados con éxito.");
+                loadServices();
+            } catch (error) {
+                console.error("Error seeding services:", error);
+            }
+        }
 
         function setFilter(filter) {
             currentFilter = filter;
@@ -802,7 +1199,10 @@
             link.click();
         }
         function logout() { sessionStorage.removeItem('isAdmin'); window.location.href = 'index.html'; }
+        
+        // Initial load
         loadAppointments();
+        loadServices();
     </script>
     <!-- Tutorial Interactivo (Driver.js) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
@@ -899,6 +1299,24 @@
                             title: 'Resumen y Filtros', 
                             description: 'Estas tarjetas te muestran el volumen de solicitudes actuales. Además, ¡funcionan como filtros! Haz clic en cualquiera de ellas para ver únicamente las citas Pendientes, Aceptadas o Rechazadas.', 
                             side: "bottom", 
+                            align: 'center' 
+                        }
+                    },
+                    { 
+                        element: '.tabs-nav', 
+                        popover: { 
+                            title: 'Navegación por Pestañas', 
+                            description: 'Ahora puedes alternar entre gestionar tus Citas y configurar tus Servicios. ¡Pruébalo!', 
+                            side: "bottom", 
+                            align: 'center' 
+                        }
+                    },
+                    { 
+                        element: '#tab-servicios', 
+                        popover: { 
+                            title: 'Ajuste de Servicios', 
+                            description: 'En esta pestaña podrás agregar, editar o eliminar los servicios que ofreces en tu sitio web de forma dinámica.', 
+                            side: "top", 
                             align: 'center' 
                         }
                     },
