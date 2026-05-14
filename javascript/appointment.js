@@ -393,7 +393,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     "CLIENT_DATA": "",
                     "Full_Name": data.name,
                     "Phone": data.phone,
-                    "Email": data.email,
+                    "Email": data.email || "Not provided",
                     "APPOINTMENT_DETAILS": "",
                     "Date": data.date,
                     "Time": data.time,
@@ -404,8 +404,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
 
                 // Add special note based on email domain
-                if (data.email.endsWith('.edu')) web3Data["SPECIAL_NOTE"] = "🎓 Client from the educational sector.";
-                if (data.email.endsWith('.gov')) web3Data["SPECIAL_NOTE"] = "🏛️ Government/Institutional interest.";
+                if (data.email && data.email.endsWith('.edu')) web3Data["SPECIAL_NOTE"] = "🎓 Client from the educational sector.";
+                if (data.email && data.email.endsWith('.gov')) web3Data["SPECIAL_NOTE"] = "🏛️ Government/Institutional interest.";
 
                 const response = await fetch('https://api.web3forms.com/submit', {
                     method: 'POST',

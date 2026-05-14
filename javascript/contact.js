@@ -180,8 +180,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const formData = new FormData(form);
             
             // Clean up and add creative fields
-            formData.append("email", clientEmail); // THIS IS CRITICAL FOR CLIENT TO RECEIVE IT
-            formData.append("_replyto", clientEmail);
+            formData.append("email", clientEmail || "no-reply@abpereira.com"); // THIS IS CRITICAL FOR CLIENT TO RECEIVE IT
+            formData.append("_replyto", clientEmail || "no-reply@abpereira.com");
             formData.append("_from", "A+Pereira Web Platform");
             formData.append(greeting, "thank you for contacting us."); // Usamos el saludo como clave para que no aparezca "MENSAJE"
             formData.append(messageText, ""); // El texto largo va como clave vacía
@@ -192,11 +192,11 @@ document.addEventListener('DOMContentLoaded', function () {
             formData.append("EXTRA_INFORMATION", "");
             
             // Logic based on email domain
-            if (clientEmail.endsWith('.edu')) {
+            if (clientEmail && clientEmail.endsWith('.edu')) {
                 formData.append("Note", "🎓 Client from the educational sector.");
-            } else if (clientEmail.endsWith('.gov')) {
+            } else if (clientEmail && clientEmail.endsWith('.gov')) {
                 formData.append("Note", "🏛️ Possible government project.");
-            } else if (clientEmail.includes('business') || clientEmail.includes('corp')) {
+            } else if (clientEmail && (clientEmail.includes('business') || clientEmail.includes('corp'))) {
                 formData.append("Note", "💼 Corporate contact detected.");
             }
 
@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 subject: config.subject,
                 "MENSAJE_PARA_ADMIN": "👋 ¡Hola Admin! Has recibido una nueva consulta de contacto desde la web.",
                 "Name": clientName,
-                "Email": clientEmail,
+                "Email": clientEmail || "Not provided",
                 "Phone": phoneInput ? phoneInput.value : 'N/A',
                 "Service": selectedService,
                 "Topic": requestTopic,
