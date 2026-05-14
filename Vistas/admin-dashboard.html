@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | A⁺Pereira Company</title>
-    <link rel="stylesheet" href="../styles/style.css?v=124">
+    <link rel="stylesheet" href="../styles/style.css?v=125">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -1222,7 +1222,7 @@
                         const scrollLeft = btn.offsetLeft - (nav.offsetWidth / 2) + (btn.offsetWidth / 2);
                         nav.scrollTo({
                             left: scrollLeft,
-                            behavior: 'smooth'
+                            behavior: smooth ? 'smooth' : 'auto'
                         });
                     }
                 }
@@ -1686,15 +1686,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
     <style>
-        @keyframes softPop {
-            0% { opacity: 0; transform: translateY(10px) scale(0.98); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
         .driver-popover {
             border-radius: 20px;
             font-family: 'Inter', sans-serif;
             padding: 20px;
-            animation: softPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3) !important;
             max-width: 350px !important;
             border: none !important;
@@ -1760,7 +1755,7 @@
             
             const driverObj = driver({
                 showProgress: true,
-                animate: true,
+                animate: false, // Desactivar animaciones de deslizamiento para estabilidad total
                 nextBtnText: 'Siguiente',
                 prevBtnText: 'Anterior',
                 doneBtnText: '¡Entendido!',
@@ -1779,11 +1774,11 @@
                         }
                     }
                     
-                    // Ajuste de scroll para compensar la navegación fija y dar aire en móviles
+                    // Ajuste de scroll instantáneo para evitar efectos de movimiento
                     setTimeout(() => {
                         const offset = isMobile ? -160 : -100;
-                        window.scrollBy({ top: offset, behavior: 'smooth' });
-                    }, 50);
+                        window.scrollBy({ top: offset, behavior: 'auto' });
+                    }, 0);
                 },
                 onPopoverRender: (popover, { config, state }) => {
                     if (!popover.footer.querySelector('.driver-skip-btn')) {
