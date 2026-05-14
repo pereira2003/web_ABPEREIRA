@@ -274,16 +274,10 @@ main {
   white-space: nowrap;
 }
 
-.cotizar-button {
+.book-button {
   background: #0f3f79;
   color: #ffffff;
   flex: 1.2;
-}
-
-.book-button {
-  background: #d5b082;
-  color: #ffffff;
-  flex: 1;
 }
 
 .cotizar-button:hover,
@@ -574,7 +568,6 @@ main {
     padding-top: 0.5rem;
   }
 
-  .cotizar-button,
   .book-button {
     flex: 1;
     min-height: 34px;
@@ -582,14 +575,7 @@ main {
     font-size: 0.72rem;
     border-radius: 10px;
     color: #ffffff !important;
-  }
-
-  .cotizar-button {
     background: #0f3f79 !important;
-  }
-
-  .book-button {
-    background: #d5b082 !important;
   }
 
   .like-button {

@@ -4,17 +4,61 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Like buttons ──
     const likeButtons = document.querySelectorAll('.like-button');
+    
+    // Load likes and counts from localStorage
+    const savedLikes = JSON.parse(localStorage.getItem('serviceLikes') || '{}');
+    const savedCounts = JSON.parse(localStorage.getItem('serviceCounts') || '{}');
+
     likeButtons.forEach(function (button) {
-        button.liked = false;
-        button.count = 0;
+        const serviceCard = button.closest('.service-card');
+        const serviceTitle = serviceCard.querySelector('.service-title').textContent.trim();
+        const serviceImage = serviceCard.querySelector('.service-image')?.src || 
+                           serviceCard.querySelector('.slideshow-image')?.src;
+        const countDisplay = button.querySelector('.like-count');
+        
+        // Initial count from HTML or localStorage
+        const initialHTMLCount = parseInt(countDisplay.textContent) || 0;
+        
+        // If we have a saved count, use it, otherwise use HTML count
+        if (savedCounts[serviceTitle] === undefined) {
+            savedCounts[serviceTitle] = initialHTMLCount;
+        }
+
+        button.liked = !!savedLikes[serviceTitle];
+        
+        // If liked, the count should be at least what's in savedCounts
+        button.count = savedCounts[serviceTitle];
+
+        if (button.liked) {
+            button.classList.add('liked');
+            button.setAttribute('aria-pressed', 'true');
+        }
+        countDisplay.textContent = button.count;
 
         button.addEventListener('click', function (event) {
             event.stopPropagation();
             button.liked = !button.liked;
-            button.count = button.liked ? button.count + 1 : Math.max(button.count - 1, 0);
+            
+            if (button.liked) {
+                button.count++;
+                savedLikes[serviceTitle] = {
+                    title: serviceTitle,
+                    image: serviceImage,
+                    description: serviceCard.querySelector('.service-description')?.textContent.trim() || ''
+                };
+            } else {
+                button.count = Math.max(0, button.count - 1);
+                delete savedLikes[serviceTitle];
+            }
+            
             button.classList.toggle('liked', button.liked);
             button.setAttribute('aria-pressed', String(button.liked));
-            button.querySelector('.like-count').textContent = button.count;
+            countDisplay.textContent = button.count;
+
+            // Save to localStorage
+            savedCounts[serviceTitle] = button.count;
+            localStorage.setItem('serviceLikes', JSON.stringify(savedLikes));
+            localStorage.setItem('serviceCounts', JSON.stringify(savedCounts));
         });
     });
 

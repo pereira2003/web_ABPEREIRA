@@ -1,10 +1,65 @@
 document.addEventListener('DOMContentLoaded', function () {
     const track = document.getElementById('showcaseTrack');
-    const slides = track ? Array.from(track.querySelectorAll('.carousel-slide')) : [];
+    let slides = track ? Array.from(track.querySelectorAll('.carousel-slide')) : [];
     const prevButton = document.getElementById('carouselPrev');
     const nextButton = document.getElementById('carouselNext');
-    const dots = Array.from(document.querySelectorAll('.carousel-dot'));
+    let dots = Array.from(document.querySelectorAll('.carousel-dot'));
+    const dotsContainer = document.getElementById('carouselDots');
     const carousel = document.querySelector('.showcase-carousel');
+
+    // ── Add Liked Services to Carousel ──
+    function injectLikedServices() {
+        if (!track || !dotsContainer) return;
+
+        const savedLikes = JSON.parse(localStorage.getItem('serviceLikes') || '{}');
+        const savedCounts = JSON.parse(localStorage.getItem('serviceCounts') || '{}');
+        const likedEntries = Object.values(savedLikes);
+        
+        // Define what "many likes" means (e.g., at least 1 like)
+        const LIKE_THRESHOLD = 1;
+
+        likedEntries.forEach(service => {
+            const currentCount = savedCounts[service.title] || 0;
+            
+            // Only add if it meets the threshold
+            if (currentCount >= LIKE_THRESHOLD) {
+                // Check if this service image is already in the carousel
+                const exists = slides.some(slide => {
+                    const img = slide.querySelector('img');
+                    return img && img.src.includes(service.image.split('/').pop());
+                });
+
+                if (!exists) {
+                    // Create new slide
+                    const newSlide = document.createElement('article');
+                    newSlide.className = 'carousel-slide';
+                    newSlide.setAttribute('aria-hidden', 'true');
+                    newSlide.innerHTML = `
+                        <img src="${service.image}" alt="${service.title}" loading="lazy" decoding="async">
+                        <div class="carousel-caption">
+                            <span>Featured Service</span>
+                            <h3>${service.title}</h3>
+                        </div>
+                    `;
+                    track.appendChild(newSlide);
+
+                    // Create new dot
+                    const newDot = document.createElement('button');
+                    newDot.className = 'carousel-dot';
+                    newDot.type = 'button';
+                    newDot.setAttribute('aria-label', `Show slide ${slides.length + 1}`);
+                    newDot.setAttribute('aria-pressed', 'false');
+                    dotsContainer.appendChild(newDot);
+                }
+            }
+        });
+
+        // Refresh slides and dots arrays
+        slides = Array.from(track.querySelectorAll('.carousel-slide'));
+        dots = Array.from(dotsContainer.querySelectorAll('.carousel-dot'));
+    }
+
+    injectLikedServices();
 
     let currentIndex = 0;
     let autoPlayId;
