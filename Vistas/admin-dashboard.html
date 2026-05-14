@@ -452,6 +452,191 @@
             border-top: 1px solid #e1e8f0;
         }
 
+        /* --- SERVICES LIST (Match public style) --- */
+        .services-list-admin {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .service-card-admin {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-radius: 28px;
+            background: #ffffff;
+            border: 1px solid #eef3f8;
+            box-shadow: 0 14px 44px rgba(16, 35, 63, 0.06);
+            transition: transform 0.22s ease, box-shadow 0.22s ease;
+        }
+
+        .service-card-admin:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(16, 35, 63, 0.12);
+        }
+
+        .admin-service-img-wrap {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            background: #f1f3f5;
+        }
+
+        .admin-service-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .admin-service-content {
+            display: flex;
+            flex-direction: column;
+            padding: 1.4rem;
+            flex-grow: 1;
+            gap: 0.8rem;
+        }
+
+        .admin-service-tag {
+            display: inline-flex;
+            padding: 0.25rem 0.65rem;
+            border-radius: 999px;
+            background: #eef3f8;
+            color: #5f7390;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            width: fit-content;
+        }
+
+        .admin-service-title {
+            margin: 0;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            color: var(--primary);
+            line-height: 1.1;
+        }
+
+        .admin-service-pricing {
+            font-size: 0.75rem;
+            color: #a0a0a0;
+            font-style: italic;
+            margin-top: -0.3rem;
+        }
+
+        .admin-service-desc {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .admin-service-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            margin-top: auto;
+            padding-top: 1rem;
+        }
+
+        .btn-admin-edit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-admin-delete {
+            background: #fdeded;
+            color: var(--danger);
+            border: none;
+            padding: 0.6rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-admin-edit:hover { background: #082547; transform: translateY(-2px); }
+        .btn-admin-delete:hover { background: #fcdcdc; transform: translateY(-2px); }
+
+        /* Mobile adjustments for Admin List (Match public mobile) */
+        @media (max-width: 640px) {
+            .services-list-admin {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .service-card-admin {
+                flex-direction: row;
+                border-radius: 16px;
+                min-height: 120px;
+            }
+
+            .admin-service-img-wrap {
+                width: 112px;
+                height: auto;
+                flex-shrink: 0;
+            }
+
+            .admin-service-img-wrap img {
+                height: 100%;
+                width: 100%;
+                position: absolute;
+                inset: 0;
+            }
+
+            .service-card-admin {
+                position: relative;
+            }
+
+            .admin-service-img-wrap {
+                position: relative;
+                min-height: 112px;
+            }
+
+            .admin-service-content {
+                padding: 0.8rem 1rem;
+                gap: 0.3rem;
+            }
+
+            .admin-service-title {
+                font-size: 1.1rem;
+            }
+
+            .admin-service-desc {
+                display: none;
+            }
+
+            .admin-service-tag {
+                font-size: 0.6rem;
+                padding: 0.15rem 0.5rem;
+                margin-bottom: 0.1rem;
+            }
+
+            .admin-service-actions {
+                padding-top: 0.4rem;
+                gap: 0.4rem;
+            }
+
+            .btn-admin-edit, .btn-admin-delete {
+                padding: 0.4rem;
+                font-size: 0.7rem;
+                border-radius: 8px;
+            }
+        }
+
         @media (max-width: 1024px) {
             .services-manager {
                 grid-template-columns: 1fr;
@@ -963,20 +1148,22 @@
             }
 
             list.innerHTML = currentServices.map(s => `
-                <div class="service-admin-card">
-                    <img src="${s.image}" class="service-admin-img" alt="${s.title}" onerror="this.src='../img/placeholder.png'">
-                    <div class="service-admin-info">
-                        <h3>${s.title}</h3>
-                        <p>${s.description}</p>
-                        <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--accent); font-weight: 700;">
-                            ${s.tag} | ${s.pricing_note}
+                <article class="service-card-admin">
+                    <div class="admin-service-img-wrap">
+                        <img src="${s.image}" alt="${s.title}" onerror="this.src='../img/placeholder.png'">
+                    </div>
+                    <div class="admin-service-content">
+                        <span class="admin-service-tag">${s.tag || 'General'}</span>
+                        <h3 class="admin-service-title">${s.title}</h3>
+                        <p class="admin-service-pricing">${s.pricing_note || 'Contact for pricing'}</p>
+                        <p class="admin-service-desc">${s.description}</p>
+                        
+                        <div class="admin-service-actions">
+                            <button class="btn-admin-edit" onclick="editService('${s.id}')">Editar</button>
+                            <button class="btn-admin-delete" onclick="deleteService('${s.id}')">Eliminar</button>
                         </div>
                     </div>
-                    <div class="service-admin-actions">
-                        <button class="btn-dash" style="background: #e8f0fe; color: var(--primary);" onclick="editService('${s.id}')">Editar</button>
-                        <button class="btn-dash" style="background: #fdeded; color: var(--danger);" onclick="deleteService('${s.id}')">Eliminar</button>
-                    </div>
-                </div>
+                </article>
             `).join('');
         }
 
