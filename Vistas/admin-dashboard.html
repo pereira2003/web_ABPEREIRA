@@ -260,7 +260,7 @@
         /* --- SERVICES MANAGEMENT UI --- */
         .services-manager {
             display: grid;
-            grid-template-columns: 350px 1fr;
+            grid-template-columns: 1fr;
             gap: 2rem;
         }
 
@@ -270,9 +270,8 @@
             border-radius: 24px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.03);
             border: 1px solid rgba(0,0,0,0.05);
-            height: fit-content;
-            position: sticky;
-            top: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .service-form-card h2 {
@@ -725,6 +724,7 @@
 
         <nav class="tabs-nav">
             <button class="tab-btn active" onclick="switchTab('citas')">Registros Citas</button>
+            <button class="tab-btn" onclick="switchTab('registrar')">Registrar Servicios</button>
             <button class="tab-btn" onclick="switchTab('servicios')">Ajuste de Servicios</button>
         </nav>
 
@@ -754,50 +754,53 @@
             </div>
         </div>
 
+        <!-- Pestaña: Registrar Servicios -->
+        <div id="tab-registrar" class="tab-pane">
+            <div class="service-form-card">
+                <h2 id="serviceFormTitle">Agregar Nuevo Servicio</h2>
+                <form id="serviceForm">
+                    <input type="hidden" id="editServiceId">
+                    <div class="form-group">
+                        <label for="sTitle">Título del Servicio</label>
+                        <input type="text" id="sTitle" placeholder="Ej: Gutters" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sTag">Categoría / Etiqueta</label>
+                        <input type="text" id="sTag" placeholder="Ej: Exterior">
+                    </div>
+                    <div class="form-group">
+                        <label for="sPricing">Nota de Precio</label>
+                        <input type="text" id="sPricing" placeholder="Ej: For pricing, contact us...">
+                    </div>
+                    <div class="form-group">
+                        <label for="sDesc">Descripción Corta</label>
+                        <textarea id="sDesc" rows="3" placeholder="Descripción para la tarjeta..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="sFullDesc">Descripción Detallada (Popover)</label>
+                        <textarea id="sFullDesc" rows="3" placeholder="Descripción completa para el modal..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Imagen del Servicio</label>
+                        <div class="upload-area" id="uploadArea">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <p>Haz clic o arrastra una imagen aquí</p>
+                            <input type="file" id="sImageFile" accept="image/*" style="display: none;">
+                            <img id="imgPreview" class="upload-preview" alt="Vista previa">
+                            <div class="progress-container" id="uploadProgressContainer">
+                                <div class="progress-bar" id="uploadProgressBar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit" id="btnSaveService">Guardar Servicio</button>
+                    <button type="button" class="btn-cancel-edit" id="btnCancelEdit" onclick="resetServiceForm()">Cancelar Edición</button>
+                </form>
+            </div>
+        </div>
+
         <!-- Pestaña: Ajuste de Servicios -->
         <div id="tab-servicios" class="tab-pane">
             <div class="services-manager">
-                <div class="service-form-card">
-                    <h2 id="serviceFormTitle">Agregar Nuevo Servicio</h2>
-                    <form id="serviceForm">
-                        <input type="hidden" id="editServiceId">
-                        <div class="form-group">
-                            <label for="sTitle">Título del Servicio</label>
-                            <input type="text" id="sTitle" placeholder="Ej: Gutters" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="sTag">Categoría / Etiqueta</label>
-                            <input type="text" id="sTag" placeholder="Ej: Exterior">
-                        </div>
-                        <div class="form-group">
-                            <label for="sPricing">Nota de Precio</label>
-                            <input type="text" id="sPricing" placeholder="Ej: For pricing, contact us...">
-                        </div>
-                        <div class="form-group">
-                            <label for="sDesc">Descripción Corta</label>
-                            <textarea id="sDesc" rows="3" placeholder="Descripción para la tarjeta..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="sFullDesc">Descripción Detallada (Popover)</label>
-                            <textarea id="sFullDesc" rows="3" placeholder="Descripción completa para el modal..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Imagen del Servicio</label>
-                            <div class="upload-area" id="uploadArea">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                <p>Haz clic o arrastra una imagen aquí</p>
-                                <input type="file" id="sImageFile" accept="image/*" style="display: none;">
-                                <img id="imgPreview" class="upload-preview" alt="Vista previa">
-                                <div class="progress-container" id="uploadProgressContainer">
-                                    <div class="progress-bar" id="uploadProgressBar"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn-submit" id="btnSaveService">Guardar Servicio</button>
-                        <button type="button" class="btn-cancel-edit" id="btnCancelEdit" onclick="resetServiceForm()">Cancelar Edición</button>
-                    </form>
-                </div>
-                
                 <div class="services-list-container">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                         <h2 style="font-family: 'Cormorant Garamond', serif; color: var(--primary); margin: 0;">Servicios Registrados</h2>
@@ -1017,10 +1020,12 @@
                 if (id) {
                     await db.ref(`services_catalog/${id}`).update(serviceData);
                     alert("Servicio actualizado correctamente.");
+                    switchTab('servicios'); // Go back to list after update
                 } else {
                     serviceData.created_at = new Date().toISOString();
                     await db.ref('services_catalog').push(serviceData);
                     alert("Servicio agregado correctamente.");
+                    switchTab('servicios'); // Go back to list after adding
                 }
                 resetServiceForm();
                 loadServices();
@@ -1037,6 +1042,7 @@
             const s = currentServices.find(srv => srv.id === id);
             if (!s) return;
 
+            switchTab('registrar'); // Switch to registration tab
             resetServiceForm(); // Clear any previous selection
 
             document.getElementById('serviceFormTitle').textContent = "Editar Servicio";
