@@ -1676,35 +1676,40 @@
             100% { opacity: 1; transform: translateY(0) scale(1); }
         }
         .driver-popover {
-            border-radius: 15px;
+            border-radius: 20px;
             font-family: 'Inter', sans-serif;
-            padding: 12px;
+            padding: 20px;
             animation: softPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            box-shadow: 0 15px 45px rgba(0,0,0,0.25) !important;
-            max-width: 320px !important;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3) !important;
+            max-width: 350px !important;
         }
         .driver-popover-title {
             color: var(--primary);
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.3rem;
-            margin-bottom: 0.3rem;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
             line-height: 1.2;
         }
         .driver-popover-description {
             color: #444;
-            font-size: 0.9rem;
-            line-height: 1.4;
+            font-size: 1rem;
+            line-height: 1.5;
         }
         @media (max-width: 640px) {
             .driver-popover {
-                max-width: 280px !important;
-                padding: 10px;
+                max-width: 90vw !important;
+                padding: 15px;
+                border-radius: 16px;
             }
             .driver-popover-title {
-                font-size: 1.15rem;
+                font-size: 1.3rem;
             }
             .driver-popover-description {
-                font-size: 0.85rem;
+                font-size: 0.9rem;
+            }
+            .driver-popover-next-btn, .driver-popover-prev-btn {
+                padding: 10px 15px !important;
+                font-size: 0.85rem !important;
             }
         }
         .driver-popover-next-btn, .driver-popover-prev-btn {
@@ -1734,6 +1739,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             const driver = window.driver.js.driver;
             
+            const isMobile = window.innerWidth <= 768;
+            
             const driverObj = driver({
                 showProgress: true,
                 animate: true,
@@ -1742,7 +1749,7 @@
                 doneBtnText: '¡Entendido!',
                 progressText: 'Paso {{current}} de {{total}}',
                 allowClose: true,
-                stagePadding: 5,
+                stagePadding: isMobile ? 10 : 5,
                 onHighlightStarted: (element, step) => {
                     const el = step.element;
                     if (typeof el === 'string') {
@@ -1754,9 +1761,11 @@
                             switchTab('citas', false);
                         }
                     }
-                    // Ajuste de scroll para compensar la navegación fija
+                    
+                    // Ajuste de scroll para compensar la navegación fija y dar aire en móviles
                     setTimeout(() => {
-                        window.scrollBy({ top: -100, behavior: 'smooth' });
+                        const offset = isMobile ? -140 : -100;
+                        window.scrollBy({ top: offset, behavior: 'smooth' });
                     }, 100);
                 },
                 onPopoverRender: (popover, { config, state }) => {
