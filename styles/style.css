@@ -490,15 +490,15 @@ body.is-page-transitioning {
 .story-copy h2,
 .cta-content h2 {
     font-family: 'Cormorant Garamond', serif;
-    font-weight: 600;
-    line-height: 0.98;
-    letter-spacing: -0.03em;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
 }
 
 .hero h1 {
     max-width: 15ch;
-    font-size: clamp(2.5rem, 5vw, 4.2rem);
-    margin-bottom: 1.3rem;
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    margin-bottom: 1.5rem;
 }
 
 .hero-description {
@@ -563,9 +563,13 @@ body.is-page-transitioning {
 
 @media (max-width: 768px) {
     .btn {
-        width: calc(100% - 60px); /* Leave space for the floating icon on the right if needed */
-        max-width: 320px;
-        margin: 0; /* Keep aligned to the left */
+        width: auto; /* Buttons are not full width, like in the image */
+        min-width: 160px;
+        max-width: none;
+        margin: 0;
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+        min-height: 56px;
     }
 }
 
