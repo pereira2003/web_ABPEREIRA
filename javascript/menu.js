@@ -144,6 +144,25 @@
 
     closeMenu();
 
+    // Handle smooth scroll for anchors on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.location.hash) {
+            setTimeout(() => {
+                const target = document.querySelector(window.location.hash);
+                if (target) {
+                    const headerOffset = 80;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth"
+                    });
+                }
+            }, 1000); // Wait for splash and animations
+        }
+    });
+
     function createPageTransitionLayer() {
         const layer = document.createElement('div');
         layer.className = 'page-transition';
