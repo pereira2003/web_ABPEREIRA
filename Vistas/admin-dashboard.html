@@ -404,21 +404,24 @@
         }
 
         .upload-preview {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
+            max-width: 100%;
+            height: auto;
+            max-height: 200px;
+            object-fit: contain;
             border-radius: 12px;
-            margin-top: 1rem;
+            margin: 1rem auto 0;
             display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .progress-container {
             width: 100%;
-            height: 6px;
+            height: 8px;
             background: #e1e8f0;
             border-radius: 10px;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             display: none;
+            overflow: hidden;
         }
 
         .progress-bar {
@@ -430,20 +433,30 @@
         }
 
         .btn-submit {
-            width: 100%;
-            padding: 1rem;
+            display: block;
+            width: fit-content;
+            min-width: 220px;
+            padding: 1rem 3rem;
             background: var(--primary);
             color: white;
             border: none;
             border-radius: 14px;
             font-weight: 700;
             cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 1rem;
+            transition: all 0.2s;
+            margin: 2rem auto 0;
         }
 
-        .btn-submit:hover {
+        .btn-submit:hover:not(:disabled) {
             background: #082547;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 35, 63, 0.2);
+        }
+
+        .btn-submit:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .btn-cancel-edit {
@@ -1260,9 +1273,9 @@
 
             try {
                 // Comprimir la imagen antes de subirla
+                console.log("Iniciando compresión...");
                 const compressedBlob = await compressImage(selectedFile);
-                console.log(`Original size: ${selectedFile.size / 1024} KB`);
-                console.log(`Compressed size: ${compressedBlob.size / 1024} KB`);
+                console.log(`Compresión finalizada. Original: ${selectedFile.size / 1024} KB, Nueva: ${compressedBlob.size / 1024} KB`);
 
                 const fileName = `services/${Date.now()}_${selectedFile.name.split('.')[0]}.webp`;
                 const storageRef = storage.ref(fileName);
@@ -1270,43 +1283,57 @@
                 return new Promise((resolve, reject) => {
                     const uploadTask = storageRef.put(compressedBlob, { contentType: 'image/webp' });
                     
-                        uploadTask.on('state_changed', 
-                            (snapshot) => {
-                                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                                progressBar.style.width = progress + '%';
-                                if (uploadText) uploadText.textContent = `Uploading: ${Math.round(progress)}%`;
-                            }, 
-                            (error) => {
-                                console.error("Upload error details:", error);
+                    uploadTask.on('state_changed', 
+                        (snapshot) => {
+                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            progressBar.style.width = progress + '%';
+                            if (uploadText) uploadText.textContent = `Subiendo: ${Math.round(progress)}%`;
+                        }, 
+                        (error) => {
+                            console.error("Error en la subida:", error);
+                            progressContainer.style.display = 'none';
+                            if (uploadText) uploadText.textContent = 'Error: ' + error.message;
+                            reject(error);
+                        }, 
+                        async () => {
+                            try {
+                                const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
                                 progressContainer.style.display = 'none';
-                                if (uploadText) uploadText.textContent = 'Error: ' + error.message;
-                                reject(error);
-                            }, 
-                            async () => {
-                                try {
-                                    const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
-                                    console.log("Upload successful, URL:", downloadURL);
-                                    progressContainer.style.display = 'none';
-                                    if (uploadText) uploadText.textContent = 'Done!';
-                                    resolve(downloadURL);
-                                } catch (urlError) {
-                                    console.error("Error getting download URL:", urlError);
-                                    reject(urlError);
-                                }
+                                if (uploadText) uploadText.textContent = '¡Completado!';
+                                resolve(downloadURL);
+                            } catch (urlError) {
+                                console.error("Error al obtener URL:", urlError);
+                                reject(urlError);
                             }
-                        );
+                        }
+                    );
                 });
             } catch (error) {
-                console.error("Compression error:", error);
-                // Si la compresión falla, intentar subir la original como fallback
+                console.error("Fallo en el proceso de compresión/subida:", error);
+                if (uploadText) uploadText.textContent = 'Usando imagen original...';
+                
                 const fileName = `services/${Date.now()}_${selectedFile.name}`;
                 const storageRef = storage.ref(fileName);
+                
                 return new Promise((resolve, reject) => {
                     const uploadTask = storageRef.put(selectedFile);
-                    uploadTask.on('state_changed', null, reject, async () => {
-                        const url = await uploadTask.snapshot.ref.getDownloadURL();
-                        resolve(url);
-                    });
+                    uploadTask.on('state_changed', 
+                        (snapshot) => {
+                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            progressBar.style.width = progress + '%';
+                            if (uploadText) uploadText.textContent = `Subiendo original: ${Math.round(progress)}%`;
+                        }, 
+                        (error) => {
+                            progressContainer.style.display = 'none';
+                            if (uploadText) uploadText.textContent = 'Error: ' + error.message;
+                            reject(error);
+                        }, 
+                        async () => {
+                            const url = await uploadTask.snapshot.ref.getDownloadURL();
+                            progressContainer.style.display = 'none';
+                            resolve(url);
+                        }
+                    );
                 });
             }
         }
