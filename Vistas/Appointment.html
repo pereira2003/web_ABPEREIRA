@@ -112,10 +112,12 @@
             messagingSenderId: "270636168434",
             appId: "1:270636168434:web:046c7d9bc4d55aaececc6b"
         };
-        if (!firebase.apps.length) firebase.initializeApp(fbCheck);
-        firebase.database().ref('settings/maintenance').on('value', (snapshot) => {
-            if (snapshot.val() === true) window.location.href = 'Maintenance.html';
-        });
+        if (typeof firebase !== 'undefined') {
+            if (!firebase.apps.length) firebase.initializeApp(fbCheck);
+            firebase.database().ref('settings/maintenance').on('value', (snapshot) => {
+                if (snapshot.val() === true) window.location.href = 'Maintenance.html';
+            });
+        }
     </script>
 </head>
 
@@ -219,7 +221,7 @@
                             </svg>
                         </button>
                         <div class="calendar-title">
-                            <span id="currentMonth">March 2025</span>
+                            <span id="currentMonth">...</span>
                         </div>
                         <button class="calendar-nav-btn" id="nextMonth" aria-label="Next month">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -374,9 +376,9 @@
     </div>
 
     <!-- Scripts Optimizados -->
-    <script src="../javascript/menu.js?v=113" defer></script>
-    <script src="../javascript/appointment.js?v=113" defer></script>
-    <script src="../javascript/scroll-reveal.js?v=113" defer></script>
+    <script src="../javascript/menu.js?v=114" defer></script>
+    <script src="../javascript/appointment.js?v=114" defer></script>
+    <script src="../javascript/scroll-reveal.js?v=114" defer></script>
 </body>
 
 </html>

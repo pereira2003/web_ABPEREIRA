@@ -42,12 +42,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize Firebase if config is provided
     let db = null;
-    if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
-        firebase.initializeApp(firebaseConfig);
-        db = firebase.database();
-        console.log("✅ Firebase connected for shared reservations.");
+    if (typeof firebase !== 'undefined' && firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY") {
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            db = firebase.database();
+            console.log("✅ Firebase connected for shared reservations.");
+        } catch (error) {
+            console.error("Firebase initialization error:", error);
+        }
     } else {
-        console.warn("⚠️ Firebase not configured. Reservations will be LOCAL ONLY to this browser.");
+        console.warn("⚠️ Firebase not found or not configured. Reservations will be LOCAL ONLY to this browser.");
     }
 
     let bookedDates = [];
