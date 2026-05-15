@@ -5,19 +5,33 @@
     <link rel="icon" type="image/x-icon" href="../img/ABP.ico">
     <link rel="shortcut icon" href="../img/ABP.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="../img/ABPEREIRA%20L.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0c3363">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A⁺Pereira Company provides elegant, reliable home repair and finish services.">
-    <title>A⁺Pereira Company</title>
+    <title>A⁺Pereira Company | Home</title>
     <link rel="preload" href="../styles/menu.css?v=114" as="style">
     <link rel="stylesheet" href="../styles/menu.css?v=114">
     <link rel="preload" href="../styles/style.css?v=114" as="style">
     <link rel="stylesheet" href="../styles/style.css?v=114">
     
-    <!-- MANTENIMIENTO CHECK -->
+    <!-- MANTENIMIENTO & ERROR CHECK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
+        // Registrar Service Worker para carga rápida
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('../sw.js');
+            });
+        }
+
+        // Detectar Offline
+        window.addEventListener('offline', () => {
+            window.location.href = 'Error.html?type=offline';
+        });
+
         const firebaseConfigCheck = {
             apiKey: "AIzaSyD6h6fErJd-nVhvxsTyBdJmkqLMzzR4rOk",
             authDomain: "abpereira-web.firebaseapp.com",
@@ -28,9 +42,19 @@
             appId: "1:270636168434:web:046c7d9bc4d55aaececc6b"
         };
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfigCheck);
+        
+        // Check Mantenimiento
         firebase.database().ref('settings/maintenance').on('value', (snapshot) => {
             if (snapshot.val() === true) window.location.href = 'Maintenance.html';
         });
+
+        // Detectar errores de carga globales
+        window.addEventListener('error', (e) => {
+            if (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK') {
+                console.error('Error cargando recurso:', e.target.src || e.target.href);
+                // Opcional: Redirigir si es crítico
+            }
+        }, true);
     </script>
 </head>
 
