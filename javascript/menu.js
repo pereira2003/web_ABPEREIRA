@@ -172,13 +172,20 @@
         // Floating Menu Scroll Logic
         const floatingMenu = document.getElementById('commMenu');
         if (floatingMenu) {
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 300) { // Aparece después de 300px de scroll
+            // Asegurarnos de que el menú esté oculto al inicio
+            floatingMenu.style.display = 'flex'; 
+            
+            const handleScroll = () => {
+                if (window.scrollY > 200) {
                     floatingMenu.classList.add('show');
                 } else {
                     floatingMenu.classList.remove('show');
                 }
-            }, { passive: true });
+            };
+
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            // Ejecutar una vez al cargar por si ya hay scroll
+            handleScroll();
         }
     });
 
