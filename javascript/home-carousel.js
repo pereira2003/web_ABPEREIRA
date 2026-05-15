@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         newSlide.className = 'carousel-slide';
                         newSlide.setAttribute('aria-hidden', 'true');
                         newSlide.innerHTML = `
-                            <img src="${imagePath}" alt="${originalTitle}" loading="lazy" decoding="async">
+                            <img src="${imagePath}" alt="${originalTitle}" loading="lazy" decoding="async" draggable="false">
                             <div class="carousel-caption">
                                 <div class="carousel-stats">
                                     <span>Featured Work</span>

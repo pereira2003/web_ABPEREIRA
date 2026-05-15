@@ -59,9 +59,19 @@ document.addEventListener('DOMContentLoaded', function () {
             article.dataset.service = index;
             article.setAttribute('aria-haspopup', 'dialog');
             
+            const isFirstThree = index < 3;
+            const zoomText = isTouchDevice ? 'Toca para zoom' : 'Click para zoom';
+            
             article.innerHTML = `
-                <div class="service-image-container">
-                    <img class="service-image" src="${s.image}" alt="${s.title}" loading="lazy" decoding="async">
+                <div class="service-image-wrap">
+                    <img class="service-image" 
+                         src="${s.image}" 
+                         alt="${s.title}" 
+                         ${isFirstThree ? 'fetchpriority="high"' : 'loading="lazy"'} 
+                         decoding="async"
+                         onload="this.classList.add('is-loaded')"
+                         onerror="this.classList.add('is-loaded')">
+                    <span class="service-zoom-hint">${zoomText}</span>
                 </div>
                 <div class="service-content">
                     <div>
@@ -86,6 +96,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             `;
             servicesGrid.appendChild(article);
+
+            // Double check for cached images that might not fire onload
+            const img = article.querySelector('.service-image');
+            if (img.complete) {
+                img.classList.add('is-loaded');
+            }
         });
 
         cardsArray = Array.from(document.querySelectorAll('.service-card'));
@@ -148,20 +164,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // --- LIGHTBOX ---
-        document.querySelectorAll('.service-image').forEach(img => {
-            const card = img.closest('.service-card');
+        document.querySelectorAll('.service-image-wrap').forEach(wrap => {
+            const img = wrap.querySelector('.service-image');
+            const card = wrap.closest('.service-card');
             const desc = card.querySelector('.service-description').textContent;
             
-            const wrap = document.createElement('div');
-            wrap.className = 'service-image-wrap';
-            img.parentNode.insertBefore(wrap, img);
-            wrap.appendChild(img);
-
-            const hint = document.createElement('span');
-            hint.className = 'service-zoom-hint';
-            hint.textContent = isTouchDevice ? 'Toca para zoom' : 'Click para zoom';
-            wrap.appendChild(hint);
-
             wrap.addEventListener('click', (e) => {
                 e.stopPropagation();
                 openLightbox(img.src, img.alt, desc);
