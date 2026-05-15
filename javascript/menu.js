@@ -76,33 +76,36 @@
         const icons = document.querySelectorAll('.carousel-icon');
         let currentIconIndex = 0;
 
-        // Clear any existing interval to prevent duplicates
         if (window.commMenuInterval) clearInterval(window.commMenuInterval);
 
         if (icons.length > 0) {
             window.commMenuInterval = setInterval(() => {
-                // If the menu is active (open), don't animate the carousel icons behind the close icon
                 if (commMenu.classList.contains('is-active')) return;
-
-                // Remove active class from current icon and add prev
                 icons[currentIconIndex].classList.remove('active');
                 icons[currentIconIndex].classList.add('prev');
-                
-                const prevIndex = currentIconIndex;
-                
-                // Move to next icon
                 currentIconIndex = (currentIconIndex + 1) % icons.length;
-                
-                // Reset the new active icon position and add active class
                 icons[currentIconIndex].classList.remove('prev');
                 icons[currentIconIndex].classList.add('active');
-
-                // Clean up the prev class after animation
                 setTimeout(() => {
-                    icons[prevIndex].classList.remove('prev');
+                    document.querySelectorAll('.carousel-icon.prev').forEach(icon => {
+                        if (icon !== icons[currentIconIndex]) icon.classList.remove('prev');
+                    });
                 }, 600);
             }, 3000);
         }
+
+        // Scroll Visibility Logic
+        const handleScroll = () => {
+            const scrollPos = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollPos > 100) {
+                commMenu.classList.add('show');
+            } else {
+                commMenu.classList.remove('show');
+            }
+        };
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener('touchmove', handleScroll, { passive: true }); // Para móviles
+        setTimeout(handleScroll, 1500); // Check after splash
     }
 
     document.addEventListener('keydown', event => {
@@ -145,49 +148,33 @@
     closeMenu();
 
     // Handle smooth scroll for anchors on page load
-    document.addEventListener('DOMContentLoaded', () => {
-        if (window.location.hash) {
-            // Function to handle the scroll
-            const scrollToAnchor = () => {
-                const target = document.querySelector(window.location.hash);
-                if (target) {
-                    const headerOffset = 100; // Increased offset to leave the form perfectly in front
-                    const elementPosition = target.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    if (window.location.hash) {
+        // Function to handle the scroll
+        const scrollToAnchor = () => {
+            const target = document.querySelector(window.location.hash);
+            if (target) {
+                const headerOffset = 100; // Increased offset to leave the form perfectly in front
+                const elementPosition = target.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: "smooth"
-                    });
-                }
-            };
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
+            }
+        };
 
-            // Initial scroll attempt after splash
-            setTimeout(scrollToAnchor, 1000);
-            
-            // Backup scroll attempt for slower devices
-            setTimeout(scrollToAnchor, 2000);
-        }
+        // Initial scroll attempt after splash
+        setTimeout(scrollToAnchor, 1000);
+        
+        // Backup scroll attempt for slower devices
+        setTimeout(scrollToAnchor, 2000);
+    }
 
-        // Floating Menu Scroll Logic
-        const floatingMenu = document.getElementById('commMenu');
-        if (floatingMenu) {
-            // Asegurarnos de que el menú esté oculto al inicio
-            floatingMenu.style.display = 'flex'; 
-            
-            const handleScroll = () => {
-                if (window.scrollY > 200) {
-                    floatingMenu.classList.add('show');
-                } else {
-                    floatingMenu.classList.remove('show');
-                }
-            };
-
-            window.addEventListener('scroll', handleScroll, { passive: true });
-            // Ejecutar una vez al cargar por si ya hay scroll
-            handleScroll();
-        }
-    });
+    // Floating Menu Initial State
+    if (commMenu) {
+        commMenu.style.display = 'flex'; 
+    }
 
     function createPageTransitionLayer() {
         const layer = document.createElement('div');

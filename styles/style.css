@@ -235,7 +235,7 @@ body.is-page-transitioning {
 @media (max-width: 480px) {
     .communication-menu {
         right: 1.5rem;
-        bottom: 4rem; /* Lifted up to never overlap buttons */
+        bottom: 5rem; /* Even higher to ensure no overlap with buttons */
     }
 }
 
