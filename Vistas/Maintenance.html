@@ -62,19 +62,22 @@
 
         .maintenance-illustration {
             width: 320px;
-            height: 320px;
+            height: 260px; /* Altura reducida para ocultar las letras de abajo */
             position: relative;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Alinear arriba */
+            overflow: hidden; /* Cortar lo que sobresalga (las letras) */
         }
 
         .tech-img {
-            width: 280px;
+            width: 300px;
             height: auto;
             z-index: 2;
-            /* Eliminar fondo blanco y ajustar visualmente */
+            /* Eliminar fondo blanco */
             mix-blend-mode: multiply;
+            /* Posicionamiento para ocultar la marca de agua */
+            margin-top: -10px; 
             filter: contrast(1.1) brightness(1.05);
         }
 
