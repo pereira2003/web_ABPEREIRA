@@ -1264,8 +1264,9 @@
         }
 
         async function uploadImage() {
-            if (!selectedFile || !storage) {
-                console.error("Falta archivo o referencia a Storage");
+            if (!selectedFile) return null;
+            if (!storage) {
+                alert("Error: Firebase Storage no está inicializado.");
                 return null;
             }
             
@@ -1276,89 +1277,80 @@
             progressContainer.style.display = 'block';
             progressBar.style.width = '0%';
             
-            if (uploadText) {
-                uploadText.style.display = 'block';
-                uploadText.style.fontSize = '1.1rem';
-                uploadText.style.fontWeight = 'bold';
-                uploadText.style.color = 'var(--primary)';
-                uploadText.textContent = 'Preparando imagen...';
-            }
+            const updateUI = (msg, progress = null) => {
+                if (uploadText) {
+                    uploadText.style.display = 'block';
+                    uploadText.textContent = msg;
+                }
+                if (progress !== null) {
+                    progressBar.style.width = progress + '%';
+                }
+            };
 
             try {
-                // Comprimir la imagen antes de subirla
-                console.log("Iniciando compresión de:", selectedFile.name);
+                updateUI('Comprimiendo imagen...');
+                console.log("Comprimiendo:", selectedFile.name);
+                
+                // Comprimir imagen (máximo 800px, calidad 0.5)
                 const compressedBlob = await compressImage(selectedFile);
-                console.log(`Compresión OK. Tamaño original: ${(selectedFile.size/1024).toFixed(1)}KB -> Nuevo: ${(compressedBlob.size/1024).toFixed(1)}KB`);
+                console.log("Compresión completada");
 
                 const fileName = `services/${Date.now()}_${selectedFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}.webp`;
                 const storageRef = storage.ref(fileName);
                 
+                updateUI('Iniciando subida...', 0);
+
                 return new Promise((resolve, reject) => {
                     const uploadTask = storageRef.put(compressedBlob, { contentType: 'image/webp' });
                     
-                    // Timer para detectar si se queda pegado al inicio
-                    const stuckTimer = setTimeout(() => {
-                        if (uploadText && uploadText.textContent.includes('0%')) {
-                            uploadText.textContent = 'Iniciando subida (esto puede tardar)...';
-                        }
-                    }, 4000);
-
                     uploadTask.on('state_changed', 
                         (snapshot) => {
                             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                            const roundedProgress = Math.round(progress);
-                            
-                            // Actualizar barra (ahora sin !important)
-                            progressBar.style.width = roundedProgress + '%';
-                            
-                            if (uploadText) {
-                                uploadText.textContent = `Subiendo: ${roundedProgress}%`;
-                            }
+                            const rounded = Math.round(progress);
+                            console.log("Progreso subida:", rounded + "%");
+                            updateUI(`Subiendo: ${rounded}%`, rounded);
                         }, 
                         (error) => {
-                            clearTimeout(stuckTimer);
-                            console.error("Error Firebase Storage:", error);
+                            console.error("Error en uploadTask:", error);
+                            alert("Error de Firebase: " + error.message);
                             progressContainer.style.display = 'none';
-                            alert("Error al subir imagen: " + error.message);
                             reject(error);
                         }, 
                         async () => {
-                            clearTimeout(stuckTimer);
                             try {
                                 const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
-                                progressContainer.style.display = 'none';
-                                if (uploadText) uploadText.textContent = '¡Imagen lista!';
+                                console.log("Subida exitosa:", downloadURL);
+                                updateUI('¡Completado!', 100);
+                                setTimeout(() => progressContainer.style.display = 'none', 1000);
                                 resolve(downloadURL);
-                            } catch (urlError) {
-                                reject(urlError);
+                            } catch (err) {
+                                console.error("Error obteniendo URL:", err);
+                                reject(err);
                             }
                         }
                     );
                 });
             } catch (error) {
-                console.warn("Fallo compresión, intentando original:", error);
-                if (uploadText) uploadText.textContent = 'Subiendo original...';
+                console.error("Error en proceso uploadImage:", error);
+                updateUI('Fallo compresión. Subiendo original...');
                 
-                const fileName = `services/${Date.now()}_original_${selectedFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                // Intento con archivo original
+                const fileName = `services/${Date.now()}_raw_${selectedFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
                 const storageRef = storage.ref(fileName);
                 
                 return new Promise((resolve, reject) => {
                     const uploadTask = storageRef.put(selectedFile);
                     uploadTask.on('state_changed', 
                         (snapshot) => {
-                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                            const roundedProgress = Math.round(progress);
-                            progressBar.style.width = roundedProgress + '%';
-                            if (uploadText) uploadText.textContent = `Subiendo original: ${roundedProgress}%`;
+                            const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                            updateUI(`Subiendo original: ${progress}%`, progress);
                         }, 
-                        (error) => {
-                            progressContainer.style.display = 'none';
-                            alert("Error al subir original: " + error.message);
-                            reject(error);
+                        (err) => {
+                            alert("Error subiendo original: " + err.message);
+                            reject(err);
                         }, 
                         async () => {
                             const url = await uploadTask.snapshot.ref.getDownloadURL();
-                            progressContainer.style.display = 'none';
                             resolve(url);
                         }
                     );
