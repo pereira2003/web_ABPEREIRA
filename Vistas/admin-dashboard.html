@@ -425,11 +425,11 @@
         }
 
         .progress-bar {
-            width: 0% !important;
+            width: 0%; /* Eliminado !important para que el JS pueda cambiarlo */
             height: 100% !important;
             background: var(--primary) !important;
             border-radius: 10px !important;
-            transition: width 0.2s !important;
+            transition: width 0.3s ease !important;
         }
 
         .btn-submit {
@@ -1247,7 +1247,8 @@
                             } else {
                                 // Fallback a JPEG si falla webp
                                 canvas.toBlob((fallbackBlob) => {
-                                    resolve(fallbackBlob);
+                                    if (fallbackBlob) resolve(fallbackBlob);
+                                    else reject(new Error("No se pudo generar el Blob de la imagen"));
                                 }, 'image/jpeg', quality);
                             }
                         }, format, quality);
@@ -1259,74 +1260,82 @@
         }
 
         async function uploadImage() {
-            if (!selectedFile || !storage) return null;
+            if (!selectedFile || !storage) {
+                console.error("Falta archivo o referencia a Storage");
+                return null;
+            }
             
             const progressContainer = document.getElementById('uploadProgressContainer');
             const progressBar = document.getElementById('uploadProgressBar');
             const uploadText = uploadArea.querySelector('p');
             
             progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+            
             if (uploadText) {
                 uploadText.style.display = 'block';
-                uploadText.style.fontSize = '1.2rem';
+                uploadText.style.fontSize = '1.1rem';
                 uploadText.style.fontWeight = 'bold';
                 uploadText.style.color = 'var(--primary)';
-                uploadText.textContent = 'Optimizando imagen...';
+                uploadText.textContent = 'Preparando imagen...';
             }
 
             try {
                 // Comprimir la imagen antes de subirla
-                console.log("Iniciando compresión...");
+                console.log("Iniciando compresión de:", selectedFile.name);
                 const compressedBlob = await compressImage(selectedFile);
-                console.log(`Compresión finalizada. Original: ${selectedFile.size / 1024} KB, Nueva: ${compressedBlob.size / 1024} KB`);
+                console.log(`Compresión OK. Tamaño original: ${(selectedFile.size/1024).toFixed(1)}KB -> Nuevo: ${(compressedBlob.size/1024).toFixed(1)}KB`);
 
-                const fileName = `services/${Date.now()}_${selectedFile.name.split('.')[0]}.webp`;
+                const fileName = `services/${Date.now()}_${selectedFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}.webp`;
                 const storageRef = storage.ref(fileName);
                 
                 return new Promise((resolve, reject) => {
                     const uploadTask = storageRef.put(compressedBlob, { contentType: 'image/webp' });
                     
+                    // Timer para detectar si se queda pegado al inicio
+                    const stuckTimer = setTimeout(() => {
+                        if (uploadText && uploadText.textContent.includes('0%')) {
+                            uploadText.textContent = 'Iniciando subida (esto puede tardar)...';
+                        }
+                    }, 4000);
+
                     uploadTask.on('state_changed', 
                         (snapshot) => {
                             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                             const roundedProgress = Math.round(progress);
+                            
+                            // Actualizar barra (ahora sin !important)
                             progressBar.style.width = roundedProgress + '%';
+                            
                             if (uploadText) {
                                 uploadText.textContent = `Subiendo: ${roundedProgress}%`;
                             }
                         }, 
                         (error) => {
-                            console.error("Error en la subida:", error);
+                            clearTimeout(stuckTimer);
+                            console.error("Error Firebase Storage:", error);
                             progressContainer.style.display = 'none';
-                            if (uploadText) {
-                                uploadText.style.fontSize = '';
-                                uploadText.style.color = '';
-                                uploadText.textContent = 'Error: ' + error.message;
-                            }
+                            alert("Error al subir imagen: " + error.message);
                             reject(error);
                         }, 
                         async () => {
+                            clearTimeout(stuckTimer);
                             try {
                                 const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
                                 progressContainer.style.display = 'none';
-                                if (uploadText) {
-                                    uploadText.style.fontSize = '';
-                                    uploadText.style.color = '';
-                                    uploadText.textContent = '¡Completado!';
-                                }
+                                if (uploadText) uploadText.textContent = '¡Imagen lista!';
                                 resolve(downloadURL);
                             } catch (urlError) {
-                                console.error("Error al obtener URL:", urlError);
                                 reject(urlError);
                             }
                         }
                     );
                 });
             } catch (error) {
-                console.error("Fallo en el proceso de compresión/subida:", error);
-                if (uploadText) uploadText.textContent = 'Usando imagen original...';
+                console.warn("Fallo compresión, intentando original:", error);
+                if (uploadText) uploadText.textContent = 'Subiendo original...';
                 
-                const fileName = `services/${Date.now()}_${selectedFile.name}`;
+                const fileName = `services/${Date.now()}_original_${selectedFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
                 const storageRef = storage.ref(fileName);
                 
                 return new Promise((resolve, reject) => {
@@ -1340,20 +1349,12 @@
                         }, 
                         (error) => {
                             progressContainer.style.display = 'none';
-                            if (uploadText) {
-                                uploadText.style.fontSize = '';
-                                uploadText.style.color = '';
-                                uploadText.textContent = 'Error: ' + error.message;
-                            }
+                            alert("Error al subir original: " + error.message);
                             reject(error);
                         }, 
                         async () => {
                             const url = await uploadTask.snapshot.ref.getDownloadURL();
                             progressContainer.style.display = 'none';
-                            if (uploadText) {
-                                uploadText.style.fontSize = '';
-                                uploadText.style.color = '';
-                            }
                             resolve(url);
                         }
                     );
