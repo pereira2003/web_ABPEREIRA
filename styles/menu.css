@@ -50,10 +50,12 @@
 }
 
 .logo-img {
-    display: block;
-    width: 56px;
-    height: auto;
+    display: block !important;
+    width: 56px !important;
+    height: auto !important;
     flex-shrink: 0;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .logo span {
