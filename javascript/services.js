@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </svg>
                                 <span class="like-count">0</span>
                             </button>
-                            <a href="Appointment.html" class="book-button" aria-label="Book appointment for ${s.title}">Schedule</a>
+                            <a href="Appointment.html#appointmentForm" class="book-button" aria-label="Book appointment for ${s.title}">Schedule</a>
                         </div>
                     </div>
                     <div class="popover" role="dialog" aria-modal="false">
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </svg>
                                 <span class="like-count">0</span>
                             </button>
-                            <a href="Appointment.html" class="book-button" aria-label="Book appointment for ${s.title}">Schedule</a>
+                            <a href="Appointment.html#appointmentForm" class="book-button" aria-label="Book appointment for ${s.title}">Schedule</a>
                         </div>
                     </div>
                     <div class="popover" role="dialog" aria-modal="false">
