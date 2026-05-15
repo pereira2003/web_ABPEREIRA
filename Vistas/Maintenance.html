@@ -45,8 +45,27 @@
         p {
             font-size: 1.2rem;
             color: #555;
-            margin: 1rem 0 4rem;
+            margin: 1rem 0 2rem;
             font-weight: 300;
+        }
+
+        .btn-support {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(12, 51, 99, 0.2);
+        }
+
+        .btn-support:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(12, 51, 99, 0.3);
+            filter: brightness(1.1);
         }
 
         /* --- ESCENA PROFESIONAL DE ESPERA --- */
@@ -134,7 +153,9 @@
         </div>
         
         <h1>Under Maintenance</h1>
-        <p>Our expert technician is preparing the tools to improve your experience. We'll be back online shortly.</p>
+        <p>Our expert technician is preparing the tools to improve your experience. We'll be back online shortly. <br><br> <strong>We apologize for the inconvenience.</strong></p>
+        
+        <a href="Contact.html" class="btn-support">Support</a>
         
         <div class="status-loader">
             <div class="dot"></div>
