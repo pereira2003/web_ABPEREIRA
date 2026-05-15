@@ -69,30 +69,21 @@
             align-items: center;
         }
 
-        .tech-img {
-            width: 240px;
-            height: auto;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
+        /* Personaje SVG reconstruido manualmente para asegurar que sea visible */
+        .tech-svg {
+            width: 220px;
+            height: 220px;
             z-index: 2;
-            animation: breathe 3s ease-in-out infinite;
-            /* Estilo para que la imagen se vea profesional sin fondo */
-            mix-blend-mode: multiply; 
         }
 
         /* Caja de herramientas SVG del mismo estilo */
         .toolbox-side {
             position: absolute;
-            right: 10px;
-            bottom: 40px;
-            width: 80px;
-            height: 80px;
+            right: 20px;
+            bottom: 50px;
+            width: 70px;
+            height: 70px;
             z-index: 3;
-            animation: breathe 3s ease-in-out infinite reverse;
-        }
-
-        @keyframes breathe {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(1deg); }
         }
 
         /* Brillo sutil */
@@ -105,7 +96,6 @@
             height: 260px;
             background: radial-gradient(circle, rgba(190, 148, 93, 0.15) 0%, rgba(255,255,255,0) 70%);
             z-index: 1;
-            animation: pulseGlow 3s ease-in-out infinite;
         }
 
         @keyframes pulseGlow {
@@ -143,16 +133,40 @@
         <div class="scene">
             <div class="glow-circle"></div>
             <div class="maintenance-illustration">
-                <!-- Personaje de la imagen (sin fondo) -->
-                <img src="https://img.freepik.com/vector-premium/personaje-dibujos-animados-ingeniero-construccion-aislado_96928-1123.jpg" alt="Technician" class="tech-img" id="maintenanceTechImg">
+                <!-- Personaje Reconstruido en SVG Puro (Para que siempre se vea) -->
+                <svg viewBox="0 0 100 100" class="tech-svg">
+                    <!-- Cuerpo/Torso -->
+                    <path d="M20 90 Q20 50 50 50 Q80 50 80 90" fill="none" stroke="black" stroke-width="2.5" />
+                    <path d="M30 90 Q30 60 50 60 Q70 60 70 90" fill="none" stroke="black" stroke-width="2" />
+                    
+                    <!-- Cabeza -->
+                    <circle cx="50" cy="35" r="15" fill="white" stroke="black" stroke-width="2.5" />
+                    
+                    <!-- Casco -->
+                    <path d="M35 35 A15 15 0 0 1 65 35 L68 38 L32 38 Z" fill="black" />
+                    <path d="M38 30 A12 18 0 0 1 62 30 Z" fill="black" />
+                    
+                    <!-- Cara (Ojos y Nariz) -->
+                    <circle cx="45" cy="40" r="1.5" fill="black" />
+                    <circle cx="55" cy="40" r="1.5" fill="black" />
+                    <path d="M50 42 V45" stroke="black" stroke-width="1.5" stroke-linecap="round" />
+                    
+                    <!-- Brazo con Llave -->
+                    <path d="M75 70 L85 60" stroke="black" stroke-width="5" stroke-linecap="round" />
+                    <g transform="translate(85, 60) rotate(-45)">
+                        <path d="M-4 -2 L4 -2 L6 0 L4 2 L-4 2 Z" fill="black" />
+                        <circle cx="6" cy="0" r="3.5" fill="white" stroke="black" stroke-width="1.5" />
+                        <path d="M5.5 -1 L7.5 1 M5.5 1 L7.5 -1" stroke="black" stroke-width="1" />
+                    </g>
+                </svg>
                 
-                <!-- Caja de herramientas del mismo estilo -->
+                <!-- Caja de herramientas -->
                 <div class="toolbox-side">
                     <svg viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="3">
-                        <rect x="20" y="40" width="60" height="40" rx="4" fill="white" />
-                        <path d="M40 40 V30 H60 V40" />
-                        <line x1="20" y1="55" x2="80" y2="55" />
-                        <rect x="45" y="50" width="10" height="10" rx="1" fill="black" />
+                        <rect x="15" y="40" width="65" height="45" rx="5" fill="white" />
+                        <path d="M35 40 V25 H65 V40" />
+                        <line x1="15" y1="58" x2="80" y2="58" />
+                        <rect x="42" y="52" width="16" height="12" rx="2" fill="black" />
                     </svg>
                 </div>
             </div>
