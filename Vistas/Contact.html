@@ -75,6 +75,7 @@
             }, 400);
         });
     </script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script>
         const fbCheck = {
@@ -88,7 +89,33 @@
         };
         if (!firebase.apps.length) firebase.initializeApp(fbCheck);
         firebase.database().ref('settings/maintenance').on('value', (snapshot) => {
-            if (snapshot.val() === true) window.location.href = 'Maintenance.html';
+            const isMaintenance = snapshot.val();
+            const navbar = document.getElementById('mainNav');
+            const overlay = document.getElementById('navOverlay');
+            
+            if (isMaintenance === true) {
+                // Si estamos en mantenimiento, ocultar otras categorías del menú
+                if (navbar) {
+                    navbar.querySelectorAll('li').forEach(li => {
+                        const link = li.querySelector('a');
+                        if (link && !link.textContent.toLowerCase().includes('support')) {
+                            li.style.display = 'none';
+                        }
+                    });
+                }
+                if (overlay) {
+                    overlay.querySelectorAll('li').forEach(li => {
+                        const link = li.querySelector('a');
+                        if (link && !link.textContent.toLowerCase().includes('support')) {
+                            li.style.display = 'none';
+                        }
+                    });
+                }
+            } else {
+                // Si NO hay mantenimiento, asegurar que todo sea visible
+                if (navbar) navbar.querySelectorAll('li').forEach(li => li.style.display = '');
+                if (overlay) overlay.querySelectorAll('li').forEach(li => li.style.display = '');
+            }
         });
     </script>
 </head>

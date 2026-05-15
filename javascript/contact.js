@@ -27,9 +27,18 @@ document.addEventListener('DOMContentLoaded', function () {
     let db = null;
     try {
         if (typeof firebase !== 'undefined') {
-            firebase.initializeApp(firebaseConfig);
+            if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
             db = firebase.database();
             console.log("✅ Firebase connected for contact messages.");
+            
+            // Maintenance check for redirect
+            db.ref('settings/maintenance').on('value', (snapshot) => {
+                if (snapshot.val() === true) {
+                    redirectHome.value = './Maintenance.html';
+                } else {
+                    redirectHome.value = './index.html';
+                }
+            });
         }
     } catch (error) {
         console.error("Firebase initialization error:", error);
