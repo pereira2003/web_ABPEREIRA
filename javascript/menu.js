@@ -147,10 +147,11 @@
     // Handle smooth scroll for anchors on page load
     document.addEventListener('DOMContentLoaded', () => {
         if (window.location.hash) {
-            setTimeout(() => {
+            // Function to handle the scroll
+            const scrollToAnchor = () => {
                 const target = document.querySelector(window.location.hash);
                 if (target) {
-                    const headerOffset = 80;
+                    const headerOffset = 100; // Increased offset to leave the form perfectly in front
                     const elementPosition = target.getBoundingClientRect().top;
                     const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
@@ -159,7 +160,13 @@
                         behavior: "smooth"
                     });
                 }
-            }, 1000); // Wait for splash and animations
+            };
+
+            // Initial scroll attempt after splash
+            setTimeout(scrollToAnchor, 1000);
+            
+            // Backup scroll attempt for slower devices
+            setTimeout(scrollToAnchor, 2000);
         }
     });
 
