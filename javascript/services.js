@@ -35,19 +35,23 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- LOAD SERVICES FROM FIREBASE ---
     async function loadServices() {
         if (!db) return;
-        try {
-            const snapshot = await db.ref('services_catalog').once('value');
+        
+        // Escuchar cambios en tiempo real
+        db.ref('services_catalog').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
+                // Convertir objeto de Firebase a array y ordenar por fecha de creación (opcional)
                 allServices = Object.keys(data).map(key => ({ ...data[key], id: key }));
+                
+                // Mantener el orden original si es necesario o aplicar uno nuevo
                 renderServicesGrid();
             } else {
                 servicesGrid.innerHTML = '<div class="empty-state"><p>No hay servicios disponibles en este momento.</p></div>';
             }
-        } catch (error) {
+        }, (error) => {
             console.error("Error loading services:", error);
-            servicesGrid.innerHTML = '<div class="empty-state"><p>Error al cargar los servicios. Por favor, intenta más tarde.</p></div>';
-        }
+            servicesGrid.innerHTML = '<div class="empty-state"><p>Error al sincronizar los servicios.</p></div>';
+        });
     }
 
     function renderServicesGrid() {
