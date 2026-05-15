@@ -123,17 +123,14 @@
     <!-- Pantalla de Bienvenida Animada (Splash Screen) -->
     <div id="app-splash">
         <img src="../img/ABPEREIRA L.png" alt="A⁺Pereira" class="splash-logo">
-        <div class="splash-loader-container">
-            <div class="splash-progress-bar"></div>
-        </div>
     </div>
 
     <script>
-        // Lógica para ocultar el Splash Screen
+        // Lógica para ocultar el Splash Screen cuando TODO esté cargado
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.body.classList.add('loaded');
-            }, 800); // Un poco más rápido en subpáginas
+            }, 300);
         });
     </script>
   <header class="page-header">
