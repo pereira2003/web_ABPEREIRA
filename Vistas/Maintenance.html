@@ -74,11 +74,11 @@
             width: 300px;
             height: auto;
             z-index: 2;
-            /* Eliminar fondo blanco */
-            mix-blend-mode: multiply;
+            /* Eliminación agresiva del fondo blanco */
+            mix-blend-mode: darken;
+            filter: contrast(1.2) brightness(1.1);
             /* Posicionamiento para ocultar la marca de agua */
             margin-top: -10px; 
-            filter: contrast(1.1) brightness(1.05);
         }
 
         /* Brillo sutil de fondo */
