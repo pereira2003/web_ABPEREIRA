@@ -349,20 +349,21 @@
             box-sizing: border-box;
             background-color: white;
             color: var(--text-main);
-            appearance: none; /* Eliminar estilo nativo para mayor control */
+            appearance: none;
+            background-image: none; /* Flecha eliminada por defecto */
+        }
+
+        .form-group select {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%23667' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-down' viewBox='0 0 24 24'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 1rem center;
             background-size: 1.2em;
         }
 
-        .form-group input {
-            background-image: none; /* Los inputs no necesitan la flecha */
-        }
-
         .form-group textarea {
-            height: auto; /* El textarea debe mantener su altura basada en filas */
-            min-height: 80px;
+            height: auto;
+            min-height: 100px;
+            resize: none; /* Evitar que el usuario vea las líneas de redimensionar */
         }
 
         .form-group input:focus, .form-group textarea:focus {
@@ -1269,25 +1270,31 @@
                 return new Promise((resolve, reject) => {
                     const uploadTask = storageRef.put(compressedBlob, { contentType: 'image/webp' });
                     
-                    uploadTask.on('state_changed', 
-                        (snapshot) => {
-                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                            progressBar.style.width = progress + '%';
-                            if (uploadText) uploadText.textContent = `Uploading: ${Math.round(progress)}%`;
-                        }, 
-                        (error) => {
-                            console.error("Upload error:", error);
-                            progressContainer.style.display = 'none';
-                            if (uploadText) uploadText.textContent = 'Error uploading';
-                            reject(error);
-                        }, 
-                        async () => {
-                            const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
-                            progressContainer.style.display = 'none';
-                            if (uploadText) uploadText.textContent = 'Done!';
-                            resolve(downloadURL);
-                        }
-                    );
+                        uploadTask.on('state_changed', 
+                            (snapshot) => {
+                                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                progressBar.style.width = progress + '%';
+                                if (uploadText) uploadText.textContent = `Uploading: ${Math.round(progress)}%`;
+                            }, 
+                            (error) => {
+                                console.error("Upload error details:", error);
+                                progressContainer.style.display = 'none';
+                                if (uploadText) uploadText.textContent = 'Error: ' + error.message;
+                                reject(error);
+                            }, 
+                            async () => {
+                                try {
+                                    const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                                    console.log("Upload successful, URL:", downloadURL);
+                                    progressContainer.style.display = 'none';
+                                    if (uploadText) uploadText.textContent = 'Done!';
+                                    resolve(downloadURL);
+                                } catch (urlError) {
+                                    console.error("Error getting download URL:", urlError);
+                                    reject(urlError);
+                                }
+                            }
+                        );
                 });
             } catch (error) {
                 console.error("Compression error:", error);
@@ -1402,10 +1409,12 @@
                 
                 if (selectedFile) {
                     finalImageUrl = await uploadImage();
+                    if (!finalImageUrl) throw new Error("Upload returned null");
                 }
 
-                if (!finalImageUrl || finalImageUrl === window.location.href) {
-                    alert("Por favor selecciona una imagen.");
+                // Asegurar que finalImageUrl sea una URL válida y no base64 o la URL actual
+                if (!finalImageUrl || finalImageUrl.startsWith('data:') || finalImageUrl === window.location.href) {
+                    alert("Por favor selecciona o sube una imagen válida.");
                     btnSave.disabled = false;
                     btnSave.textContent = originalBtnText;
                     return;

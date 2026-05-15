@@ -370,16 +370,22 @@ main {
 
 .services-note {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.8fr);
-  gap: 2rem;
+  grid-template-columns: 1fr; /* Cambiado a una sola columna para centrar mejor */
+  text-align: center; /* Centrar el texto */
+  gap: 1.5rem;
   margin-top: 4rem;
-  padding: 2rem;
+  padding: 3rem 2rem; /* Más espacio vertical */
   border-radius: 28px;
   background: #ffffff;
   border: 1px solid var(--color-line);
   box-shadow: var(--shadow-card);
   content-visibility: auto;
   contain-intrinsic-size: 260px;
+}
+
+.services-note div {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .services-note h2 {
