@@ -1048,7 +1048,7 @@
 
                     <div class="form-group">
                         <label for="sPricing">Nota de Precio</label>
-                        <input type="text" id="sPricing" placeholder="Ej: For pricing, contact us...">
+                        <input type="text" id="sPricing" value="For pricing, contact us or book your appointment." readonly style="background-color: #f8fafd; cursor: not-allowed; color: #5c6d84;">
                     </div>
 
                     <div class="form-group">
@@ -1482,6 +1482,8 @@
             document.getElementById('serviceFormTitle').textContent = "Agregar Nuevo Servicio";
             document.getElementById('editServiceId').value = "";
             serviceForm.reset();
+            // Restaurar valor predeterminado de la nota de precio
+            document.getElementById('sPricing').value = "For pricing, contact us or book your appointment.";
             selectedFile = null;
             imgPreview.src = "";
             imgPreview.style.display = 'none';
