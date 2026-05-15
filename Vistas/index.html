@@ -7,6 +7,13 @@
     <link rel="apple-touch-icon" href="../img/ABPEREIRA%20L.png">
     <link rel="manifest" href="../manifest.json">
     <meta name="theme-color" content="#0c3363">
+    
+    <!-- iOS PWA Optimizations -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="A⁺Pereira">
+    <link rel="apple-touch-startup-image" href="../img/ABPEREIRA%20L.png">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A⁺Pereira Company provides elegant, reliable home repair and finish services.">
@@ -15,10 +22,91 @@
     <link rel="stylesheet" href="../styles/menu.css?v=114">
     <link rel="preload" href="../styles/style.css?v=114" as="style">
     <link rel="stylesheet" href="../styles/style.css?v=114">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" as="style">
+    <link rel="preload" href="../img/ABPEREIRA%20L.png" as="image" fetchpriority="high">
     
-    <!-- MANTENIMIENTO & ERROR CHECK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+        /* --- APP SPLASH SCREEN (PROFESSIONAL STYLE) --- */
+        #app-splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1), visibility 0.8s;
+        }
+
+        .splash-logo {
+            width: 140px;
+            height: auto;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: professionalIntro 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+                       logoPulse 3s ease-in-out 1.5s infinite;
+            filter: drop-shadow(0 15px 35px rgba(12, 51, 99, 0.1));
+        }
+
+        .splash-loader-container {
+            margin-top: 4rem;
+            position: relative;
+            width: 120px;
+            height: 2px;
+            background: rgba(12, 51, 99, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeIn 0.6s ease 1s forwards;
+        }
+
+        .splash-progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #0c3363, #be945d);
+            animation: progressAnim 2.5s cubic-bezier(0.1, 0.5, 0.5, 1) forwards;
+        }
+
+        @keyframes professionalIntro {
+            0% { opacity: 0; transform: translateY(30px) scale(0.9); filter: blur(10px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        @keyframes progressAnim {
+            0% { width: 0; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Ocultar splash cuando cargue */
+        body.loaded #app-splash {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+    </style>
+    
+    <!-- Firebase SDK (Unified v10) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script>
         // Registrar Service Worker para carga rápida
         if ('serviceWorker' in navigator) {
@@ -52,13 +140,29 @@
         window.addEventListener('error', (e) => {
             if (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK') {
                 console.error('Error cargando recurso:', e.target.src || e.target.href);
-                // Opcional: Redirigir si es crítico
             }
         }, true);
     </script>
 </head>
 
-<body>
+<body class="home-page">
+    <!-- Pantalla de Bienvenida Animada (Splash Screen) -->
+    <div id="app-splash">
+        <img src="../img/ABPEREIRA L.png" alt="A⁺Pereira" class="splash-logo">
+        <div class="splash-loader-container">
+            <div class="splash-progress-bar"></div>
+        </div>
+    </div>
+
+    <script>
+        // Lógica para ocultar el Splash Screen
+        window.addEventListener('load', () => {
+            // Delay mínimo para que la animación se vea pero no moleste
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 600);
+        });
+    </script>
     <header class="page-header">
         <!-- AB Pereira Company — Navigation Menu -->
         <div class="menu container" id="site-menu">
@@ -289,10 +393,6 @@
         </div>
     </footer>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-
     <div class="communication-menu" id="commMenu">
         <div class="comm-options">
             <a href="Appointment.html" class="comm-item" title="Book Appointment">
@@ -322,11 +422,8 @@
         </div>
         <button class="comm-toggle" id="commToggleBtn" aria-label="Open communication menu">
             <div class="icon-open" id="iconCarousel">
-                <!-- Icon 1: Phone -->
                 <svg class="carousel-icon active" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.79 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.28-2.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                <!-- Icon 2: Calendar -->
                 <svg class="carousel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                <!-- Icon 3: Message -->
                 <svg class="carousel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
             </div>
             <div class="icon-close">
@@ -335,10 +432,11 @@
         </button>
     </div>
 
-    <script src="../javascript/menu.js?v=122"></script>
-    <script src="../javascript/contact/success-alert.js?v=122"></script>
-    <script src="../javascript/home-carousel.js?v=122"></script>
-    <script src="../javascript/scroll-reveal.js?v=122"></script>
+    <!-- Scripts Optimizados -->
+    <script src="../javascript/menu.js?v=122" defer></script>
+    <script src="../javascript/contact/success-alert.js?v=122" defer></script>
+    <script src="../javascript/home-carousel.js?v=122" defer></script>
+    <script src="../javascript/scroll-reveal.js?v=122" defer></script>
 </body>
 
 </html>

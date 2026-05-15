@@ -5,6 +5,13 @@
     <link rel="icon" type="image/x-icon" href="../img/ABP.ico">
     <link rel="shortcut icon" href="../img/ABP.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="../img/ABPEREIRA%20L.png">
+    
+    <!-- iOS PWA Optimizations -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="A⁺Pereira">
+    <link rel="apple-touch-startup-image" href="../img/ABPEREIRA%20L.png">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Support | A⁺Pereira Company</title>
@@ -15,9 +22,86 @@
     <link rel="preload" href="../styles/styleContact.css?v=114" as="style">
     <link rel="stylesheet" href="../styles/styleContact.css?v=114">
     
-    <!-- MANTENIMIENTO CHECK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+        /* --- APP SPLASH SCREEN (PROFESSIONAL STYLE) --- */
+        #app-splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1), visibility 0.8s;
+        }
+
+        .splash-logo {
+            width: 140px;
+            height: auto;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: professionalIntro 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+                       logoPulse 3s ease-in-out 1.5s infinite;
+            filter: drop-shadow(0 15px 35px rgba(12, 51, 99, 0.1));
+        }
+
+        .splash-loader-container {
+            margin-top: 4rem;
+            position: relative;
+            width: 120px;
+            height: 2px;
+            background: rgba(12, 51, 99, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeIn 0.6s ease 1s forwards;
+        }
+
+        .splash-progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #0c3363, #be945d);
+            animation: progressAnim 2.5s cubic-bezier(0.1, 0.5, 0.5, 1) forwards;
+        }
+
+        @keyframes professionalIntro {
+            0% { opacity: 0; transform: translateY(30px) scale(0.9); filter: blur(10px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        @keyframes progressAnim {
+            0% { width: 0; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Ocultar splash cuando cargue */
+        body.loaded #app-splash {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+    </style>
+    
+    <!-- Firebase SDK (Unified v10) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script>
         const fbCheck = {
             apiKey: "AIzaSyD6h6fErJd-nVhvxsTyBdJmkqLMzzR4rOk",
@@ -36,6 +120,22 @@
 </head>
 
 <body>
+    <!-- Pantalla de Bienvenida Animada (Splash Screen) -->
+    <div id="app-splash">
+        <img src="../img/ABPEREIRA L.png" alt="A⁺Pereira" class="splash-logo">
+        <div class="splash-loader-container">
+            <div class="splash-progress-bar"></div>
+        </div>
+    </div>
+
+    <script>
+        // Lógica para ocultar el Splash Screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 800);
+        });
+    </script>
     <header class="page-header">
         <!-- AB Pereira Company — Navigation Menu -->
         <div class="menu container" id="site-menu">
@@ -167,22 +267,50 @@
         </section>
     </main>
 
-    <a class="whatsapp-float" href="tel:+16319601989" aria-label="Call +1 (631) 960-1989">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M6.6 10.8a15.6 15.6 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24c1.1.36 2.3.56 3.5.56a1 1 0 0 1 1 1V21a1 1 0 0 1-1 1C10.1 22 2 13.9 2 4a1 1 0 0 1 1-1h4.5a1 1 0 0 1 1 1c0 1.2.2 2.4.56 3.5a1 1 0 0 1-.24 1l-2.22 2.3z"></path>
-        </svg>
-    </a>
+    <div class="communication-menu" id="commMenu">
+        <div class="comm-options">
+            <a href="Appointment.html" class="comm-item" title="Book Appointment">
+                <span class="comm-label">Book Appointment</span>
+                <div class="comm-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                </div>
+            </a>
+            <a href="Contact.html" class="comm-item" title="Support">
+                <span class="comm-label">Support</span>
+                <div class="comm-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                </div>
+            </a>
+            <a href="tel:+16319601989" class="comm-item" title="Call Us">
+                <span class="comm-label">Call Us</span>
+                <div class="comm-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.79 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.28-2.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                </div>
+            </a>
+            <a href="https://wa.me/16319601989" class="comm-item" title="WhatsApp">
+                <span class="comm-label">WhatsApp</span>
+                <div class="comm-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.353-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.216 1.36.186 1.871.11.57-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.94 3.659 1.437 5.634 1.437h.005c6.558 0 11.894-5.338 11.897-11.896a11.821 11.821 0 00-3.48-8.413Z"></path></svg>
+                </div>
+            </a>
+        </div>
+        <button class="comm-toggle" id="commToggleBtn" aria-label="Open communication menu">
+            <div class="icon-open" id="iconCarousel">
+                <svg class="carousel-icon active" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.79 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.28-2.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                <svg class="carousel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <svg class="carousel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <div class="icon-close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </div>
+        </button>
+    </div>
 
-
-
-    <script src="../javascript/menu.js?v=113"></script>
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-    
-    <script src="../javascript/contact/success-alert.js?v=113"></script>
-    <script src="../javascript/contact.js?v=113"></script>
-    <script src="../javascript/scroll-reveal.js?v=113"></script>
+    <!-- Scripts Optimizados -->
+    <script src="../javascript/menu.js?v=113" defer></script>
+    <script src="../javascript/contact/success-alert.js?v=113" defer></script>
+    <script src="../javascript/contact.js?v=113" defer></script>
+    <script src="../javascript/scroll-reveal.js?v=113" defer></script>
 </body>
 
 </html>
