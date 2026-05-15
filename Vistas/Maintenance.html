@@ -48,48 +48,64 @@
         /* --- ANIMACIÓN --- */
         .animation-box {
             position: relative;
-            height: 150px;
+            height: 180px;
             width: 100%;
             margin-bottom: 2rem;
+            background: rgba(12, 51, 99, 0.03);
+            border-radius: 20px;
+            overflow: hidden;
         }
 
-        /* Personaje (Muneco) */
-        .worker {
+        /* Personaje SVG (Blanco y Negro) */
+        .worker-svg {
             position: absolute;
-            left: -50px;
-            bottom: 0;
-            font-size: 50px;
-            animation: walk 8s linear infinite;
+            left: -100px;
+            bottom: 20px;
+            width: 80px;
+            height: 80px;
+            animation: run 4s linear infinite;
         }
 
-        /* Caja de herramientas */
-        .toolbox {
+        /* Caja de herramientas SVG */
+        .toolbox-svg {
             position: absolute;
-            right: 10%;
-            bottom: 0;
-            font-size: 40px;
+            right: 20px;
+            bottom: 20px;
+            width: 60px;
+            height: 60px;
         }
 
-        /* Llave de herramientas */
-        .wrench {
-            display: inline-block;
-            font-size: 24px;
-            transform: rotate(-45deg);
-            margin-left: -10px;
-            animation: swing 0.5s ease-in-out infinite alternate;
+        @keyframes run {
+            0% { 
+                left: -100px; 
+                transform: scaleX(1) translateY(0); 
+            }
+            45% { 
+                left: calc(100% - 100px); 
+                transform: scaleX(1) translateY(-5px); 
+            }
+            50% { 
+                left: calc(100% - 100px); 
+                transform: scaleX(-1) translateY(0); 
+            }
+            95% { 
+                left: -100px; 
+                transform: scaleX(-1) translateY(-5px); 
+            }
+            100% { 
+                left: -100px; 
+                transform: scaleX(1) translateY(0); 
+            }
         }
 
-        @keyframes walk {
-            0% { left: -10%; transform: scaleX(1); }
-            45% { left: 80%; transform: scaleX(1); }
-            50% { left: 80%; transform: scaleX(-1); }
-            95% { left: -10%; transform: scaleX(-1); }
-            100% { left: -10%; transform: scaleX(1); }
+        /* Efecto de correr (rebote) */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
-        @keyframes swing {
-            from { transform: rotate(-30deg); }
-            to { transform: rotate(-60deg); }
+        .worker-svg svg {
+            animation: bounce 0.3s ease-in-out infinite;
         }
 
         /* --- LOADER --- */
@@ -112,10 +128,23 @@
 <body>
     <div class="container">
         <div class="animation-box">
-            <div class="worker">
-                👷<span class="wrench">🔧</span>
+            <div class="worker-svg">
+                <!-- Personaje Blanco y Negro (Estilo Minimalista) con Llave -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="7" r="4"></circle>
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <rect x="14" y="12" width="6" height="6" rx="1" fill="white" stroke="black"></rect>
+                    <path d="M16 14l2 2m0-2l-2 2" stroke="black"></path>
+                </svg>
             </div>
-            <div class="toolbox">🧰</div>
+            <div class="toolbox-svg">
+                <!-- Caja de herramientas Blanco y Negro -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 20h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z"></path>
+                    <path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
+                    <line x1="4" y1="11" x2="20" y2="11"></line>
+                </svg>
+            </div>
         </div>
         
         <h1>Estamos en mantenimiento</h1>
