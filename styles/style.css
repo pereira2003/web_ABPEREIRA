@@ -437,17 +437,24 @@ body.is-page-transitioning {
 @media (max-width: 768px) {
     .hero-content {
         min-height: auto;
-        padding: 4rem 0 8rem; /* Increased bottom padding for floating icon space */
+        padding: 4rem 0 12rem; /* Much more bottom padding to clear floating icon */
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 2.5rem;
+        text-align: center; /* Center text on mobile for better balance */
+    }
+    .hero-copy {
+        margin: 0 auto;
+    }
+    .hero-description {
+        margin: 0 auto 2.5rem;
     }
 }
 
 @media (max-width: 480px) {
     .hero-content {
-        padding: 3rem 0 7rem;
+        padding: 3rem 0 10rem;
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 2rem;
     }
 }
 
@@ -507,15 +514,24 @@ body.is-page-transitioning {
     flex-wrap: wrap;
     gap: 1.2rem;
     align-items: center;
+    justify-content: center; /* Center buttons by default on small screens */
     max-width: 600px;
     margin-bottom: 3rem;
+}
+
+@media (min-width: 769px) {
+    .hero-actions {
+        justify-content: flex-start; /* Align left on desktop */
+    }
 }
 
 @media (max-width: 480px) {
     .hero-actions {
         flex-direction: column;
-        align-items: stretch;
+        align-items: center; /* Center buttons */
         width: 100%;
+        margin-left: auto;
+        margin-right: auto;
     }
 }
 
