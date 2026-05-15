@@ -168,6 +168,18 @@
             // Backup scroll attempt for slower devices
             setTimeout(scrollToAnchor, 2000);
         }
+
+        // Floating Menu Scroll Logic
+        const floatingMenu = document.getElementById('commMenu');
+        if (floatingMenu) {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) { // Aparece después de 300px de scroll
+                    floatingMenu.classList.add('show');
+                } else {
+                    floatingMenu.classList.remove('show');
+                }
+            }, { passive: true });
+        }
     });
 
     function createPageTransitionLayer() {
