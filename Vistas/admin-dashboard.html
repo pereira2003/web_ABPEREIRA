@@ -1009,6 +1009,7 @@
             <button class="tab-btn active" onclick="switchTab('citas')">Registros Citas</button>
             <button class="tab-btn" onclick="switchTab('registrar')">Registrar Servicios</button>
             <button class="tab-btn" onclick="switchTab('servicios')">Ajuste de Servicios</button>
+            <button class="tab-btn" onclick="switchTab('ajustes')">Mantenimiento</button>
         </nav>
 
         <!-- Pestaña: Registros Citas -->
@@ -1110,7 +1111,45 @@
                 </div>
             </div>
         </div>
+
+        <!-- Pestaña: Ajustes de Sistema (Mantenimiento) -->
+        <div id="tab-ajustes" class="tab-pane">
+            <div class="service-form-card" style="max-width: 500px;">
+                <h2 style="font-family: 'Cormorant Garamond', serif; color: var(--primary); text-align: center;">Control de Mantenimiento</h2>
+                <div style="text-align: center; padding: 2rem;">
+                    <div id="maintenanceStatus" style="margin-bottom: 2rem; font-weight: bold; font-size: 1.2rem; color: var(--text-muted);">
+                        Estado: <span id="statusLabel">Cargando...</span>
+                    </div>
+                    
+                    <label class="switch" style="position: relative; display: inline-block; width: 60px; height: 34px;">
+                        <input type="checkbox" id="maintenanceToggle" style="opacity: 0; width: 0; height: 0;">
+                        <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                    </label>
+                    
+                    <p style="margin-top: 2rem; color: #667; font-size: 0.9rem;">
+                        Al activar el mantenimiento, todos los usuarios que entren a la web serán redirigidos a la pantalla de mantenimiento.
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <style>
+        /* Estilos para el switch de mantenimiento */
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--danger); }
+        input:checked + .slider:before { transform: translateX(26px); }
+    </style>
 
     <!-- Hidden form for Email Notifications -->
     <form id="emailTrigger" action="https://formsubmit.co/ajax/a90011410@gmail.com" method="POST">
@@ -1396,7 +1435,35 @@
             });
 
             if (tab === 'servicios') loadServices();
+            if (tab === 'ajustes') loadMaintenanceStatus();
         }
+
+        // --- MAINTENANCE CONTROL ---
+        function loadMaintenanceStatus() {
+            if (!db) return;
+            const statusLabel = document.getElementById('statusLabel');
+            const toggle = document.getElementById('maintenanceToggle');
+            
+            db.ref('settings/maintenance').on('value', (snapshot) => {
+                const isMaintenance = snapshot.val() || false;
+                statusLabel.textContent = isMaintenance ? "ACTIVO (Web bloqueada)" : "INACTIVO (Web pública)";
+                statusLabel.style.color = isMaintenance ? "var(--danger)" : "var(--success)";
+                toggle.checked = isMaintenance;
+            });
+        }
+
+        document.getElementById('maintenanceToggle').addEventListener('change', async (e) => {
+            if (!db) return;
+            const isChecked = e.target.checked;
+            try {
+                await db.ref('settings/maintenance').set(isChecked);
+                alert(isChecked ? "Mantenimiento ACTIVADO" : "Mantenimiento DESACTIVADO");
+            } catch (error) {
+                console.error("Error updating maintenance:", error);
+                alert("Error al cambiar el estado");
+                e.target.checked = !isChecked;
+            }
+        });
 
         // --- SERVICES MANAGEMENT ---
         async function loadServices() {

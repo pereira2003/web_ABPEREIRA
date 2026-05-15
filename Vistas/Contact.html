@@ -14,6 +14,25 @@
     <link rel="stylesheet" href="../styles/style.css?v=114">
     <link rel="preload" href="../styles/styleContact.css?v=114" as="style">
     <link rel="stylesheet" href="../styles/styleContact.css?v=114">
+    
+    <!-- MANTENIMIENTO CHECK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        const fbCheck = {
+            apiKey: "AIzaSyD6h6fErJd-nVhvxsTyBdJmkqLMzzR4rOk",
+            authDomain: "abpereira-web.firebaseapp.com",
+            databaseURL: "https://abpereira-web-default-rtdb.firebaseio.com",
+            projectId: "abpereira-web",
+            storageBucket: "abpereira-web.firebasestorage.app",
+            messagingSenderId: "270636168434",
+            appId: "1:270636168434:web:046c7d9bc4d55aaececc6b"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(fbCheck);
+        firebase.database().ref('settings/maintenance').on('value', (snapshot) => {
+            if (snapshot.val() === true) window.location.href = 'Maintenance.html';
+        });
+    </script>
 </head>
 
 <body>
