@@ -54,7 +54,8 @@ document.addEventListener('DOMContentLoaded', function () {
         servicesGrid.innerHTML = '';
         allServices.forEach((s, index) => {
             const article = document.createElement('article');
-            article.className = 'service-card';
+            const isMoreCard = s.title.toLowerCase().includes('more');
+            article.className = `service-card ${isMoreCard ? 'service-card-animated' : ''}`;
             article.tabIndex = 0;
             article.dataset.service = index;
             article.setAttribute('aria-haspopup', 'dialog');
@@ -62,54 +63,118 @@ document.addEventListener('DOMContentLoaded', function () {
             const isFirstThree = index < 3;
             const zoomText = isTouchDevice ? 'Toca para zoom' : 'Click para zoom';
             
-            article.innerHTML = `
-                <div class="service-image-wrap">
-                    <img class="service-image" 
-                         src="${s.image}" 
-                         alt="${s.title}" 
-                         ${isFirstThree ? 'fetchpriority="high"' : 'loading="lazy"'} 
-                         decoding="async"
-                         onload="this.classList.add('is-loaded')"
-                         onerror="this.classList.add('is-loaded')">
-                    <span class="service-zoom-hint">${zoomText}</span>
-                </div>
-                <div class="service-content">
-                    <div>
-                        <span class="service-tag">${s.tag}</span>
-                        <h2 class="service-title">${s.title}</h2>
-                        <p class="service-pricing-note" style="font-size: 0.85em; color: #a0a0a0; margin-top: -0.3rem; margin-bottom: 0.5rem; font-style: italic;">${s.pricing_note}</p>
-                        <p class="service-description">${s.description}</p>
+            if (isMoreCard) {
+                // Special rendering for "and more" card with slideshow
+                const slideshowImages = [
+                    s.image,
+                    '../img/Galeria 2.png',
+                    '../img/Galeria 3.png',
+                    '../img/Galeria 5.png',
+                    '../img/Galeria 9.png'
+                ];
+                
+                article.innerHTML = `
+                    <div class="slideshow-container service-image-wrap">
+                        ${slideshowImages.map((imgSrc, i) => `
+                            <img class="slideshow-image ${i === 0 ? 'active is-loaded' : ''}" 
+                                 src="${imgSrc}" 
+                                 alt="${s.title} ${i + 1}" 
+                                 loading="lazy" 
+                                 decoding="async">
+                        `).join('')}
+                        <span class="service-zoom-hint">${zoomText}</span>
                     </div>
-                    <div class="service-actions">
-                        <button class="like-button" aria-pressed="false" aria-label="Like ${s.title}">
-                            <svg class="like-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-                            </svg>
-                            <span class="like-count">0</span>
-                        </button>
-                        <a href="Appointment.html" class="book-button" aria-label="Book appointment for ${s.title}">Schedule</a>
+                    <div class="service-content">
+                        <div>
+                            <span class="service-tag">${s.tag}</span>
+                            <h2 class="service-title">${s.title}</h2>
+                            <p class="service-pricing-note" style="font-size: 0.85em; color: #a0a0a0; margin-top: -0.3rem; margin-bottom: 0.5rem; font-style: italic;">${s.pricing_note}</p>
+                            <p class="service-description">${s.description}</p>
+                        </div>
+                        <div class="service-actions">
+                            <button class="like-button" aria-pressed="false" aria-label="Like ${s.title}">
+                                <svg class="like-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                                </svg>
+                                <span class="like-count">0</span>
+                            </button>
+                            <a href="Appointment.html" class="book-button" aria-label="Book appointment for ${s.title}">Schedule</a>
+                        </div>
                     </div>
-                </div>
-                <div class="popover" role="dialog" aria-modal="false">
-                    <h3>${s.title}</h3>
-                    <p>${s.full_description || s.description}</p>
-                </div>
-            `;
+                    <div class="popover" role="dialog" aria-modal="false">
+                        <h3>${s.title}</h3>
+                        <p>${s.full_description || s.description}</p>
+                    </div>
+                `;
+            } else {
+                // Default rendering
+                article.innerHTML = `
+                    <div class="service-image-wrap">
+                        <img class="service-image" 
+                             src="${s.image}" 
+                             alt="${s.title}" 
+                             ${isFirstThree ? 'fetchpriority="high"' : 'loading="lazy"'} 
+                             decoding="async"
+                             onload="this.classList.add('is-loaded')"
+                             onerror="this.classList.add('is-loaded')">
+                        <span class="service-zoom-hint">${zoomText}</span>
+                    </div>
+                    <div class="service-content">
+                        <div>
+                            <span class="service-tag">${s.tag}</span>
+                            <h2 class="service-title">${s.title}</h2>
+                            <p class="service-pricing-note" style="font-size: 0.85em; color: #a0a0a0; margin-top: -0.3rem; margin-bottom: 0.5rem; font-style: italic;">${s.pricing_note}</p>
+                            <p class="service-description">${s.description}</p>
+                        </div>
+                        <div class="service-actions">
+                            <button class="like-button" aria-pressed="false" aria-label="Like ${s.title}">
+                                <svg class="like-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                                </svg>
+                                <span class="like-count">0</span>
+                            </button>
+                            <a href="Appointment.html" class="book-button" aria-label="Book appointment for ${s.title}">Schedule</a>
+                        </div>
+                    </div>
+                    <div class="popover" role="dialog" aria-modal="false">
+                        <h3>${s.title}</h3>
+                        <p>${s.full_description || s.description}</p>
+                    </div>
+                `;
+            }
+            
             servicesGrid.appendChild(article);
 
             // Double check for cached images that might not fire onload
             const img = article.querySelector('.service-image');
-            if (img.complete) {
+            if (img && img.complete) {
                 img.classList.add('is-loaded');
             }
         });
 
         cardsArray = Array.from(document.querySelectorAll('.service-card'));
         initInteractions();
+        startSlideshows(); // Start slideshows after rendering
+        
         if (cardsArray.length > getCardsPerPage()) {
             buildPagination();
             renderPage(1);
         }
+    }
+
+    function startSlideshows() {
+        const animatedCards = document.querySelectorAll('.service-card-animated');
+        animatedCards.forEach(card => {
+            const images = card.querySelectorAll('.slideshow-image');
+            if (images.length <= 1) return;
+            
+            let currentIdx = 0;
+            setInterval(() => {
+                images[currentIdx].classList.remove('active');
+                currentIdx = (currentIdx + 1) % images.length;
+                images[currentIdx].classList.add('active');
+            }, 3000); // Change image every 3 seconds
+        });
     }
 
     function initInteractions() {
