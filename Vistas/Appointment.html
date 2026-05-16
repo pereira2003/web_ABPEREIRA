@@ -308,6 +308,122 @@
         </section>
     </main>
 
+    <!-- Success Confirmation Modal (Image Reference 2) -->
+    <div id="confirmationModal" class="custom-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Appointment Confirmation</h3>
+            </div>
+            <div id="modalMessage" class="modal-body">
+                <!-- Content will be injected by JS -->
+            </div>
+            
+            <div class="calendar-options">
+                <p>Add to your calendar:</p>
+                <div class="calendar-buttons">
+                    <button id="googleCalBtn" class="btn-cal">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" alt="Google">
+                        Google Calendar
+                    </button>
+                    <button id="appleCalBtn" class="btn-cal">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/Apple_logo_white.svg" alt="Apple" style="filter: invert(1);">
+                        Apple Calendar
+                    </button>
+                </div>
+            </div>
+
+            <button id="closeModalBtn" class="btn-close-modal">CLOSE</button>
+        </div>
+    </div>
+
+    <style>
+        /* Modal Styles to match Image 2 */
+        .custom-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(16, 35, 63, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+        }
+        .modal-content {
+            background: #ffffff;
+            width: 100%;
+            max-width: 420px;
+            border-radius: 35px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-header h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            color: #0c3363;
+            margin-bottom: 1.5rem;
+        }
+        .modal-body {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #0c3363;
+            margin-bottom: 2rem;
+        }
+        .calendar-options {
+            background: #f8fafd;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .calendar-options p {
+            font-weight: 600;
+            color: #5c6d84;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .calendar-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        .btn-cal {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            border: 1.5px solid #e1e8f0;
+            border-radius: 14px;
+            background: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-cal img { width: 20px; }
+        .btn-cal:hover { background: #f0f7ff; border-color: #0c3363; }
+        .btn-close-modal {
+            width: 100%;
+            padding: 1.2rem;
+            background: #0c3363;
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(12, 51, 99, 0.2);
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+
     <!-- Floating Menu Removed -->
 
     <!-- Scripts Optimizados -->

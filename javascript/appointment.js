@@ -453,13 +453,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 const appleBtn = document.getElementById('appleCalBtn');
 
                 if (modal && modalMsg) {
-                    const verificationText = data.email 
-                        ? 'A verification message will be sent to you shortly.' 
-                        : 'Our team will review your request shortly.';
+                    const verificationText = 'A verification message will be sent to you shortly.';
 
                     modalMsg.innerHTML = `
-                        <strong>${greeting}! Your appointment has been scheduled:</strong>
-                        <div style="margin: 0.5rem 0 1.5rem; color: #444;">${data.date} at ${data.time}</div>
+                        <div style="font-weight: 700; margin-bottom: 0.8rem;">Good afternoon! Your appointment has been scheduled:</div>
+                        <div style="margin: 0.5rem 0 1.5rem; color: #5c6d84; font-weight: 500;">${data.date} at ${data.time}</div>
                         <div style="color: #2e7d32; font-weight: 600; margin-bottom: 1rem;">
                             ${verificationText}
                         </div>

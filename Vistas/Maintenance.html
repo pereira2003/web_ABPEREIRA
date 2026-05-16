@@ -53,13 +53,20 @@
             display: inline-block;
             background: var(--primary);
             color: white;
-            padding: 1rem 2.5rem;
+            padding: 1.2rem 3rem;
             border-radius: 999px;
             text-decoration: none;
             font-weight: 700;
-            margin-top: 2rem;
+            margin-top: 1rem;
+            margin-bottom: 6rem; /* Aumentado para evitar que Safari lo tape */
             transition: all 0.3s ease;
             box-shadow: 0 10px 25px rgba(12, 51, 99, 0.2);
+            position: relative;
+            z-index: 10;
+        }
+
+        .status-loader {
+            margin-bottom: 4rem; /* Subido más arriba */
         }
 
         .btn-support:hover {
