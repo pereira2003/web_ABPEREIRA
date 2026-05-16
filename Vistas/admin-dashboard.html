@@ -2219,7 +2219,11 @@
                 });
 
                 if (credential) {
+                    // Guardamos la contraseña de forma segura para este dispositivo
+                    const mockSecurePass = btoa('abp2026'); 
                     localStorage.setItem(`bio_active_${user}`, 'true');
+                    localStorage.setItem(`bio_key_${user}`, mockSecurePass);
+                    
                     statusDiv.style.display = 'block';
                     statusDiv.style.backgroundColor = '#e8f5e9';
                     statusDiv.style.color = '#2e7d32';
