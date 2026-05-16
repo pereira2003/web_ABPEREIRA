@@ -1203,25 +1203,25 @@
     <div id="choiceModal" class="custom-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Select Messaging App</h3>
+                <h3>Notificar al Cliente</h3>
             </div>
             <div class="modal-body">
-                <div id="choiceMessage">
+                <div id="choiceMessage" style="margin-bottom: 1.5rem; color: #1a2a3a; font-weight: 600;">
                     <!-- Dinámico -->
                 </div>
                 <div class="calendar-options">
-                    <p>Choose how to notify the client:</p>
+                    <p>Elige cómo notificar al cliente:</p>
                     <div class="calendar-buttons">
-                        <button id="whatsappBtn" class="btn-cal" style="border-color: #25D366;">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA"> WhatsApp
+                        <button id="whatsappBtn" class="btn-cal" style="border-color: #25D366; background: #ffffff; color: #25D366; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer;">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA" style="width: 20px; height: 20px;"> WhatsApp
                         </button>
-                        <button id="imessageBtn" class="btn-cal" style="border-color: #34C759;">
-                            <img src="https://img.icons8.com/color/512/imessage.png" alt="iM"> iMessage / SMS
+                        <button id="imessageBtn" class="btn-cal" style="border-color: #34C759; background: #ffffff; color: #34C759; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer;">
+                            <img src="https://img.icons8.com/color/512/imessage.png" alt="iM" style="width: 20px; height: 20px;"> iMessage / SMS
                         </button>
                     </div>
                 </div>
             </div>
-            <button onclick="closeChoiceModal()" class="btn-close-modal">CANCEL</button>
+            <button onclick="closeChoiceModal()" class="btn-close-modal">CANCELAR</button>
         </div>
     </div>
 
@@ -1229,27 +1229,26 @@
     <div id="mapChoiceModal" class="custom-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Select Map App</h3>
+                <h3>Selecciona tu Mapa</h3>
             </div>
             <div class="modal-body">
                 <div id="mapChoiceMessage" style="margin-bottom: 1.5rem; color: #5c6d84; font-weight: 500;">
-                    Choose your preferred navigation app:
+                    Elige tu aplicación de navegación preferida:
                 </div>
                 <div class="calendar-options">
                     <div class="calendar-buttons">
-                        <button id="googleMapsBtn" class="btn-map google">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_Maps_Icon.png" alt="Google" style="display:none;"> <!-- Placeholder for icon -->
-                            <svg viewBox="0 0 24 24" style="width:28px;height:28px;"><path fill="#4285F4" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                        <button id="googleMapsBtn" class="btn-map google" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; border: 1.5px solid #4285F4; border-radius: 12px; background: #ffffff; color: #2c3e50; font-weight: 700; cursor: pointer; margin-bottom: 10px;">
+                            <svg viewBox="0 0 24 24" style="width:24px;height:24px;"><path fill="#4285F4" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
                             Google Maps
                         </button>
-                        <button id="appleMapsBtn" class="btn-map apple">
-                            <svg viewBox="0 0 24 24" style="width:28px;height:28px;"><path fill="#000000" d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+                        <button id="appleMapsBtn" class="btn-map apple" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; border: 1.5px solid #000000; border-radius: 12px; background: #ffffff; color: #2c3e50; font-weight: 700; cursor: pointer;">
+                            <svg viewBox="0 0 24 24" style="width:24px;height:24px;"><path fill="#000000" d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
                             Apple Maps
                         </button>
                     </div>
                 </div>
             </div>
-            <button onclick="closeMapModal()" class="btn-close-modal">CANCEL</button>
+            <button onclick="closeMapModal()" class="btn-close-modal">CANCELAR</button>
         </div>
     </div>
 

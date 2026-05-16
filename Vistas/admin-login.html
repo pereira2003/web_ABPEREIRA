@@ -269,11 +269,35 @@
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
         const btnCancel = document.getElementById('btnCancel');
         
-        if (!isStandalone) {
-             btnCancel.style.display = 'inline-block';
-         }
+        // --- MULTI-IDIOMA CONDICIONAL ---
+        if (isStandalone) {
+            // Modo Home Screen: ESPAÑOL
+            document.querySelector('.login-card h2').textContent = "Bienvenido";
+            document.querySelector('.login-card p').textContent = "Gestión de A⁺Pereira Company";
+            document.querySelectorAll('.form-group label')[0].textContent = "Usuario Administrador";
+            document.getElementById('username').placeholder = "Usuario";
+            document.querySelector('.remember-wrap label').textContent = "Recordar usuario";
+            document.querySelectorAll('.form-group label')[1].textContent = "Contraseña Segura";
+            document.querySelector('.btn-login').textContent = "Acceder";
+            document.getElementById('faceIdBtn').firstChild.textContent = "Ingresar con Face ID ";
+            
+            btnCancel.style.display = 'none';
+        } else {
+            // Modo Web: INGLES
+            document.querySelector('.login-card h2').textContent = "Welcome";
+            document.querySelector('.login-card p').textContent = "A⁺Pereira Company Management";
+            document.querySelectorAll('.form-group label')[0].textContent = "Admin User";
+            document.getElementById('username').placeholder = "Username";
+            document.querySelector('.remember-wrap label').textContent = "Remember user";
+            document.querySelectorAll('.form-group label')[1].textContent = "Secure Password";
+            document.querySelector('.btn-login').textContent = "Login";
+            document.getElementById('faceIdBtn').firstChild.textContent = "Sign in with Face ID ";
+            
+            btnCancel.style.display = 'inline-block';
+            btnCancel.textContent = "Cancel and Return";
+        }
 
-        const loginForm = document.getElementById('loginForm');
+         const loginForm = document.getElementById('loginForm');
         const usernameInput = document.getElementById('username');
         const passwordInput = document.getElementById('password');
         const rememberCheckbox = document.getElementById('rememberUser');
