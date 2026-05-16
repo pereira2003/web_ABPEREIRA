@@ -222,7 +222,7 @@ h1 {
 
 .calendar-day.selected {
     background: linear-gradient(135deg, var(--color-accent) 0%, #d5b082 100%);
-    color: #ffffff;
+    color: var(--color-ink) !important;
     border-color: var(--color-accent);
     box-shadow: 0 10px 24px rgba(190, 148, 93, 0.28);
 }

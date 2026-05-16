@@ -125,9 +125,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize booked dates from shared database or local storage
     async function fetchBookedDates() {
-        bookedDates = await getSharedBookedDates();
-        console.log("Booked dates loaded:", bookedDates);
-        generateCalendar();
+        if (db) {
+            // Real-time listener for appointments
+            db.ref('appointments').on('value', (snapshot) => {
+                const data = snapshot.val();
+                bookedDates = [];
+                if (data) {
+                    Object.values(data).forEach(app => {
+                        // Solo bloquear fechas de citas aceptadas o pendientes (si quieres bloquear todas)
+                        if (app.dateDB && (app.status === 'pending' || app.status === 'accepted')) {
+                            bookedDates.push(app.dateDB);
+                        }
+                    });
+                }
+                console.log("Real-time booked dates updated:", bookedDates);
+                generateCalendar();
+            });
+        } else {
+            // Fallback for local storage
+            bookedDates = await getSharedBookedDates();
+            generateCalendar();
+        }
     }
 
     // Helper to format dates for Calendar links

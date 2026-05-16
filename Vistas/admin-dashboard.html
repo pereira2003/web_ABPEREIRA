@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | A⁺Pereira Company</title>
-    <link rel="stylesheet" href="../styles/style.css?v=126">
+    <link rel="stylesheet" href="../styles/style.css?v=127">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -1559,14 +1559,14 @@
         // --- SERVICES MANAGEMENT ---
         async function loadServices() {
             if (!db) return;
-            try {
-                const snapshot = await db.ref('services_catalog').once('value');
+            // Listener en tiempo real para servicios
+            db.ref('services_catalog').on('value', (snapshot) => {
                 const data = snapshot.val();
                 currentServices = data ? Object.keys(data).map(key => ({ ...data[key], id: key })) : [];
                 renderServices();
-            } catch (error) {
+            }, (error) => {
                 console.error("Error loading services:", error);
-            }
+            });
         }
 
         function renderServices() {
@@ -1745,24 +1745,20 @@
         }
 
         async function loadAppointments() {
-            let appointments = [];
-            if (db) {
-                try {
-                    const snapshot = await db.ref('appointments').once('value');
-                    const data = snapshot.val();
-                    if (data) {
-                        appointments = Object.keys(data).map(key => ({ ...data[key], fbKey: key }));
-                    }
-                } catch (error) {
-                    console.error("Firebase load error:", error);
-                    appointments = JSON.parse(localStorage.getItem(DETAILS_KEY) || '[]');
+            if (!db) return;
+            // Listener en tiempo real para citas
+            db.ref('appointments').on('value', (snapshot) => {
+                const data = snapshot.val();
+                let appointments = [];
+                if (data) {
+                    appointments = Object.keys(data).map(key => ({ ...data[key], fbKey: key }));
                 }
-            } else {
-                appointments = JSON.parse(localStorage.getItem(DETAILS_KEY) || '[]');
-            }
-            currentAppointments = appointments;
-            updateStats();
-            renderAppointments();
+                currentAppointments = appointments;
+                updateStats();
+                renderAppointments();
+            }, (error) => {
+                console.error("Firebase load error:", error);
+            });
         }
 
         function updateStats() {
@@ -1780,7 +1776,7 @@
             const list = document.getElementById('appointmentsList');
             let filtered = currentAppointments;
             if (currentFilter === 'all') {
-                filtered = currentAppointments.filter(a => !a.status || a.status === 'pending');
+                filtered = currentAppointments; // Show ALL in 'all' filter
             } else if (currentFilter === 'pending') {
                 filtered = currentAppointments.filter(a => !a.status || a.status === 'pending');
             } else if (currentFilter === 'accepted') {
