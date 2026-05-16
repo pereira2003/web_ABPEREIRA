@@ -203,11 +203,11 @@
         <form id="loginForm">
             <div class="form-group">
                 <label>Usuario Administrador</label>
-                <input type="text" id="username" placeholder="Usuario" required>
+                <input type="text" id="username" placeholder="Usuario" autocomplete="username" required>
             </div>
             <div class="form-group">
                 <label>Contraseña Segura</label>
-                <input type="password" id="password" placeholder="••••••••" required>
+                <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
             </div>
             <button type="submit" class="btn-login">Acceder</button>
             <button type="button" class="btn-faceid" id="faceIdBtn">
@@ -261,14 +261,32 @@
         usernameInput.addEventListener('input', checkAutoFill);
         passwordInput.addEventListener('input', checkAutoFill);
         
-        // --- 2. Botón Face ID (Simulado para Web) ---
-        document.getElementById('faceIdBtn').addEventListener('click', function() {
-            // En una web real, usaríamos WebAuthn API si estuviera configurado.
-            // Aquí simulamos el flujo de éxito si hay credenciales guardadas.
-            if (usernameInput.value && passwordInput.value) {
-                attemptLogin(usernameInput.value, passwordInput.value);
-            } else {
-                alert("Por favor, asegúrate de tener tus credenciales guardadas en el llavero de tu dispositivo para usar Face ID.");
+        // --- 2. Botón Face ID (Activa el sistema nativo) ---
+        document.getElementById('faceIdBtn').addEventListener('click', async function() {
+            try {
+                // Intentamos usar la API de Gestión de Credenciales del navegador
+                // Esto activa el prompt nativo de "Contraseñas" en iOS/Safari (que usa Face ID)
+                if (navigator.credentials && navigator.credentials.get) {
+                    const cred = await navigator.credentials.get({
+                        password: true,
+                        mediation: 'optional'
+                    });
+                    
+                    if (cred) {
+                        usernameInput.value = cred.id;
+                        passwordInput.value = cred.password;
+                        attemptLogin(cred.id, cred.password);
+                    } else {
+                        // Si no hay credencial seleccionada, forzamos el foco para activar el teclado/autofill
+                        passwordInput.focus();
+                    }
+                } else {
+                    passwordInput.focus();
+                }
+            } catch (err) {
+                console.log("Face ID prompt manual:", err);
+                // Si falla o se cancela, damos foco para que el sistema muestre el autofill sobre el teclado
+                passwordInput.focus();
             }
         });
 
