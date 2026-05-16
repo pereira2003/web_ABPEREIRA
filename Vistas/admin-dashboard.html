@@ -271,6 +271,56 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
+        .address-link {
+            color: #555;
+            text-decoration: underline;
+            text-decoration-color: #ddd;
+            text-underline-offset: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .address-link:hover {
+            color: var(--primary);
+            text-decoration-color: var(--primary);
+        }
+
+        /* --- MAP SELECTION MODAL --- */
+        #mapChoiceModal .modal-header h3 {
+            font-size: 1.8rem;
+        }
+
+        .btn-map {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1.5px solid #d0dbe8;
+            border-radius: 16px;
+            background: #ffffff;
+            color: #2c3e50;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-map img {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+        }
+
+        .btn-map:hover {
+            border-color: #0c3363;
+            background: #f0f7ff;
+            transform: translateY(-2px);
+        }
+
+        .btn-map.google { border-color: #4285F4; }
+        .btn-map.apple { border-color: #000000; }
+
         .btn-logout {
             display: none; /* Reemplazado por el menú desplegable */
         }
@@ -1175,6 +1225,34 @@
         </div>
     </div>
 
+    <!-- Modal de Selección de Mapa (IGUAL A LA IMAGEN) -->
+    <div id="mapChoiceModal" class="custom-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Select Map App</h3>
+            </div>
+            <div class="modal-body">
+                <div id="mapChoiceMessage" style="margin-bottom: 1.5rem; color: #5c6d84; font-weight: 500;">
+                    Choose your preferred navigation app:
+                </div>
+                <div class="calendar-options">
+                    <div class="calendar-buttons">
+                        <button id="googleMapsBtn" class="btn-map google">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_Maps_Icon.png" alt="Google" style="display:none;"> <!-- Placeholder for icon -->
+                            <svg viewBox="0 0 24 24" style="width:28px;height:28px;"><path fill="#4285F4" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                            Google Maps
+                        </button>
+                        <button id="appleMapsBtn" class="btn-map apple">
+                            <svg viewBox="0 0 24 24" style="width:28px;height:28px;"><path fill="#000000" d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+                            Apple Maps
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button onclick="closeMapModal()" class="btn-close-modal">CANCEL</button>
+        </div>
+    </div>
+
     <div class="dashboard-container">
         <div class="header">
             <div class="header-left">
@@ -2009,9 +2087,9 @@
                         ${app.address ? `
                         <div class="info-item">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(app.address)}" target="_blank" class="address-link" style="color: inherit; text-decoration: underline;">
+                            <span class="address-link" onclick="openMapModal('${app.address.replace(/'/g, "\\'")}')">
                                 ${app.address}
-                            </a>
+                            </span>
                         </div>
                         ` : ''}
                         ${isContact ? `
@@ -2096,6 +2174,34 @@
         function closeChoiceModal() {
             document.getElementById('choiceModal').style.display = 'none';
         }
+
+        // --- MAP SELECTION LOGIC ---
+        let currentMapAddress = null;
+
+        function openMapModal(address) {
+            currentMapAddress = address;
+            const modal = document.getElementById('mapChoiceModal');
+            modal.style.display = 'flex';
+        }
+
+        function closeMapModal() {
+            document.getElementById('mapChoiceModal').style.display = 'none';
+        }
+
+        document.getElementById('googleMapsBtn').onclick = () => {
+            if (!currentMapAddress) return;
+            const encoded = encodeURIComponent(currentMapAddress);
+            window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`, '_blank');
+            closeMapModal();
+        };
+
+        document.getElementById('appleMapsBtn').onclick = () => {
+            if (!currentMapAddress) return;
+            const encoded = encodeURIComponent(currentMapAddress);
+            // Formato maps.apple.com para abrir app nativa en iOS/macOS
+            window.open(`https://maps.apple.com/?q=${encoded}`, '_blank');
+            closeMapModal();
+        };
 
         async function updateStatus(id, newStatus) {
             if (db) {
