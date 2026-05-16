@@ -324,14 +324,16 @@
         usernameInput.addEventListener('input', checkAutoFill);
         passwordInput.addEventListener('input', checkAutoFill);
         
-        // --- 2. Botón Face ID (Experiencia de Banco) ---
+        // --- 2. Botón Face ID (Activa el sistema nativo) ---
         document.getElementById('faceIdBtn').addEventListener('click', async function() {
             try {
+                // Verificar si hay algún admin con biometría activa en este dispositivo
                 const isAdmin1Bio = localStorage.getItem('bio_active_admin') === 'true';
                 const isAdmin2Bio = localStorage.getItem('bio_active_admin2') === 'true';
 
                 if (!isAdmin1Bio && !isAdmin2Bio) {
-                    alert("No has configurado Face ID. Entra una vez con tu contraseña y actívalo en el panel.");
+                    alert("No has configurado Face ID todavía. Por favor, ingresa con tu contraseña una vez y configúralo en el panel.");
+                    passwordInput.focus();
                     return;
                 }
 
@@ -350,19 +352,19 @@
                 const assertion = await navigator.credentials.get(options);
                 
                 if (assertion) {
-                    // Si el Face ID es exitoso, recuperamos las credenciales guardadas
+                    // Si el dispositivo autoriza, buscamos qué usuario está activo en este equipo
                     const userToLogin = isAdmin1Bio ? 'admin' : 'admin2';
-                    const savedPass = atob(localStorage.getItem(`bio_key_${userToLogin}`));
-                    
-                    // Entramos directamente
-                    if (attemptLogin(userToLogin, savedPass)) {
-                        console.log("Login biométrico exitoso");
-                    }
+                    sessionStorage.setItem('isAdmin', 'true');
+                    window.location.href = 'admin-dashboard.html';
                 }
             } catch (err) {
-                console.log("Error en Face ID:", err);
-                // Si el usuario cancela o falla, mostramos el teclado como respaldo
-                passwordInput.focus();
+                console.log("Face ID cancelado o no disponible:", err);
+                // Fallback a autocompletado normal si la API real falla
+                if (usernameInput.value && passwordInput.value) {
+                    attemptLogin(usernameInput.value, passwordInput.value);
+                } else {
+                    passwordInput.focus();
+                }
             }
         });
 
