@@ -243,7 +243,7 @@
         .user-dropdown a, .user-dropdown button {
             padding: 1rem 1.2rem;
             text-decoration: none;
-            color: var(--text-main);
+            color: var(--primary); /* Cambiado a azul corporativo */
             font-size: 0.9rem;
             font-weight: 600;
             border: none;
@@ -260,8 +260,8 @@
             background: #f8fafd;
         }
 
-        .user-dropdown button {
-            color: var(--danger);
+        .user-dropdown .btn-logout-red {
+            color: var(--danger) !important;
             border-top: 1px solid #f0f0f0;
             width: 100%;
         }
@@ -1195,7 +1195,7 @@
                             <svg style="width: 18px; height: 18px; fill: #0c3363;" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                             <span id="tutorialStatusText">Desactivar Tutorial</span>
                         </button>
-                        <button onclick="logout()">
+                        <button onclick="logout()" class="btn-logout-red">
                             <svg style="width: 18px; height: 18px; fill: currentColor;" viewBox="0 0 24 24"><path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/></svg>
                             Logout
                         </button>
