@@ -2268,26 +2268,33 @@
         });
 
         function toggleTutorialSetting() {
-            const isDisabled = localStorage.getItem('tutorialDisabled') === 'true';
+            const currentUser = sessionStorage.getItem('currentAdminUser') || 'admin';
+            const isDisabled = localStorage.getItem(`tutorialDisabled_${currentUser}`) === 'true';
+            
             if (isDisabled) {
-                localStorage.removeItem('tutorialDisabled');
-                alert("Tutorial activado. Se mostrará la próxima vez que entres.");
+                localStorage.removeItem(`tutorialDisabled_${currentUser}`);
+                alert(`Tutorial activado para ${currentUser}. Se mostrará la próxima vez que entres.`);
             } else {
-                localStorage.setItem('tutorialDisabled', 'true');
-                alert("Tutorial desactivado.");
+                localStorage.setItem(`tutorialDisabled_${currentUser}`, 'true');
+                alert(`Tutorial desactivado para ${currentUser}.`);
             }
             updateTutorialMenuText();
         }
 
         function updateTutorialMenuText() {
-            const isDisabled = localStorage.getItem('tutorialDisabled') === 'true';
+            const currentUser = sessionStorage.getItem('currentAdminUser') || 'admin';
+            const isDisabled = localStorage.getItem(`tutorialDisabled_${currentUser}`) === 'true';
             const textEl = document.getElementById('tutorialStatusText');
             if (textEl) {
                 textEl.textContent = isDisabled ? "Activar Tutorial" : "Desactivar Tutorial";
             }
         }
 
-        function logout() { sessionStorage.removeItem('isAdmin'); window.location.href = 'admin-login.html'; }
+        function logout() { 
+            sessionStorage.removeItem('isAdmin'); 
+            sessionStorage.removeItem('currentAdminUser');
+            window.location.href = 'admin-login.html'; 
+        }
         
         // Initial load
         loadAppointments();
@@ -2524,7 +2531,8 @@
 
             // Dar un pequeño tiempo para que el DOM (como citas cacheadas) se asiente
             setTimeout(() => {
-                const isDisabled = localStorage.getItem('tutorialDisabled') === 'true';
+                const currentUser = sessionStorage.getItem('currentAdminUser') || 'admin';
+                const isDisabled = localStorage.getItem(`tutorialDisabled_${currentUser}`) === 'true';
                 if (!isDisabled) {
                     driverObj.drive();
                 }

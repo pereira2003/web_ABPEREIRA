@@ -293,6 +293,7 @@
                     localStorage.removeItem('savedAdminUser');
                 }
                 sessionStorage.setItem('isAdmin', 'true');
+                sessionStorage.setItem('currentAdminUser', user); // Guardar usuario actual para preferencias
                 window.location.href = 'admin-dashboard.html';
                 return true;
             }
@@ -355,6 +356,7 @@
                     // Si el dispositivo autoriza, buscamos qué usuario está activo en este equipo
                     const userToLogin = isAdmin1Bio ? 'admin' : 'admin2';
                     sessionStorage.setItem('isAdmin', 'true');
+                    sessionStorage.setItem('currentAdminUser', userToLogin); // Guardar usuario actual
                     window.location.href = 'admin-dashboard.html';
                 }
             } catch (err) {
