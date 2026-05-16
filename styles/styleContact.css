@@ -188,9 +188,11 @@ select:invalid {
 }
 
 textarea {
-    min-height: 180px;
-    resize: vertical;
+    min-height: 220px;
+    height: 220px;
+    resize: none;
     line-height: 1.55;
+    box-sizing: border-box;
 }
 
 input:not([type="hidden"]):focus,
