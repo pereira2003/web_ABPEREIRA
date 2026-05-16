@@ -1,4 +1,4 @@
-const CACHE_NAME = 'abpereira-v25';
+const CACHE_NAME = 'abpereira-v26';
 const ASSETS = [
   '/',
   '/Vistas/index.html',
