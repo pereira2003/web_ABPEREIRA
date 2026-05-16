@@ -4,6 +4,8 @@
     <link rel="icon" type="image/x-icon" href="../img/ABP.ico">
     <link rel="shortcut icon" href="../img/ABP.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="../img/ABPEREIRA%20L.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0c3363">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | A⁺Pereira Company</title>
@@ -1855,27 +1857,27 @@
 
                     <div class="actions-grid">
                         ${isPending ? `
-                            <button class="btn-dash" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7;" onclick="openMessagingChoice('${id}', 'accepted')">
+                            <button class="btn-dash" style="background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; width: 100%;" onclick="openMessagingChoice('${id}', 'accepted')">
                                 Aceptar
                             </button>
-                            <button class="btn-dash" style="background: #fbe9e7; color: #d32f2f; border: 1px solid #ffccbc;" onclick="openMessagingChoice('${id}', 'rejected')">
+                            <button class="btn-dash" style="background: #fbe9e7; color: #d32f2f; border: 1px solid #ffccbc; width: 100%;" onclick="openMessagingChoice('${id}', 'rejected')">
                                 Rechazar
                             </button>
                         ` : ''}
                         ${isAccepted ? `
-                            <button class="btn-dash" style="grid-column: span 2; background: #fafafa; color: #666; border: 1px solid #ddd;" onclick="openMessagingChoice('${id}', 'rejected', true)">
+                            <button class="btn-dash" style="grid-column: span 2; background: #fafafa; color: #666; border: 1px solid #ddd; width: 100%;" onclick="openMessagingChoice('${id}', 'rejected', true)">
                                 ${isContact ? 'Archivar Mensaje' : 'Cancelar Cita'}
                             </button>
                         ` : ''}
                         ${isRejected ? `
-                            <button class="btn-dash" style="background: #e8f5e9; color: #34C759; border: 1px solid #a5d6a7;" onclick="openMessagingChoice('${id}', 'accepted', true)">
+                            <button class="btn-dash" style="background: #e3f2fd; color: #1976d2; border: 1px solid #bbdefb; width: 100%;" onclick="openMessagingChoice('${id}', 'accepted', true)">
                                 ${isContact ? 'Restaurar Mensaje' : 'Restaurar y Aceptar'}
                             </button>
-                            <button class="btn-dash" style="background: #fdeded; color: #d32f2f; border: 1px solid #ffcdd2;" onclick="confirmDelete('${id}')">
+                            <button class="btn-dash" style="background: #fdeded; color: #d32f2f; border: 1px solid #ffcdd2; width: 100%;" onclick="confirmDelete('${id}')">
                                 Eliminar Permanentemente
                             </button>
                         ` : ''}
-                        <button class="btn-dash btn-calendar" onclick="addToAdminCalendar('${id}')">Añadir a mi Calendario</button>
+                        <button class="btn-dash btn-calendar" style="width: 100%;" onclick="addToAdminCalendar('${id}')">Añadir a mi Calendario</button>
                     </div>
                 </div>
             `;}).join('');
