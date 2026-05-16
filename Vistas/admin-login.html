@@ -33,20 +33,21 @@
         .login-card {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(20px);
-            padding: 3.5rem 2.5rem;
+            padding: 2.5rem 2rem 5rem; /* Aumentado el padding inferior para Safari */
             border-radius: 30px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 100%;
+            width: 95%; /* Un poco más estrecho para móviles */
             max-width: 420px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.3);
             text-align: center;
+            margin-bottom: 2rem; /* Espacio extra abajo */
         }
 
         .login-card img {
-            width: 130px;
-            margin-bottom: 1.5rem;
+            width: 100px; /* Un poco más pequeño para ganar espacio */
+            margin-bottom: 1rem;
             filter: drop-shadow(0 0 10px rgba(190, 148, 93, 0.3));
-            background: transparent; /* Remove white background */
+            background: transparent;
             border-radius: 0;
             padding: 0;
         }
@@ -82,19 +83,19 @@
 
         .login-card p {
             color: rgba(255, 255, 255, 0.5);
-            margin-bottom: 2.5rem;
+            margin-bottom: 1.5rem; /* Reducido de 2.5rem */
             font-size: 0.9rem;
         }
 
         .form-group {
             text-align: left;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem; /* Reducido de 1.5rem */
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 0.6rem;
-            font-size: 0.75rem;
+            margin-bottom: 0.4rem; /* Reducido de 0.6rem */
+            font-size: 0.7rem; /* Reducido de 0.75rem */
             text-transform: uppercase;
             letter-spacing: 0.1em;
             font-weight: 700;
@@ -103,12 +104,12 @@
 
         .form-group input {
             width: 100%;
-            padding: 1.1rem;
+            padding: 0.9rem; /* Reducido de 1.1rem */
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 15px;
             color: white;
-            font-size: 1rem;
+            font-size: 0.95rem; /* Reducido ligeramente */
             box-sizing: border-box;
             transition: all 0.3s ease;
         }
@@ -122,7 +123,7 @@
 
         .btn-login {
             width: 100%;
-            padding: 1.1rem;
+            padding: 1rem; /* Reducido de 1.1rem */
             background: linear-gradient(135deg, var(--accent) 0%, #d5b082 100%);
             color: #0c1d34;
             border: none;
@@ -130,7 +131,7 @@
             font-weight: 800;
             font-size: 1rem;
             cursor: pointer;
-            margin-top: 1rem;
+            margin-top: 0.5rem; /* Reducido */
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
@@ -142,15 +143,15 @@
         /* --- FACE ID BUTTON STYLE --- */
         .btn-faceid {
             width: 100%;
-            padding: 1.1rem;
+            padding: 1rem; /* Reducido de 1.1rem */
             background: transparent;
             color: white;
             border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 999px; /* Rounded pill style like image */
+            border-radius: 999px;
             font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
-            margin-top: 1.2rem;
+            margin-top: 0.8rem; /* Reducido */
             display: flex;
             align-items: center;
             justify-content: center;
