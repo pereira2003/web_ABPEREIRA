@@ -1390,6 +1390,11 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label for="sImagePath">O ingresa la ruta de la imagen (ej: img/ABPEREIRA%20L.png)</label>
+                        <input type="text" id="sImagePath" placeholder="img/nombre-imagen.png" style="font-size: 0.9rem;">
+                    </div>
+
                     <div class="form-row">
                         <button type="submit" class="btn-submit" id="btnSaveService">Guardar Servicio</button>
                         <button type="button" class="btn-cancel-edit" id="btnCancelEdit" onclick="resetServiceForm()">Cancelar</button>
@@ -1851,17 +1856,28 @@
             btnSave.textContent = "Procesando...";
 
             try {
-                // 1. Handle image (Upload if file selected, otherwise use existing from preview)
+                // 1. Handle image (Upload if file selected, use manual path if not, or use existing preview)
                 let finalImageUrl = imgPreview.src;
+                const imagePath = document.getElementById('sImagePath').value.trim();
                 
                 if (selectedFile) {
+                    // Si hay archivo, comprimir y subir (comportamiento actual)
                     finalImageUrl = await uploadImage();
                     if (!finalImageUrl) throw new Error("Upload returned null");
+                } else if (imagePath) {
+                    // Si no hay archivo pero hay ruta manual, usar esa ruta con ../ agregado
+                    finalImageUrl = "../" + imagePath;
+                } else if (!finalImageUrl || finalImageUrl.startsWith('data:') || finalImageUrl === window.location.href) {
+                    // Si no hay archivo, ni ruta manual, ni preview, mostrar error
+                    alert("Por favor sube una imagen o ingresa la ruta de la imagen.");
+                    btnSave.disabled = false;
+                    btnSave.textContent = originalBtnText;
+                    return;
                 }
 
-                // Asegurar que finalImageUrl sea una URL válida y no base64 o la URL actual
-                if (!finalImageUrl || finalImageUrl.startsWith('data:') || finalImageUrl === window.location.href) {
-                    alert("Por favor selecciona o sube una imagen válida.");
+                // Asegurar que finalImageUrl sea una URL válida y no sea la URL actual
+                if (!finalImageUrl || finalImageUrl === window.location.href) {
+                    alert("Por favor sube una imagen o ingresa la ruta de la imagen válida.");
                     btnSave.disabled = false;
                     btnSave.textContent = originalBtnText;
                     return;
@@ -1944,6 +1960,7 @@
             selectedFile = null;
             imgPreview.src = "";
             imgPreview.style.display = 'none';
+            document.getElementById('sImagePath').value = "";
             uploadArea.querySelector('svg').style.display = 'block';
             uploadArea.querySelector('p').style.display = 'block';
             document.getElementById('uploadProgressBar').style.width = '0%';
