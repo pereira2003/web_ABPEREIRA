@@ -273,16 +273,18 @@
              btnCancel.style.display = 'inline-block';
          }
 
-         const loginForm = document.getElementById('loginForm');
-         const usernameInput = document.getElementById('username');
-         const passwordInput = document.getElementById('password');
-         const rememberCheckbox = document.getElementById('rememberUser');
+        const loginForm = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const rememberCheckbox = document.getElementById('rememberUser');
   
-         // Cargar usuario guardado
-        if (localStorage.getItem('savedAdminUser')) {
-            usernameInput.value = localStorage.getItem('savedAdminUser');
-            rememberCheckbox.checked = true;
-        }
+        // --- 1. Gestión de Usuario Guardado (Solo al tocar) ---
+        usernameInput.addEventListener('focus', () => {
+            if (!usernameInput.value && localStorage.getItem('savedAdminUser')) {
+                usernameInput.value = localStorage.getItem('savedAdminUser');
+                rememberCheckbox.checked = true;
+            }
+        }, { once: true });
 
         // Función para validar credenciales y entrar
         function attemptLogin(user, pass) {
@@ -300,22 +302,28 @@
             return false;
         }
 
-        // --- 1. Autocompletado Automático ---
-        // Detectamos cuando el navegador llena los campos (como con Face ID autofill)
+        // --- 2. Autocompletado Automático (Solo tras interacción) ---
         let autoLoginTriggered = false;
+        let userInteracted = false; 
+
+        // Detectamos cuando el usuario realmente toca para escribir
+        const setInteraction = () => { userInteracted = true; };
+        usernameInput.addEventListener('focus', setInteraction);
+        passwordInput.addEventListener('focus', setInteraction);
+        usernameInput.addEventListener('click', setInteraction);
+        passwordInput.addEventListener('click', setInteraction);
         
         function checkAutoFill() {
-            if (autoLoginTriggered) return;
+            // Solo procesamos el autologin si el usuario ya interactuó con el formulario
+            if (autoLoginTriggered || !userInteracted) return;
             
-            // Si ambos campos tienen valor y el usuario no está escribiendo activamente
             if (usernameInput.value && passwordInput.value) {
                 autoLoginTriggered = true;
-                // Pequeño retraso para asegurar que el DOM terminó de procesar el autofill
                 setTimeout(() => {
                     if (attemptLogin(usernameInput.value, passwordInput.value)) {
-                        console.log("Autologin exitoso via Autofill");
+                        console.log("Autologin exitoso via Autofill tras interacción");
                     } else {
-                        autoLoginTriggered = false; // Reset si falló (por si el usuario quiere corregir)
+                        autoLoginTriggered = false;
                     }
                 }, 500);
             }
