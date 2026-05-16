@@ -2327,6 +2327,10 @@
                             switchTab('registrar', false);
                         } else if (el.includes('servicios') || el.includes('services-list')) {
                             switchTab('servicios', false);
+                        } else if (el.includes('ajustes') || el.includes('tab-ajustes')) {
+                            switchTab('ajustes', false);
+                        } else if (el.includes('biometria') || el.includes('tab-biometria')) {
+                            switchTab('biometria', false);
                         } else if (el.includes('appointment') || el.includes('stats-bar') || el.includes('info-section') || el.includes('actions-grid')) {
                             switchTab('citas', false);
                         }
@@ -2361,9 +2365,36 @@
                         element: '.header', 
                         popover: { 
                             title: 'Cabecera Principal', 
-                            description: 'Aquí puedes ver el logo de la empresa y tienes el botón para cerrar la sesión de forma segura cuando termines.', 
+                            description: 'Aquí tienes el logo y el <b>Menú de Usuario</b>. Desde el icono de perfil puedes ingresar a la web pública o cerrar sesión de forma segura.', 
                             side: "bottom", 
                             align: 'start' 
+                        }
+                    },
+                    { 
+                        element: '.tabs-nav', 
+                        popover: { 
+                            title: 'Navegación', 
+                            description: 'Ahora tienes acceso a: <b>Registros Citas</b>, <b>Servicios</b>, <b>Mantenimiento</b> y la nueva configuración de <b>Face ID</b>.', 
+                            side: "bottom", 
+                            align: 'center' 
+                        }
+                    },
+                    { 
+                        element: '#tab-ajustes', 
+                        popover: { 
+                            title: 'Modo Mantenimiento', 
+                            description: 'Controla cuándo la web está visible para los clientes. Si activas esto, verán la pantalla de mantenimiento.', 
+                            side: "top", 
+                            align: 'center' 
+                        }
+                    },
+                    { 
+                        element: '#tab-biometria', 
+                        popover: { 
+                            title: 'Acceso con Face ID', 
+                            description: '¡Lo más nuevo! Registra el Face ID de tu dispositivo aquí para entrar al panel sin escribir contraseñas la próxima vez.', 
+                            side: "top", 
+                            align: 'center' 
                         }
                     },
                     { 
@@ -2371,15 +2402,6 @@
                         popover: { 
                             title: 'Resumen y Filtros', 
                             description: 'Estas tarjetas te muestran el volumen de solicitudes actuales. Además, ¡funcionan como filtros! Haz clic en cualquiera de ellas para ver únicamente las citas.', 
-                            side: "bottom", 
-                            align: 'center' 
-                        }
-                    },
-                    { 
-                        element: '.tabs-nav', 
-                        popover: { 
-                            title: 'Navegación por Pestañas', 
-                            description: 'Ahora tienes tres secciones: <b>Registros Citas</b>, <b>Registrar Servicios</b> y <b>Ajuste de Servicios</b>. La navegación ahora es fija para que nunca te pierdas.', 
                             side: "bottom", 
                             align: 'center' 
                         }
