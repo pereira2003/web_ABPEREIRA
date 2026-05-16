@@ -2243,6 +2243,7 @@
             
             if (confirm(`¿Estás seguro de que quieres eliminar el acceso por Face ID para ${user} en este dispositivo?`)) {
                 localStorage.removeItem(`bio_active_${user}`);
+                localStorage.removeItem(`bio_key_${user}`);
                 checkBioStatus();
                 alert(`Face ID eliminado para ${user}.`);
             }
