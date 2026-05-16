@@ -1390,7 +1390,6 @@
             <button class="tab-btn active" onclick="switchTab('citas')">Registros Citas</button>
             <button class="tab-btn" onclick="switchTab('registrar')">Registrar Servicios</button>
             <button class="tab-btn" onclick="switchTab('servicios')">Ajuste de Servicios</button>
-            <button class="tab-btn" onclick="switchTab('ordenar')">Ordenar Servicios</button>
             <button class="tab-btn" onclick="switchTab('ajustes')">Mantenimiento</button>
             <button class="tab-btn" onclick="switchTab('biometria')">Configurar Face ID</button>
         </nav>
@@ -1491,26 +1490,13 @@
                 <div class="services-list-container">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                         <h2 style="font-family: 'Cormorant Garamond', serif; color: var(--primary); margin: 0;">Servicios Registrados</h2>
-                        <button id="btnSeed" class="btn-dash" style="background: #f8fafd; border: 1px solid #ddd; font-size: 0.7rem;" onclick="refreshDashboardData()">Refrescar Datos</button>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button id="btnSaveOrder" class="btn-dash" style="background: var(--primary); color: white; border: none; font-size: 0.7rem; cursor: pointer; display: none;" onclick="saveServicesOrder()">Guardar Orden</button>
+                            <button id="btnSeed" class="btn-dash" style="background: #f8fafd; border: 1px solid #ddd; font-size: 0.7rem;" onclick="refreshDashboardData()">Refrescar Datos</button>
+                        </div>
                     </div>
                     <div id="servicesListAdmin" class="services-list-admin">
                         <!-- Services loaded via JS -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pestaña: Ordenar Servicios -->
-        <div id="tab-ordenar" class="tab-pane">
-            <div class="services-manager">
-                <div class="services-list-container">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                        <h2 style="font-family: 'Cormorant Garamond', serif; color: var(--primary); margin: 0;">Ordenar Servicios</h2>
-                        <button id="btnSaveOrder" class="btn-dash" style="background: var(--primary); color: white; border: none; font-size: 0.85rem; cursor: pointer;" onclick="saveServicesOrder()">Guardar Orden</button>
-                    </div>
-                    <p style="color: #667; font-size: 0.9rem; margin-bottom: 1.5rem;">Arrastra los servicios para cambiar su orden de aparición</p>
-                    <div id="servicesOrderList" class="services-order-list">
-                        <!-- Services loaded via JS with drag and drop -->
                     </div>
                 </div>
             </div>
@@ -1925,8 +1911,9 @@
             // Ordenar por campo "order" si existe
             const sortedServices = [...currentServices].sort((a, b) => (a.order || 999) - (b.order || 999));
 
-            list.innerHTML = sortedServices.map(s => `
-                <article class="service-card-admin">
+            list.innerHTML = sortedServices.map((s, index) => `
+                <article class="service-card-admin" draggable="true" data-id="${s.id}" data-index="${index}" style="cursor: grab; position: relative;">
+                    <div class="service-card-admin-drag-handle" style="position: absolute; top: 10px; left: 10px; background: rgba(255, 255, 255, 0.9); padding: 4px 6px; border-radius: 4px; cursor: grab; z-index: 10; font-size: 14px; font-weight: bold; color: var(--primary);">☰</div>
                     <div class="admin-service-img-wrap">
                         <img src="${s.image}" alt="${s.title}" onerror="this.src='../img/placeholder.png'">
                     </div>
@@ -1944,8 +1931,14 @@
                 </article>
             `).join('');
 
-            // También renderizar la lista de ordenamiento
-            renderServicesOrder();
+            // Agregar event listeners para drag and drop
+            document.querySelectorAll('.service-card-admin').forEach(item => {
+                item.addEventListener('dragstart', dragStart);
+                item.addEventListener('dragover', dragOver);
+                item.addEventListener('drop', drop);
+                item.addEventListener('dragleave', dragLeave);
+                item.addEventListener('dragend', dragEnd);
+            });
         }
 
         function renderServicesOrder() {
@@ -1978,10 +1971,14 @@
         }
 
         let draggedElement = null;
+        let isDraggingService = false;
 
         function dragStart(e) {
             draggedElement = this;
-            this.classList.add('dragging');
+            isDraggingService = true;
+            this.style.opacity = '0.5';
+            this.style.cursor = 'grabbing';
+            document.getElementById('btnSaveOrder').style.display = 'inline-block';
             e.dataTransfer.effectAllowed = 'move';
         }
 
@@ -1989,15 +1986,17 @@
             if (e.preventDefault) {
                 e.preventDefault();
             }
+            this.style.opacity = '0.8';
+            this.style.backgroundColor = '#f0f7ff';
             e.dataTransfer.dropEffect = 'move';
-            if (this !== draggedElement) {
-                this.classList.add('drag-over');
-            }
             return false;
         }
 
         function dragLeave(e) {
-            this.classList.remove('drag-over');
+            if (this !== draggedElement) {
+                this.style.opacity = '1';
+                this.style.backgroundColor = '';
+            }
         }
 
         function drop(e) {
@@ -2005,32 +2004,37 @@
                 e.stopPropagation();
             }
 
-            if (draggedElement !== this) {
-                const allItems = Array.from(document.querySelectorAll('.service-order-item'));
-                const draggedIndex = allItems.indexOf(draggedElement);
-                const targetIndex = allItems.indexOf(this);
+            if (draggedElement !== this && draggedElement && this) {
+                const draggedId = draggedElement.getAttribute('data-id');
+                const targetId = this.getAttribute('data-id');
+                
+                const draggedIndex = currentServices.findIndex(s => s.id === draggedId);
+                const targetIndex = currentServices.findIndex(s => s.id === targetId);
 
-                // Intercambiar orden en currentServices
-                [currentServices[draggedIndex], currentServices[targetIndex]] = [currentServices[targetIndex], currentServices[draggedIndex]];
-
-                // Renderizar de nuevo
-                renderServicesOrder();
+                if (draggedIndex > -1 && targetIndex > -1) {
+                    // Intercambiar orden en currentServices
+                    [currentServices[draggedIndex], currentServices[targetIndex]] = [currentServices[targetIndex], currentServices[draggedIndex]];
+                    
+                    // Renderizar de nuevo
+                    renderServices();
+                }
             }
 
             return false;
         }
 
         function dragEnd(e) {
-            this.classList.remove('dragging');
-            document.querySelectorAll('.service-order-item').forEach(item => {
-                item.classList.remove('drag-over');
+            isDraggingService = false;
+            document.querySelectorAll('.service-card-admin').forEach(item => {
+                item.style.opacity = '1';
+                item.style.backgroundColor = '';
+                item.style.cursor = 'grab';
             });
         }
 
         async function saveServicesOrder() {
             if (!db) return;
 
-            const btnSave = document.getElementById('btnSaveService');
             const btnOrderSave = document.getElementById('btnSaveOrder');
             btnOrderSave.disabled = true;
             const originalText = btnOrderSave.textContent;
@@ -2045,6 +2049,7 @@
 
                 await db.ref().update(updates);
                 await showCustomAlert("Orden de servicios guardado correctamente.", "Éxito");
+                btnOrderSave.style.display = 'none';
             } catch (error) {
                 console.error("Error saving services order:", error);
                 alert("Error al guardar el orden de los servicios.");
