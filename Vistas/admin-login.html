@@ -139,6 +139,49 @@
             box-shadow: 0 10px 20px rgba(190, 148, 93, 0.2);
         }
 
+        /* --- FACE ID BUTTON STYLE --- */
+        .btn-faceid {
+            width: 100%;
+            padding: 1.1rem;
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 999px; /* Rounded pill style like image */
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .btn-faceid:hover {
+            border-color: var(--accent);
+            background: rgba(190, 148, 93, 0.05);
+        }
+
+        .faceid-icon-wrap {
+            background: rgba(255, 255, 255, 0.1);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            right: 10px;
+        }
+
+        .faceid-icon-wrap svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+
         #error-msg {
             background: rgba(211, 47, 47, 0.1);
             color: #ff8a80;
@@ -166,22 +209,76 @@
                 <label>Contraseña Segura</label>
                 <input type="password" id="password" placeholder="••••••••" required>
             </div>
-            <button type="submit" class="btn-login">Desbloquear Panel</button>
+            <button type="submit" class="btn-login">Acceder</button>
+            <button type="button" class="btn-faceid" id="faceIdBtn">
+                Ingresar con Face ID
+                <div class="faceid-icon-wrap">
+                    <svg viewBox="0 0 24 24"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10,10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8,8,3.59,8,8 S16.41,20,12,20z M12,6c-3.31,0-6,2.69-6,6s2.69,6,6,6s6-2.69,6-6S15.31,6,12,6z M12,16c-2.21,0-4-1.79-4-4s1.79-4,4-4s4,1.79,4,4 S14.21,16,12,16z"/></svg>
+                </div>
+            </button>
             <a href="index.html" class="btn-cancel">Cancelar y Volver</a>
         </form>
         <div id="error-msg">Credenciales de administrador inválidas</div>
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
+        const loginForm = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
 
+        // Función para validar credenciales y entrar
+        function attemptLogin(user, pass) {
             if ((user === 'admin' || user === 'admin2') && pass === 'abp2026') {
                 sessionStorage.setItem('isAdmin', 'true');
                 window.location.href = 'admin-dashboard.html';
+                return true;
+            }
+            return false;
+        }
+
+        // --- 1. Autocompletado Automático ---
+        // Detectamos cuando el navegador llena los campos (como con Face ID autofill)
+        let autoLoginTriggered = false;
+        
+        function checkAutoFill() {
+            if (autoLoginTriggered) return;
+            
+            // Si ambos campos tienen valor y el usuario no está escribiendo activamente
+            if (usernameInput.value && passwordInput.value) {
+                autoLoginTriggered = true;
+                // Pequeño retraso para asegurar que el DOM terminó de procesar el autofill
+                setTimeout(() => {
+                    if (attemptLogin(usernameInput.value, passwordInput.value)) {
+                        console.log("Autologin exitoso via Autofill");
+                    } else {
+                        autoLoginTriggered = false; // Reset si falló (por si el usuario quiere corregir)
+                    }
+                }, 500);
+            }
+        }
+
+        // Monitorear cambios (autofill dispara 'input' o 'change')
+        usernameInput.addEventListener('input', checkAutoFill);
+        passwordInput.addEventListener('input', checkAutoFill);
+        
+        // --- 2. Botón Face ID (Simulado para Web) ---
+        document.getElementById('faceIdBtn').addEventListener('click', function() {
+            // En una web real, usaríamos WebAuthn API si estuviera configurado.
+            // Aquí simulamos el flujo de éxito si hay credenciales guardadas.
+            if (usernameInput.value && passwordInput.value) {
+                attemptLogin(usernameInput.value, passwordInput.value);
             } else {
+                alert("Por favor, asegúrate de tener tus credenciales guardadas en el llavero de tu dispositivo para usar Face ID.");
+            }
+        });
+
+        // --- 3. Login Manual ---
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = usernameInput.value;
+            const pass = passwordInput.value;
+
+            if (!attemptLogin(user, pass)) {
                 const error = document.getElementById('error-msg');
                 error.style.display = 'block';
                 setTimeout(() => error.style.display = 'none', 3000);
