@@ -163,41 +163,116 @@
 
         .header {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             margin-bottom: 2rem;
             background: var(--primary);
-            padding: 2.5rem 1.5rem;
-            border-radius: 35px;
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
             color: white;
-            box-shadow: 0 20px 40px rgba(12, 51, 99, 0.2);
-            gap: 1.2rem;
-            text-align: center;
+            box-shadow: 0 10px 30px rgba(12, 51, 99, 0.2);
         }
 
-        .header h1 {
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-left img {
+            width: 45px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .header-left h1 {
             margin: 0;
             font-family: 'Cormorant Garamond', serif;
-            font-size: 2rem;
+            font-size: 1.4rem;
             letter-spacing: 0.02em;
         }
 
-        .btn-logout {
+        .header-right {
+            position: relative;
+        }
+
+        .user-menu-btn {
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 0.6rem 2.5rem;
-            color: white;
-            border-radius: 14px;
-            font-weight: 600;
-            font-size: 0.9rem;
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
             transition: all 0.3s;
         }
 
-        .btn-logout:hover {
+        .user-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .user-menu-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: white;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
             background: white;
-            color: var(--primary);
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            width: 200px;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 2000;
+            border: 1px solid rgba(0,0,0,0.05);
+            animation: slideDown 0.2s ease-out;
+        }
+
+        .user-dropdown.show {
+            display: flex;
+        }
+
+        .user-dropdown a, .user-dropdown button {
+            padding: 1rem 1.2rem;
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            background: none;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .user-dropdown a:hover, .user-dropdown button:hover {
+            background: #f8fafd;
+        }
+
+        .user-dropdown button {
+            color: var(--danger);
+            border-top: 1px solid #f0f0f0;
+            width: 100%;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .btn-logout {
+            display: none; /* Reemplazado por el menú desplegable */
         }
 
         .stats-bar {
@@ -797,15 +872,14 @@
         @media (max-width: 768px) {
             .dashboard-container { padding: 1rem; }
             .header { 
-                padding: 2rem 1rem;
-                border-radius: 28px;
-                gap: 1.2rem;
+                padding: 0.8rem 1.2rem;
+                border-radius: 18px;
             }
-            .header img {
-                width: 65px !important;
+            .header-left img {
+                width: 35px;
             }
-            .header h1 {
-                font-size: 1.6rem;
+            .header-left h1 {
+                font-size: 1.1rem;
             }
             .btn-logout {
                 max-width: none;
@@ -1102,9 +1176,27 @@
 
     <div class="dashboard-container">
         <div class="header">
-            <img src="../img/ABPEREIRA L.png" alt="A⁺Pereira Logo" style="width: 80px; height: auto; object-fit: contain;">
-            <h1>A⁺Pereira Management</h1>
-            <button class="btn-logout" onclick="logout()">Logout</button>
+            <div class="header-left">
+                <img src="../img/ABPEREIRA L.png" alt="A⁺Pereira Logo">
+                <h1>A⁺Pereira Management</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-menu">
+                    <button class="user-menu-btn" id="userMenuBtn">
+                        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="../index.html">
+                            <svg style="width: 18px; height: 18px; fill: #0c3363;" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                            Ingresar a la web
+                        </a>
+                        <button onclick="logout()">
+                            <svg style="width: 18px; height: 18px; fill: currentColor;" viewBox="0 0 24 24"><path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/></svg>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <nav class="tabs-nav">
@@ -2106,6 +2198,23 @@
                 statusDiv.innerHTML = `Face ID eliminado para <strong>${user}</strong>.`;
                 alert(`Face ID eliminado para ${user}.`);
             }
+        });
+
+        // --- USER MENU DROPDOWN ---
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+
+        userMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdown.classList.toggle('show');
+        });
+
+        document.addEventListener('click', () => {
+            userDropdown.classList.remove('show');
+        });
+
+        userDropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
         });
 
         function logout() { sessionStorage.removeItem('isAdmin'); window.location.href = 'admin-login.html'; }
