@@ -102,16 +102,30 @@
             color: var(--accent);
         }
 
-        .form-group input {
-            width: 100%;
-            padding: 0.9rem; /* Reducido de 1.1rem */
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            color: white;
-            font-size: 0.95rem; /* Reducido ligeramente */
-            box-sizing: border-box;
-            transition: all 0.3s ease;
+        .remember-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+            justify-content: flex-start;
+        }
+
+        .remember-wrap label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            text-transform: none;
+            letter-spacing: normal;
+            font-weight: 400;
+            margin-bottom: 0;
+        }
+
+        .remember-wrap input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+            accent-color: var(--accent);
         }
 
         .form-group input:focus {
@@ -206,6 +220,10 @@
                 <label>Usuario Administrador</label>
                 <input type="text" id="username" placeholder="Usuario" autocomplete="username" required>
             </div>
+            <div class="remember-wrap">
+                <input type="checkbox" id="rememberUser">
+                <label for="rememberUser">Recordar usuario</label>
+            </div>
             <div class="form-group">
                 <label>Contraseña Segura</label>
                 <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
@@ -226,10 +244,22 @@
         const loginForm = document.getElementById('loginForm');
         const usernameInput = document.getElementById('username');
         const passwordInput = document.getElementById('password');
+        const rememberCheckbox = document.getElementById('rememberUser');
+
+        // Cargar usuario guardado
+        if (localStorage.getItem('savedAdminUser')) {
+            usernameInput.value = localStorage.getItem('savedAdminUser');
+            rememberCheckbox.checked = true;
+        }
 
         // Función para validar credenciales y entrar
         function attemptLogin(user, pass) {
             if ((user === 'admin' || user === 'admin2') && pass === 'abp2026') {
+                if (rememberCheckbox.checked) {
+                    localStorage.setItem('savedAdminUser', user);
+                } else {
+                    localStorage.removeItem('savedAdminUser');
+                }
                 sessionStorage.setItem('isAdmin', 'true');
                 window.location.href = 'admin-dashboard.html';
                 return true;

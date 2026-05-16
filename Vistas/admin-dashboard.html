@@ -1261,6 +1261,10 @@
                         Registrar Face ID en este equipo
                     </button>
 
+                    <button id="btnDelBio" class="btn-dash" style="width: 100%; margin-top: 1rem; background: #fdeded; color: #d32f2f; border: 1px solid #ffcdd2;">
+                        Borrar Face ID de este equipo
+                    </button>
+
                     <p style="margin-top: 2rem; color: #94a3b8; font-size: 0.8rem;">
                         Nota: Los datos biométricos nunca salen de tu dispositivo. Solo guardamos una "llave" digital segura.
                     </p>
@@ -2086,6 +2090,21 @@
                 statusDiv.style.backgroundColor = '#fdeded';
                 statusDiv.style.color = '#d32f2f';
                 statusDiv.innerHTML = `<strong>Error:</strong> No se pudo configurar. Asegúrate de que tu equipo soporte Face ID/Touch ID.`;
+            }
+        });
+
+        // --- BORRAR FACE ID ---
+        document.getElementById('btnDelBio').addEventListener('click', () => {
+            const user = document.getElementById('bioUser').value;
+            const statusDiv = document.getElementById('bioStatus');
+            
+            if (confirm(`¿Estás seguro de que quieres eliminar el acceso por Face ID para ${user} en este dispositivo?`)) {
+                localStorage.removeItem(`bio_active_${user}`);
+                statusDiv.style.display = 'block';
+                statusDiv.style.backgroundColor = '#fff3e0';
+                statusDiv.style.color = '#e65100';
+                statusDiv.innerHTML = `Face ID eliminado para <strong>${user}</strong>.`;
+                alert(`Face ID eliminado para ${user}.`);
             }
         });
 
