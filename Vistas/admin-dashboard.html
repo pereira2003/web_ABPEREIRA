@@ -1191,6 +1191,10 @@
                             <svg style="width: 18px; height: 18px; fill: #0c3363;" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
                             Ingresar a la web
                         </a>
+                        <button onclick="toggleTutorialSetting()" id="tutorialMenuBtn">
+                            <svg style="width: 18px; height: 18px; fill: #ed6c02;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+                            <span id="tutorialStatusText">Desactivar Tutorial</span>
+                        </button>
                         <button onclick="logout()">
                             <svg style="width: 18px; height: 18px; fill: currentColor;" viewBox="0 0 24 24"><path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/></svg>
                             Logout
@@ -2264,11 +2268,32 @@
             e.stopPropagation();
         });
 
+        function toggleTutorialSetting() {
+            const isDisabled = localStorage.getItem('tutorialDisabled') === 'true';
+            if (isDisabled) {
+                localStorage.removeItem('tutorialDisabled');
+                alert("Tutorial activado. Se mostrará la próxima vez que entres.");
+            } else {
+                localStorage.setItem('tutorialDisabled', 'true');
+                alert("Tutorial desactivado.");
+            }
+            updateTutorialMenuText();
+        }
+
+        function updateTutorialMenuText() {
+            const isDisabled = localStorage.getItem('tutorialDisabled') === 'true';
+            const textEl = document.getElementById('tutorialStatusText');
+            if (textEl) {
+                textEl.textContent = isDisabled ? "Activar Tutorial" : "Desactivar Tutorial";
+            }
+        }
+
         function logout() { sessionStorage.removeItem('isAdmin'); window.location.href = 'admin-login.html'; }
         
         // Initial load
         loadAppointments();
         loadServices();
+        updateTutorialMenuText();
     </script>
     <!-- Tutorial Interactivo (Driver.js) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
@@ -2500,7 +2525,10 @@
 
             // Dar un pequeño tiempo para que el DOM (como citas cacheadas) se asiente
             setTimeout(() => {
-                driverObj.drive();
+                const isDisabled = localStorage.getItem('tutorialDisabled') === 'true';
+                if (!isDisabled) {
+                    driverObj.drive();
+                }
             }, 800);
         });
     </script>
