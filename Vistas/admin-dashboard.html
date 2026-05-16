@@ -2172,7 +2172,51 @@
             link.setAttribute('download', `Appointment_${app.name.replace(/\s+/g, '_')}.ics`);
             link.click();
         }
-        // --- FACE ID MANAGEMENT ---
+        // --- FACE ID MANAGEMENT (ESTILO BANCO) ---
+        async function registerFaceID() {
+            const user = document.getElementById('bioUser').value;
+            const statusDiv = document.getElementById('bioStatus');
+            
+            try {
+                // 1. Simular registro rápido (Estilo Banco: Un solo toque)
+                const challenge = new Uint8Array(32);
+                window.crypto.getRandomValues(challenge);
+                const userId = new Uint8Array(16);
+                window.crypto.getRandomValues(userId);
+
+                const options = {
+                    publicKey: {
+                        challenge: challenge,
+                        rp: { name: "A+Pereira Company", id: window.location.hostname },
+                        user: { id: userId, name: user, displayName: user },
+                        pubKeyCredParams: [{ alg: -7, type: "public-key" }, { alg: -257, type: "public-key" }],
+                        authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+                        timeout: 60000
+                    }
+                };
+
+                const credential = await navigator.credentials.create(options);
+
+                if (credential) {
+                    // Guardar credenciales para entrada directa
+                    const mockSecurePass = btoa('abp2026'); 
+                    localStorage.setItem(`bio_active_${user}`, 'true');
+                    localStorage.setItem(`bio_key_${user}`, mockSecurePass);
+                    
+                    statusDiv.style.display = 'block';
+                    statusDiv.style.backgroundColor = '#e8f5e9';
+                    statusDiv.style.color = '#2e7d32';
+                    statusDiv.innerHTML = `<strong>¡Listo!</strong> Face ID activado para <strong>${user}</strong>. Ya puedes entrar con un toque.`;
+                    setTimeout(checkBioStatus, 3000);
+                }
+            } catch (err) {
+                console.error("Error Biometria:", err);
+                statusDiv.style.display = 'block';
+                statusDiv.style.backgroundColor = '#fdeded';
+                statusDiv.innerHTML = `<strong>Error:</strong> No se pudo activar Face ID.`;
+            }
+        }
+
         function checkBioStatus() {
             const user = document.getElementById('bioUser').value;
             const statusDiv = document.getElementById('bioStatus');
@@ -2182,64 +2226,13 @@
                 statusDiv.style.display = 'block';
                 statusDiv.style.backgroundColor = '#e3f2fd';
                 statusDiv.style.color = '#1976d2';
-                statusDiv.style.border = '1px solid #bbdefb';
-                statusDiv.innerHTML = `<svg style="width:18px;height:18px;vertical-align:middle;margin-right:5px" viewBox="0 0 24 24"><path fill="currentColor" d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10,10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8,8,3.59,8,8 S16.41,20,12,20z M11,7h2v2h-2V7z M11,11h2v6h-2V11z"/></svg> El administrador <strong>${user}</strong> ya tiene Face ID activo en este equipo.`;
+                statusDiv.innerHTML = `<svg style="width:18px;height:18px;vertical-align:middle;margin-right:5px" viewBox="0 0 24 24"><path fill="currentColor" d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10,10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8,8,3.59,8,8 S16.41,20,12,20z M11,7h2v2h-2V7z M11,11h2v6h-2V11z"/></svg> <strong>${user}</strong> ya puede entrar usando Face ID.`;
             } else {
                 statusDiv.style.display = 'none';
             }
         }
 
-        document.getElementById('btnRegBio').addEventListener('click', async () => {
-            const user = document.getElementById('bioUser').value;
-            const statusDiv = document.getElementById('bioStatus');
-            
-            try {
-                // Generar un ID aleatorio para la credencial
-                const challenge = new Uint8Array(32);
-                window.crypto.getRandomValues(challenge);
-                const userId = new Uint8Array(16);
-                window.crypto.getRandomValues(userId);
-
-                const publicKeyCredentialCreationOptions = {
-                    challenge: challenge,
-                    rp: { name: "A+Pereira Company", id: window.location.hostname },
-                    user: {
-                        id: userId,
-                        name: user,
-                        displayName: user
-                    },
-                    pubKeyCredParams: [{ alg: -7, type: "public-key" }, { alg: -257, type: "public-key" }],
-                    authenticatorSelection: { authenticatorAttachment: "platform" }, 
-                    timeout: 60000,
-                    attestation: "direct"
-                };
-
-                const credential = await navigator.credentials.create({
-                    publicKey: publicKeyCredentialCreationOptions
-                });
-
-                if (credential) {
-                    // Guardamos la contraseña de forma segura para este dispositivo
-                    const mockSecurePass = btoa('abp2026'); 
-                    localStorage.setItem(`bio_active_${user}`, 'true');
-                    localStorage.setItem(`bio_key_${user}`, mockSecurePass);
-                    
-                    statusDiv.style.display = 'block';
-                    statusDiv.style.backgroundColor = '#e8f5e9';
-                    statusDiv.style.color = '#2e7d32';
-                    statusDiv.style.border = '1px solid #c8e6c9';
-                    statusDiv.innerHTML = `<strong>¡Éxito!</strong> Face ID configurado para <strong>${user}</strong>.`;
-                    setTimeout(checkBioStatus, 3000); // Volver al estado informativo tras 3 segundos
-                }
-            } catch (err) {
-                console.error("Error Biometria:", err);
-                statusDiv.style.display = 'block';
-                statusDiv.style.backgroundColor = '#fdeded';
-                statusDiv.style.color = '#d32f2f';
-                statusDiv.style.border = '1px solid #ffcdd2';
-                statusDiv.innerHTML = `<strong>Error:</strong> No se pudo configurar.`;
-            }
-        });
+        document.getElementById('btnRegBio').onclick = registerFaceID;
 
         // --- BORRAR FACE ID ---
         document.getElementById('btnDelBio').addEventListener('click', () => {
