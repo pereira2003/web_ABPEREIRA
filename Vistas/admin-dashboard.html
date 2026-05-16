@@ -2374,53 +2374,18 @@
                         element: '.tabs-nav', 
                         popover: { 
                             title: 'Navegación', 
-                            description: 'Ahora tienes acceso a: <b>Registros Citas</b>, <b>Servicios</b>, <b>Mantenimiento</b> y la nueva configuración de <b>Face ID</b>.', 
+                            description: 'Usa estas pestañas para moverte entre las diferentes secciones del panel.', 
                             side: "bottom", 
                             align: 'center' 
                         }
                     },
-                    { 
-                        element: '#tab-ajustes', 
-                        popover: { 
-                            title: 'Modo Mantenimiento', 
-                            description: 'Controla cuándo la web está visible para los clientes. Si activas esto, verán la pantalla de mantenimiento.', 
-                            side: "top", 
-                            align: 'center' 
-                        }
-                    },
-                    { 
-                        element: '#tab-biometria', 
-                        popover: { 
-                            title: 'Acceso con Face ID', 
-                            description: '¡Lo más nuevo! Registra el Face ID de tu dispositivo aquí para entrar al panel sin escribir contraseñas la próxima vez.', 
-                            side: "top", 
-                            align: 'center' 
-                        }
-                    },
+                    /* --- SECCIÓN: REGISTRO CITAS --- */
                     { 
                         element: '.stats-bar', 
                         popover: { 
-                            title: 'Resumen y Filtros', 
-                            description: 'Estas tarjetas te muestran el volumen de solicitudes actuales. Además, ¡funcionan como filtros! Haz clic en cualquiera de ellas para ver únicamente las citas.', 
+                            title: 'Resumen de Citas', 
+                            description: 'Estas tarjetas te muestran el volumen de solicitudes. ¡Haz clic en ellas para filtrar por estado!', 
                             side: "bottom", 
-                            align: 'center' 
-                        }
-                    },
-                    { 
-                        element: '.service-form-card', 
-                        popover: { 
-                            title: 'Crea Nuevos Servicios', 
-                            description: 'En esta pestaña puedes agregar títulos, categorías y descripciones. ¡Ahora con un diseño más organizado y soporte para <b>arrastrar imágenes</b>!', 
-                            side: "top", 
-                            align: 'center' 
-                        }
-                    },
-                    { 
-                        element: '.services-list-container', 
-                        popover: { 
-                            title: 'Gestiona tu Catálogo', 
-                            description: 'Aquí verás todos tus servicios registrados. Puedes <b>Editar</b> para cambiar detalles o <b>Eliminar</b> si ya no los ofreces.', 
-                            side: "top", 
                             align: 'center' 
                         }
                     },
@@ -2428,7 +2393,7 @@
                         element: '#appointmentsList', 
                         popover: { 
                             title: 'Gestión de Citas', 
-                            description: 'Aquí aparecerán las tarjetas con los datos de los clientes. Vamos a ver las herramientas disponibles para cada una.', 
+                            description: 'Aquí aparecen las solicitudes de tus clientes. Veamos qué puedes hacer con cada una.', 
                             side: "top", 
                             align: 'start' 
                         }
@@ -2436,8 +2401,8 @@
                     {
                         element: '.appointment-card:first-child .date-badge',
                         popover: {
-                            title: 'Información de la Cita',
-                            description: 'Puedes ver rápidamente el tipo de solicitud y la fecha programada.',
+                            title: 'Fecha y Hora',
+                            description: 'Visualiza rápidamente cuándo es la cita.',
                             side: "top",
                             align: 'center'
                         }
@@ -2445,17 +2410,8 @@
                     {
                         element: '.appointment-card:first-child .info-section',
                         popover: {
-                            title: 'Detalles del Cliente',
-                            description: 'Aquí tienes el teléfono, el servicio solicitado y la dirección del cliente de forma rápida.',
-                            side: "top",
-                            align: 'center'
-                        }
-                    },
-                    {
-                        element: '.appointment-card:first-child .address-link',
-                        popover: {
-                            title: 'Navegación Inteligente',
-                            description: 'Si el cliente incluyó su dirección, al hacer clic aquí se abrirá en Google Maps para ver la ubicación exacta.',
+                            title: 'Datos del Cliente',
+                            description: 'Teléfono, servicio solicitado y dirección a un solo vistazo.',
                             side: "top",
                             align: 'center'
                         }
@@ -2463,19 +2419,50 @@
                     {
                         element: '.appointment-card:first-child .actions-grid',
                         popover: {
-                            title: 'Acciones Rápidas',
-                            description: 'Acepta o rechaza solicitudes y notifica a tus clientes vía WhatsApp o iMessage con un solo toque.',
+                            title: 'Notificaciones',
+                            description: 'Acepta o rechaza y notifica al cliente por WhatsApp o iMessage.',
                             side: "top",
                             align: 'center'
                         }
                     },
-                    {
-                        element: '.appointment-card:first-child .btn-calendar',
-                        popover: {
-                            title: 'Sincronización',
-                            description: 'Exporta la cita directamente a tu calendario personal para no perder ningún compromiso.',
-                            side: "top",
-                            align: 'center'
+                    /* --- SECCIÓN: REGISTRAR SERVICIOS --- */
+                    { 
+                        element: '.service-form-card', 
+                        popover: { 
+                            title: 'Agregar Servicios', 
+                            description: 'Desde aquí puedes crear nuevos servicios para tu web, incluyendo títulos y fotos.', 
+                            side: "top", 
+                            align: 'center' 
+                        }
+                    },
+                    /* --- SECCIÓN: AJUSTE DE SERVICIOS --- */
+                    { 
+                        element: '.services-list-container', 
+                        popover: { 
+                            title: 'Tu Catálogo', 
+                            description: 'Administra los servicios existentes: edita detalles o elimínalos si ya no están disponibles.', 
+                            side: "top", 
+                            align: 'center' 
+                        }
+                    },
+                    /* --- SECCIÓN: MANTENIMIENTO --- */
+                    { 
+                        element: '#tab-ajustes', 
+                        popover: { 
+                            title: 'Modo Mantenimiento', 
+                            description: 'Activa o desactiva la pantalla de mantenimiento para los visitantes de la web.', 
+                            side: "top", 
+                            align: 'center' 
+                        }
+                    },
+                    /* --- SECCIÓN: FACE ID --- */
+                    { 
+                        element: '#tab-biometria', 
+                        popover: { 
+                            title: 'Acceso Face ID', 
+                            description: 'Configura la biometría de tu dispositivo para entrar sin contraseñas en el futuro.', 
+                            side: "top", 
+                            align: 'center' 
                         }
                     }
                 ]
