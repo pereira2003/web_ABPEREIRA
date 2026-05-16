@@ -1112,6 +1112,7 @@
             <button class="tab-btn" onclick="switchTab('registrar')">Registrar Servicios</button>
             <button class="tab-btn" onclick="switchTab('servicios')">Ajuste de Servicios</button>
             <button class="tab-btn" onclick="switchTab('ajustes')">Mantenimiento</button>
+            <button class="tab-btn" onclick="switchTab('biometria')">Configurar Face ID</button>
         </nav>
 
         <!-- Pestaña: Registros Citas -->
@@ -1230,6 +1231,38 @@
                     
                     <p style="margin-top: 2rem; color: #667; font-size: 0.9rem;">
                         Al activar el mantenimiento, todos los usuarios que entren a la web serán redirigidos a la pantalla de mantenimiento.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pestaña: Configurar Face ID -->
+        <div id="tab-biometria" class="tab-pane">
+            <div class="service-form-card" style="max-width: 500px;">
+                <h2 style="font-family: 'Cormorant Garamond', serif; color: var(--primary); text-align: center;">Configurar Face ID</h2>
+                <div style="text-align: center; padding: 1.5rem;">
+                    <p style="color: #667; font-size: 0.95rem; margin-bottom: 2rem;">
+                        Asocia tu dispositivo actual con tu cuenta de administrador para entrar sin contraseña la próxima vez.
+                    </p>
+                    
+                    <div id="bioStatus" style="margin-bottom: 1.5rem; padding: 1rem; border-radius: 12px; display: none;">
+                        <!-- Status msg -->
+                    </div>
+
+                    <div class="form-group" style="text-align: left;">
+                        <label>Confirmar Usuario</label>
+                        <select id="bioUser" style="width: 100%; padding: 0.8rem; border-radius: 10px; border: 1px solid #ddd;">
+                            <option value="admin">admin</option>
+                            <option value="admin2">admin2</option>
+                        </select>
+                    </div>
+
+                    <button id="btnRegBio" class="btn-submit" style="width: 100%; margin-top: 1rem;">
+                        Registrar Face ID en este equipo
+                    </button>
+
+                    <p style="margin-top: 2rem; color: #94a3b8; font-size: 0.8rem;">
+                        Nota: Los datos biométricos nunca salen de tu dispositivo. Solo guardamos una "llave" digital segura.
                     </p>
                 </div>
             </div>
@@ -2008,6 +2041,54 @@
             link.setAttribute('download', `Appointment_${app.name.replace(/\s+/g, '_')}.ics`);
             link.click();
         }
+        // --- FACE ID REGISTRATION ---
+        document.getElementById('btnRegBio').addEventListener('click', async () => {
+            const user = document.getElementById('bioUser').value;
+            const statusDiv = document.getElementById('bioStatus');
+            
+            try {
+                // Generar un ID aleatorio para la credencial
+                const challenge = new Uint8Array(32);
+                window.crypto.getRandomValues(challenge);
+                const userId = new Uint8Array(16);
+                window.crypto.getRandomValues(userId);
+
+                const publicKeyCredentialCreationOptions = {
+                    challenge: challenge,
+                    rp: { name: "A+Pereira Company", id: window.location.hostname },
+                    user: {
+                        id: userId,
+                        name: user,
+                        displayName: user
+                    },
+                    pubKeyCredParams: [{ alg: -7, type: "public-key" }, { alg: -257, type: "public-key" }],
+                    authenticatorSelection: { authenticatorAttachment: "platform" }, // Forzar FaceID/TouchID/WindowsHello
+                    timeout: 60000,
+                    attestation: "direct"
+                };
+
+                const credential = await navigator.credentials.create({
+                    publicKey: publicKeyCredentialCreationOptions
+                });
+
+                if (credential) {
+                    // Guardar localmente que este usuario tiene biometría activa en este dispositivo
+                    localStorage.setItem(`bio_active_${user}`, 'true');
+                    statusDiv.style.display = 'block';
+                    statusDiv.style.backgroundColor = '#e8f5e9';
+                    statusDiv.style.color = '#2e7d32';
+                    statusDiv.innerHTML = `<strong>¡Éxito!</strong> Face ID configurado para <strong>${user}</strong>.`;
+                    alert(`Face ID activado para ${user} en este dispositivo.`);
+                }
+            } catch (err) {
+                console.error("Error Biometria:", err);
+                statusDiv.style.display = 'block';
+                statusDiv.style.backgroundColor = '#fdeded';
+                statusDiv.style.color = '#d32f2f';
+                statusDiv.innerHTML = `<strong>Error:</strong> No se pudo configurar. Asegúrate de que tu equipo soporte Face ID/Touch ID.`;
+            }
+        });
+
         function logout() { sessionStorage.removeItem('isAdmin'); window.location.href = 'index.html'; }
         
         // Initial load

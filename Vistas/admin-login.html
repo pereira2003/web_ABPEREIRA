@@ -264,29 +264,46 @@
         // --- 2. Botón Face ID (Activa el sistema nativo) ---
         document.getElementById('faceIdBtn').addEventListener('click', async function() {
             try {
-                // Intentamos usar la API de Gestión de Credenciales del navegador
-                // Esto activa el prompt nativo de "Contraseñas" en iOS/Safari (que usa Face ID)
-                if (navigator.credentials && navigator.credentials.get) {
-                    const cred = await navigator.credentials.get({
-                        password: true,
-                        mediation: 'optional'
-                    });
-                    
-                    if (cred) {
-                        usernameInput.value = cred.id;
-                        passwordInput.value = cred.password;
-                        attemptLogin(cred.id, cred.password);
-                    } else {
-                        // Si no hay credencial seleccionada, forzamos el foco para activar el teclado/autofill
-                        passwordInput.focus();
+                // Verificar si hay algún admin con biometría activa en este dispositivo
+                const isAdmin1Bio = localStorage.getItem('bio_active_admin') === 'true';
+                const isAdmin2Bio = localStorage.getItem('bio_active_admin2') === 'true';
+
+                if (!isAdmin1Bio && !isAdmin2Bio) {
+                    alert("No has configurado Face ID todavía. Por favor, ingresa con tu contraseña una vez y configúralo en el panel.");
+                    passwordInput.focus();
+                    return;
+                }
+
+                // Intentar autenticación biométrica real
+                const challenge = new Uint8Array(32);
+                window.crypto.getRandomValues(challenge);
+
+                const options = {
+                    publicKey: {
+                        challenge: challenge,
+                        timeout: 60000,
+                        userVerification: "required"
                     }
+                };
+
+                const assertion = await navigator.credentials.get(options);
+                
+                if (assertion) {
+                    // Si el dispositivo autoriza, buscamos qué usuario está activo en este equipo
+                    // En una web real, el 'assertion' diría quién es, aquí lo simplificamos 
+                    // asumiendo que el que lo configuró es el que entra.
+                    const userToLogin = isAdmin1Bio ? 'admin' : 'admin2';
+                    sessionStorage.setItem('isAdmin', 'true');
+                    window.location.href = 'admin-dashboard.html';
+                }
+            } catch (err) {
+                console.log("Face ID cancelado o no disponible:", err);
+                // Fallback a autocompletado normal si la API real falla
+                if (usernameInput.value && passwordInput.value) {
+                    attemptLogin(usernameInput.value, passwordInput.value);
                 } else {
                     passwordInput.focus();
                 }
-            } catch (err) {
-                console.log("Face ID prompt manual:", err);
-                // Si falla o se cancela, damos foco para que el sistema muestre el autofill sobre el teclado
-                passwordInput.focus();
             }
         });
 
