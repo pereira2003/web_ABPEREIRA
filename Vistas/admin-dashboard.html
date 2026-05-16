@@ -1299,7 +1299,7 @@
                 <div class="services-list-container">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                         <h2 style="font-family: 'Cormorant Garamond', serif; color: var(--primary); margin: 0;">Servicios Registrados</h2>
-                        <button id="btnSeed" class="btn-dash" style="background: #f8fafd; border: 1px solid #ddd; font-size: 0.7rem;" onclick="seedInitialServices()">Cargar Datos Iniciales</button>
+                        <button id="btnSeed" class="btn-dash" style="background: #f8fafd; border: 1px solid #ddd; font-size: 0.7rem;" onclick="refreshDashboardData()">Refrescar Datos</button>
                     </div>
                     <div id="servicesListAdmin" class="services-list-admin">
                         <!-- Services loaded via JS -->
@@ -1846,9 +1846,39 @@
             document.getElementById('btnCancelEdit').style.display = 'none';
         }
 
+        async function refreshDashboardData() {
+            if (!db) return;
+            const btn = document.getElementById('btnSeed');
+            const originalText = btn.textContent;
+            
+            try {
+                btn.textContent = "Refrescando...";
+                btn.disabled = true;
+                
+                // Forzar recarga de ambos conjuntos de datos desde Firebase
+                await Promise.all([
+                    loadAppointments(),
+                    loadServices()
+                ]);
+                
+                // Pequeña pausa visual
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                    alert("Datos actualizados correctamente.");
+                }, 500);
+                
+            } catch (error) {
+                console.error("Error al refrescar:", error);
+                btn.textContent = originalText;
+                btn.disabled = false;
+                alert("Hubo un error al refrescar los datos.");
+            }
+        }
+
         async function seedInitialServices() {
             if (!db) return;
-            if (!confirm("Esto cargará los servicios predeterminados (Gutters, Decks, etc.). ¿Continuar?")) return;
+            if (!confirm("Esto cargará los servicios predeterminados (Gutters, Decks, etc.) si no existen. ¿Continuar?")) return;
             
             const initialServices = [
                 { title: "Gutters", tag: "Exterior", pricing_note: "For pricing, contact us or book your appointment.", description: "Professional gutter systems designed for proper water management and property protection.", full_description: "Complete gutter solutions including installation, repair, and maintenance to protect your home's foundation.", image: "../img/Galeria 14.png" },
