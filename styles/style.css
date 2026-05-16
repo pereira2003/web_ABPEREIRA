@@ -83,20 +83,20 @@ a {
     position: fixed;
     top: 1.2rem;
     right: 1.2rem;
-    z-index: 220;
+    z-index: 100000; /* Aumentado para estar por encima de todo */
     width: min(360px, calc(100% - 2rem));
     display: grid;
     gap: 0.5rem;
     padding: 0.9rem 1rem;
     border-radius: 18px;
     border: 1px solid rgba(16, 35, 63, 0.18);
-    background: linear-gradient(145deg, rgba(12, 35, 66, 0.96) 0%, rgba(25, 63, 109, 0.95) 70%, rgba(190, 148, 93, 0.92) 100%);
+    background: linear-gradient(145deg, rgba(12, 35, 66, 0.98) 0%, rgba(25, 63, 109, 0.97) 70%, rgba(190, 148, 93, 0.95) 100%);
     color: #ffffff;
-    box-shadow: 0 18px 34px rgba(16, 35, 63, 0.28);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4); /* Sombra más pronunciada para PC */
     transform: translate3d(0, -14px, 0);
     opacity: 0;
     transition: opacity 0.3s ease, transform 0.3s ease;
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(12px); /* Blur más fuerte */
 }
 
 .home-toast-visible {
