@@ -165,7 +165,19 @@
             box-shadow: 0 10px 20px rgba(190, 148, 93, 0.2);
         }
 
-        /* --- FACE ID BUTTON STYLE --- */
+        .btn-cancel {
+            display: none; /* Oculto por defecto */
+            margin-top: 1.5rem;
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .btn-cancel:hover {
+            color: var(--accent);
+        }
         .btn-faceid {
             width: 100%;
             padding: 1.1rem;
@@ -246,17 +258,26 @@
                     <svg viewBox="0 0 24 24"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10,10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8,8,3.59,8,8 S16.41,20,12,20z M12,6c-3.31,0-6,2.69-6,6s2.69,6,6,6s6-2.69,6-6S15.31,6,12,6z M12,16c-2.21,0-4-1.79-4-4s1.79-4,4-4s4,1.79,4,4 S14.21,16,12,16z"/></svg>
                 </div>
             </button>
+            <a href="index.html" class="btn-cancel" id="btnCancel">Cancelar y Volver</a>
         </form>
         <div id="error-msg">Credenciales de administrador inválidas</div>
     </div>
 
     <script>
-        const loginForm = document.getElementById('loginForm');
-        const usernameInput = document.getElementById('username');
-        const passwordInput = document.getElementById('password');
-        const rememberCheckbox = document.getElementById('rememberUser');
+        // --- DETECTAR MODO (WEB VS APP/HOME SCREEN) ---
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        const btnCancel = document.getElementById('btnCancel');
+        
+        if (!isStandalone) {
+             btnCancel.style.display = 'inline-block';
+         }
 
-        // Cargar usuario guardado
+         const loginForm = document.getElementById('loginForm');
+         const usernameInput = document.getElementById('username');
+         const passwordInput = document.getElementById('password');
+         const rememberCheckbox = document.getElementById('rememberUser');
+  
+         // Cargar usuario guardado
         if (localStorage.getItem('savedAdminUser')) {
             usernameInput.value = localStorage.getItem('savedAdminUser');
             rememberCheckbox.checked = true;
