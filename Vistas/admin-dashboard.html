@@ -864,7 +864,7 @@
                 padding: 0.2rem 0.5rem !important;
             }
             .actions-grid {
-                grid-template-columns: 1fr !important;
+                grid-template-columns: repeat(2, 1fr) !important;
                 gap: 0.8rem !important;
             }
             .btn-dash {
@@ -987,11 +987,13 @@
         .actions-grid {
             margin-top: 1.5rem;
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 0.8rem;
+            width: 100%;
         }
 
         .btn-dash {
+            width: 100%;
             padding: 0.75rem;
             border: none;
             border-radius: 12px;
@@ -1004,6 +1006,7 @@
             justify-content: center;
             gap: 0.5rem;
             text-align: center;
+            box-sizing: border-box;
         }
 
         .btn-dash:hover {
