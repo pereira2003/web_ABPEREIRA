@@ -1344,7 +1344,7 @@
 
                     <div class="form-group" style="text-align: left;">
                         <label>Confirmar Usuario</label>
-                        <select id="bioUser" style="width: 100%; padding: 0.8rem; border-radius: 10px; border: 1px solid #ddd;">
+                        <select id="bioUser" style="width: 100%; padding: 0.8rem; border-radius: 10px; border: 1px solid #ddd;" onchange="checkBioStatus()">
                             <option value="admin">admin</option>
                             <option value="admin2">admin2</option>
                         </select>
@@ -2138,7 +2138,23 @@
             link.setAttribute('download', `Appointment_${app.name.replace(/\s+/g, '_')}.ics`);
             link.click();
         }
-        // --- FACE ID REGISTRATION ---
+        // --- FACE ID MANAGEMENT ---
+        function checkBioStatus() {
+            const user = document.getElementById('bioUser').value;
+            const statusDiv = document.getElementById('bioStatus');
+            const isActive = localStorage.getItem(`bio_active_${user}`) === 'true';
+
+            if (isActive) {
+                statusDiv.style.display = 'block';
+                statusDiv.style.backgroundColor = '#e3f2fd';
+                statusDiv.style.color = '#1976d2';
+                statusDiv.style.border = '1px solid #bbdefb';
+                statusDiv.innerHTML = `<svg style="width:18px;height:18px;vertical-align:middle;margin-right:5px" viewBox="0 0 24 24"><path fill="currentColor" d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10,10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8,8,3.59,8,8 S16.41,20,12,20z M11,7h2v2h-2V7z M11,11h2v6h-2V11z"/></svg> El administrador <strong>${user}</strong> ya tiene Face ID activo en este equipo.`;
+            } else {
+                statusDiv.style.display = 'none';
+            }
+        }
+
         document.getElementById('btnRegBio').addEventListener('click', async () => {
             const user = document.getElementById('bioUser').value;
             const statusDiv = document.getElementById('bioStatus');
@@ -2159,7 +2175,7 @@
                         displayName: user
                     },
                     pubKeyCredParams: [{ alg: -7, type: "public-key" }, { alg: -257, type: "public-key" }],
-                    authenticatorSelection: { authenticatorAttachment: "platform" }, // Forzar FaceID/TouchID/WindowsHello
+                    authenticatorSelection: { authenticatorAttachment: "platform" }, 
                     timeout: 60000,
                     attestation: "direct"
                 };
@@ -2169,37 +2185,37 @@
                 });
 
                 if (credential) {
-                    // Guardar localmente que este usuario tiene biometría activa en este dispositivo
                     localStorage.setItem(`bio_active_${user}`, 'true');
                     statusDiv.style.display = 'block';
                     statusDiv.style.backgroundColor = '#e8f5e9';
                     statusDiv.style.color = '#2e7d32';
+                    statusDiv.style.border = '1px solid #c8e6c9';
                     statusDiv.innerHTML = `<strong>¡Éxito!</strong> Face ID configurado para <strong>${user}</strong>.`;
-                    alert(`Face ID activado para ${user} en este dispositivo.`);
+                    setTimeout(checkBioStatus, 3000); // Volver al estado informativo tras 3 segundos
                 }
             } catch (err) {
                 console.error("Error Biometria:", err);
                 statusDiv.style.display = 'block';
                 statusDiv.style.backgroundColor = '#fdeded';
                 statusDiv.style.color = '#d32f2f';
-                statusDiv.innerHTML = `<strong>Error:</strong> No se pudo configurar. Asegúrate de que tu equipo soporte Face ID/Touch ID.`;
+                statusDiv.style.border = '1px solid #ffcdd2';
+                statusDiv.innerHTML = `<strong>Error:</strong> No se pudo configurar.`;
             }
         });
 
         // --- BORRAR FACE ID ---
         document.getElementById('btnDelBio').addEventListener('click', () => {
             const user = document.getElementById('bioUser').value;
-            const statusDiv = document.getElementById('bioStatus');
             
             if (confirm(`¿Estás seguro de que quieres eliminar el acceso por Face ID para ${user} en este dispositivo?`)) {
                 localStorage.removeItem(`bio_active_${user}`);
-                statusDiv.style.display = 'block';
-                statusDiv.style.backgroundColor = '#fff3e0';
-                statusDiv.style.color = '#e65100';
-                statusDiv.innerHTML = `Face ID eliminado para <strong>${user}</strong>.`;
+                checkBioStatus();
                 alert(`Face ID eliminado para ${user}.`);
             }
         });
+
+        // Inicializar al cargar
+        setTimeout(checkBioStatus, 500);
 
         // --- USER MENU DROPDOWN ---
         const userMenuBtn = document.getElementById('userMenuBtn');
