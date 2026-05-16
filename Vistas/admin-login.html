@@ -264,7 +264,76 @@
         <div id="error-msg">Credenciales de administrador inválidas</div>
     </div>
 
+    <!-- Modal de Confirmación Estilo iOS -->
+    <div id="confirmModal" class="custom-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(16, 35, 63, 0.85); display: none; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(8px); animation: fadeIn 0.3s ease-out;">
+        <div class="modal-content" style="background: #ffffff; padding: 2.5rem 2rem; border-radius: 32px; width: 95%; max-width: 440px; text-align: center; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35); animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
+            <div class="modal-header">
+                <h3 id="confirmTitle" style="margin: 0 0 1.5rem 0; color: #0c3363; font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 700;">Confirmación</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage" style="font-size: 1.1rem; color: #1a2a3a; margin-bottom: 1.5rem; font-weight: 500; line-height: 1.5;">
+                    ¿Estás seguro de realizar esta acción?
+                </p>
+                <div style="background: #f8fafd; padding: 1.8rem 1.5rem; border-radius: 20px; border: 1px solid #e1e8f0; margin-top: 1rem;">
+                    <div style="display: flex; flex-direction: column; gap: 0.9rem;">
+                        <button id="confirmOkBtn" style="display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 0.9rem; border: 2px solid #0c3363; border-radius: 14px; background: #f0f7ff; color: #0c3363; cursor: pointer; font-size: 0.95rem; font-weight: 700; transition: all 0.25s ease;">
+                            ACEPTAR
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button id="confirmCancelBtn" style="width: 100%; padding: 1.1rem; background: #0c3363; color: #ffffff; border: none; border-radius: 16px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; margin-top: 1.5rem;">CANCELAR</button>
+        </div>
+    </div>
+
+    <style>
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+
     <script>
+        // --- SISTEMA DE ALERTA PERSONALIZADO (iOS Style) ---
+         function showCustomAlert(message, title = "Aviso", showCancel = false) {
+             return new Promise((resolve) => {
+                 const modal = document.getElementById('confirmModal');
+                 const msgEl = document.getElementById('confirmMessage');
+                 const titleEl = document.getElementById('confirmTitle');
+                 const okBtn = document.getElementById('confirmOkBtn');
+                 const cancelBtn = document.getElementById('confirmCancelBtn');
+
+                 msgEl.textContent = message;
+                 titleEl.textContent = title;
+                 
+                 if (showCancel) {
+                     cancelBtn.style.display = 'block';
+                 } else {
+                     cancelBtn.style.display = 'none';
+                 }
+                 
+                 modal.style.display = 'flex';
+
+                 const handleConfirm = () => {
+                     modal.style.display = 'none';
+                     cleanup();
+                     resolve(true);
+                 };
+
+                 const handleCancel = () => {
+                     modal.style.display = 'none';
+                     cleanup();
+                     resolve(false);
+                 };
+
+                 const cleanup = () => {
+                     okBtn.removeEventListener('click', handleConfirm);
+                     cancelBtn.removeEventListener('click', handleCancel);
+                 };
+
+                 okBtn.addEventListener('click', handleConfirm);
+                 cancelBtn.addEventListener('click', handleCancel);
+             });
+         }
+
         // --- DETECTAR MODO (WEB VS APP/HOME SCREEN) ---
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
         const btnCancel = document.getElementById('btnCancel');
@@ -272,7 +341,8 @@
         // --- MULTI-IDIOMA CONDICIONAL ---
         if (isStandalone) {
             // Modo Home Screen: ESPAÑOL
-            document.querySelector('.login-card h2').textContent = "Bienvenido";
+            const title = document.querySelector('.login-card h1');
+            if (title) title.textContent = "Bienvenido";
             document.querySelector('.login-card p').textContent = "Gestión de A⁺Pereira Company";
             document.querySelectorAll('.form-group label')[0].textContent = "Usuario Administrador";
             document.getElementById('username').placeholder = "Usuario";
@@ -284,7 +354,8 @@
             btnCancel.style.display = 'none';
         } else {
             // Modo Web: INGLES
-            document.querySelector('.login-card h2').textContent = "Welcome";
+            const title = document.querySelector('.login-card h1');
+            if (title) title.textContent = "Welcome";
             document.querySelector('.login-card p').textContent = "A⁺Pereira Company Management";
             document.querySelectorAll('.form-group label')[0].textContent = "Admin User";
             document.getElementById('username').placeholder = "Username";
@@ -365,7 +436,7 @@
                 const isAdmin2Bio = localStorage.getItem('bio_active_admin2') === 'true';
 
                 if (!isAdmin1Bio && !isAdmin2Bio) {
-                    alert("No has configurado Face ID todavía. Por favor, ingresa con tu contraseña una vez y configúralo en el panel.");
+                    await showCustomAlert("No has configurado Face ID todavía. Por favor, ingresa con tu contraseña una vez y configúralo en el panel.", "Face ID no configurado");
                     passwordInput.focus();
                     return;
                 }

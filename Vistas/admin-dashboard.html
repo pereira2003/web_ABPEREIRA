@@ -1252,6 +1252,28 @@
         </div>
     </div>
 
+    <!-- Modal de Confirmación Estilo iOS -->
+    <div id="confirmModal" class="custom-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="confirmTitle">Confirmación</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage" style="font-size: 1.1rem; color: #1a2a3a; margin-bottom: 1.5rem; font-weight: 500; line-height: 1.5;">
+                    ¿Estás seguro de realizar esta acción?
+                </p>
+                <div class="calendar-options">
+                    <div class="calendar-buttons">
+                        <button id="confirmOkBtn" class="btn-cal" style="width: 100%; justify-content: center; font-weight: 700; border-width: 2px;">
+                            ACEPTAR
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button id="confirmCancelBtn" class="btn-close-modal">CANCELAR</button>
+        </div>
+    </div>
+
     <div class="dashboard-container">
         <div class="header">
             <div class="header-left">
@@ -1855,12 +1877,12 @@
 
                 if (id) {
                     await db.ref(`services_catalog/${id}`).update(serviceData);
-                    alert("Servicio actualizado correctamente.");
+                    await showCustomAlert("Servicio actualizado correctamente.", "Éxito");
                     switchTab('servicios'); // Go back to list after update
                 } else {
                     serviceData.created_at = new Date().toISOString();
                     await db.ref('services_catalog').push(serviceData);
-                    alert("Servicio agregado correctamente.");
+                    await showCustomAlert("Servicio agregado correctamente.", "Éxito");
                     switchTab('servicios'); // Go back to list after adding
                 }
                 resetServiceForm();
@@ -1901,7 +1923,8 @@
         }
 
         async function deleteService(id) {
-            if (!confirm("¿Seguro que deseas eliminar este servicio?")) return;
+            const confirmed = await showCustomConfirm("¿Seguro que deseas eliminar este servicio?", "Eliminar Servicio", true);
+            if (!confirmed) return;
             try {
                 await db.ref(`services_catalog/${id}`).remove();
                 loadServices();
@@ -1943,23 +1966,24 @@
                 ]);
                 
                 // Pequeña pausa visual
-                setTimeout(() => {
+                setTimeout(async () => {
                     btn.textContent = originalText;
                     btn.disabled = false;
-                    alert("Datos actualizados correctamente.");
+                    await showCustomAlert("Datos actualizados correctamente.", "Actualizado");
                 }, 500);
                 
             } catch (error) {
                 console.error("Error al refrescar:", error);
                 btn.textContent = originalText;
                 btn.disabled = false;
-                alert("Hubo un error al refrescar los datos.");
+                showCustomAlert("Hubo un error al refrescar los datos.", "Error");
             }
         }
 
         async function seedInitialServices() {
             if (!db) return;
-            if (!confirm("Esto cargará los servicios predeterminados (Gutters, Decks, etc.) si no existen. ¿Continuar?")) return;
+            const confirmed = await showCustomConfirm("Esto cargará los servicios predeterminados (Gutters, Decks, etc.) si no existen. ¿Continuar?", "Cargar Predeterminados");
+            if (!confirmed) return;
             
             const initialServices = [
                 { title: "Gutters", tag: "Exterior", pricing_note: "For pricing, contact us or book your appointment.", description: "Professional gutter systems designed for proper water management and property protection.", full_description: "Complete gutter solutions including installation, repair, and maintenance to protect your home's foundation.", image: "../img/Galeria 14.png" },
@@ -2187,6 +2211,64 @@
             document.getElementById('mapChoiceModal').style.display = 'none';
         }
 
+        // --- SISTEMA DE CONFIRMACIÓN PERSONALIZADO (iOS Style) ---
+         function showCustomConfirm(message, title = "Confirmación", isDelete = false, isAlert = false) {
+              return new Promise((resolve) => {
+                  const modal = document.getElementById('confirmModal');
+                  const msgEl = document.getElementById('confirmMessage');
+                  const titleEl = document.getElementById('confirmTitle');
+                  const okBtn = document.getElementById('confirmOkBtn');
+                  const cancelBtn = document.getElementById('confirmCancelBtn');
+  
+                  msgEl.textContent = message;
+                  titleEl.textContent = title;
+                  
+                  if (isDelete) {
+                      okBtn.style.borderColor = '#d32f2f';
+                      okBtn.style.color = '#d32f2f';
+                      okBtn.style.background = '#fdeded';
+                      okBtn.textContent = "ELIMINAR PERMANENTEMENTE";
+                  } else {
+                      okBtn.style.borderColor = '#0c3363';
+                      okBtn.style.color = '#0c3363';
+                      okBtn.style.background = '#f0f7ff';
+                      okBtn.textContent = "ACEPTAR";
+                  }
+  
+                  if (isAlert) {
+                      cancelBtn.style.display = 'none';
+                  } else {
+                      cancelBtn.style.display = 'block';
+                  }
+  
+                  modal.style.display = 'flex';
+
+                const handleConfirm = () => {
+                    modal.style.display = 'none';
+                    cleanup();
+                    resolve(true);
+                };
+
+                const handleCancel = () => {
+                    modal.style.display = 'none';
+                    cleanup();
+                    resolve(false);
+                };
+
+                const cleanup = () => {
+                    okBtn.removeEventListener('click', handleConfirm);
+                    cancelBtn.removeEventListener('click', handleCancel);
+                };
+
+                okBtn.addEventListener('click', handleConfirm);
+                cancelBtn.addEventListener('click', handleCancel);
+            });
+        }
+
+        function showCustomAlert(message, title = "Aviso") {
+            return showCustomConfirm(message, title, false, true);
+        }
+
         document.getElementById('googleMapsBtn').onclick = () => {
             if (!currentMapAddress) return;
             const encoded = encodeURIComponent(currentMapAddress);
@@ -2211,7 +2293,8 @@
         }
 
         async function confirmDelete(id) {
-            if (confirm("¿Está seguro de que desea eliminar permanentemente este registro? Esta acción no se puede deshacer.")) {
+            const confirmed = await showCustomConfirm("¿Está seguro de que desea eliminar permanentemente este registro? Esta acción no se puede deshacer.", "Eliminar Registro", true);
+            if (confirmed) {
                 if (db) {
                     try {
                         await db.ref('appointments/' + id).remove();
@@ -2341,14 +2424,15 @@
         document.getElementById('btnRegBio').onclick = registerFaceID;
 
         // --- BORRAR FACE ID ---
-        document.getElementById('btnDelBio').addEventListener('click', () => {
+        document.getElementById('btnDelBio').addEventListener('click', async () => {
             const user = document.getElementById('bioUser').value;
+            const confirmed = await showCustomConfirm(`¿Estás seguro de que quieres eliminar el acceso por Face ID para ${user} en este dispositivo?`, "Eliminar Face ID", true);
             
-            if (confirm(`¿Estás seguro de que quieres eliminar el acceso por Face ID para ${user} en este dispositivo?`)) {
+            if (confirmed) {
                 localStorage.removeItem(`bio_active_${user}`);
                 localStorage.removeItem(`bio_key_${user}`);
                 checkBioStatus();
-                alert(`Face ID eliminado para ${user}.`);
+                showCustomAlert(`Face ID eliminado para ${user}.`, "Eliminado");
             }
         });
 
@@ -2372,16 +2456,16 @@
             e.stopPropagation();
         });
 
-        function toggleTutorialSetting() {
+        async function toggleTutorialSetting() {
             const currentUser = sessionStorage.getItem('currentAdminUser') || 'admin';
             const isDisabled = localStorage.getItem(`tutorialDisabled_${currentUser}`) === 'true';
             
             if (isDisabled) {
                 localStorage.removeItem(`tutorialDisabled_${currentUser}`);
-                alert(`Tutorial activado para ${currentUser}. Se mostrará la próxima vez que entres.`);
+                await showCustomAlert(`Tutorial activado para ${currentUser}. Se mostrará la próxima vez que entres.`, "Tutorial Activado");
             } else {
                 localStorage.setItem(`tutorialDisabled_${currentUser}`, 'true');
-                alert(`Tutorial desactivado para ${currentUser}.`);
+                await showCustomAlert(`Tutorial desactivado para ${currentUser}.`, "Tutorial Desactivado");
             }
             updateTutorialMenuText();
         }
