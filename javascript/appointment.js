@@ -309,6 +309,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     selectedDateInput.value = formatDate(date);
                     selectedDateInput.dataset.dbDate = dateStr;
                     selectedDateInput.dispatchEvent(new Event('change', { bubbles: true }));
+                    // Persist selected date in sessionStorage so it survives navigation
+                    try {
+                        sessionStorage.setItem('abp_selected_date', dateStr);
+                    } catch (e) {
+                        console.warn('sessionStorage unavailable:', e);
+                    }
                 });
             }
 
@@ -322,6 +328,29 @@ document.addEventListener('DOMContentLoaded', function() {
             dayDiv.className = 'calendar-day empty';
             dayDiv.textContent = day;
             calendarDaysElement.appendChild(dayDiv);
+        }
+        // If a date was previously selected in this session, restore its visual state
+        try {
+            const saved = sessionStorage.getItem('abp_selected_date');
+            if (saved) {
+                const els = calendarDaysElement.querySelectorAll('.calendar-day');
+                els.forEach(el => {
+                    if (!el.classList.contains('empty')) {
+                        const dayNum = String(el.textContent).trim().padStart(2, '0');
+                        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                        const year = currentDate.getFullYear();
+                        const candidate = `${year}-${month}-${dayNum}`;
+                        if (candidate === saved) {
+                            el.classList.add('selected');
+                            const parsedDate = new Date(year, currentDate.getMonth(), parseInt(dayNum, 10));
+                            selectedDateInput.value = formatDate(parsedDate);
+                            selectedDateInput.dataset.dbDate = saved;
+                        }
+                    }
+                });
+            }
+        } catch (e) {
+            // Ignore storage errors
         }
     }
 
