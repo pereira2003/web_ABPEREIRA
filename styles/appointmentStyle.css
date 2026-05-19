@@ -221,18 +221,19 @@ h1 {
     border-color: #ffcdd2 !important;
 }
 
-.calendar-day.selected {
-    background: linear-gradient(135deg, var(--color-accent-soft) 0%, #efe0c6 100%); /* soft gold background */
-    color: var(--color-accent) !important; /* gold text */
-    border: 1.5px solid rgba(190, 148, 93, 0.95); /* gold border */
+..calendar-day.selected {
+    background: linear-gradient(135deg, #fff8ea 0%, #f9ecd1 100%); /* lighter gold background */
+    color: #b37847 !important; /* more visible golden text */
+    border: 1px solid rgba(190, 148, 93, 0.65); /* softer gold border */
     border-radius: 12px; /* same rounded rectangle as other days */
-    box-shadow: 0 8px 18px rgba(190, 148, 93, 0.12);
+    box-shadow: 0 6px 16px rgba(190, 148, 93, 0.10);
     font-weight: 800;
-    transform: none; /* no lift on select */
+    transform: none;
 }
 
 .calendar-day.selected:hover {
-    color: var(--color-accent) !important;
+    color: #b37847 !important;
+    border-color: rgba(190, 148, 93, 0.85);
     transform: none;
 }
 
