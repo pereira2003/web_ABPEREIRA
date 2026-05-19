@@ -222,17 +222,18 @@ h1 {
 }
 
 .calendar-day.selected {
-    /* Light gold fill with darker gold number and gold border to match the reference */
-    background: linear-gradient(180deg, #fff6eb 0%, #f7e9d7 100%);
-    color: var(--color-accent) !important; /* gold number */
-    border: 2px solid #d5b082; /* gold border */
-    border-radius: 12px; /* keep same rounded rectangle as other days */
-    box-shadow: inset 0 2px 0 rgba(255,255,255,0.6), 0 8px 18px rgba(190, 148, 93, 0.12);
+    background: linear-gradient(135deg, var(--color-accent-soft) 0%, #efe0c6 100%); /* soft gold background */
+    color: var(--color-accent) !important; /* gold text */
+    border: 1.5px solid rgba(190, 148, 93, 0.95); /* gold border */
+    border-radius: 12px; /* same rounded rectangle as other days */
+    box-shadow: 0 8px 18px rgba(190, 148, 93, 0.12);
     font-weight: 800;
+    transform: none; /* no lift on select */
 }
 
 .calendar-day.selected:hover {
     color: var(--color-accent) !important;
+    transform: none;
 }
 
 .calendar-day.today {
