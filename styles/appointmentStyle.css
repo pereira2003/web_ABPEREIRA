@@ -189,6 +189,7 @@ h1 {
     border-color: var(--color-accent);
     background: linear-gradient(135deg, #faf8f3 0%, #f5f1eb 100%);
     transform: scale(1.05);
+    color: var(--color-ink);
 }
 
 .calendar-day.empty {
@@ -222,9 +223,13 @@ h1 {
 
 .calendar-day.selected {
     background: linear-gradient(135deg, var(--color-accent) 0%, #d5b082 100%);
-    color: var(--color-ink) !important;
+    color: #ffffff !important;
     border-color: var(--color-accent);
     box-shadow: 0 10px 24px rgba(190, 148, 93, 0.28);
+}
+
+.calendar-day.selected:hover {
+    color: #ffffff !important;
 }
 
 .calendar-day.today {
