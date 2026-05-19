@@ -225,9 +225,8 @@ h1 {
     background: #ffffff; /* white background so the gold number stands out */
     color: var(--color-accent) !important; /* gold number */
     border: 2px solid var(--color-accent);
-    border-radius: 999px;
-    box-shadow: 0 10px 24px rgba(190, 148, 93, 0.18);
-    transform: translateY(-2px);
+    border-radius: 12px; /* keep same rounded rectangle as other days */
+    box-shadow: 0 8px 18px rgba(190, 148, 93, 0.12);
     font-weight: 800;
 }
 
