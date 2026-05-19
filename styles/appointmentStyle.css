@@ -530,6 +530,7 @@ textarea:focus {
     z-index: 9999;
     backdrop-filter: blur(8px);
     animation: fadeIn 0.3s ease-out;
+    padding: 1rem;
 }
 
 @keyframes fadeIn {
@@ -548,6 +549,23 @@ textarea:focus {
     border: 1px solid rgba(255, 255, 255, 0.2);
     transform: translateY(0);
     animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    max-height: calc(100vh - 2rem);
+    overflow: auto;
+}
+
+@media (max-width: 640px) {
+    .custom-modal {
+        align-items: center;
+        padding: 1.2rem;
+    }
+
+    .modal-content {
+        width: 100%;
+        max-width: 100%;
+        padding: 1.8rem 1.2rem;
+        border-radius: 28px;
+        max-height: calc(100vh - 2.4rem);
+    }
 }
 
 @keyframes slideUp {
