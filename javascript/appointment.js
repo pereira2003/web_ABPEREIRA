@@ -360,10 +360,25 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchBookedDates();
 
     function getGreetingEN() {
-        const hour = new Date().getHours();
-        if (hour >= 5 && hour < 12) return "Good morning";
-        if (hour >= 12 && hour < 18) return "Good afternoon";
-        return "Good evening";
+        const locale = (navigator.languages && navigator.languages.length) ? navigator.languages[0] : navigator.language || 'en-US';
+        const now = new Date();
+        let hour = now.getHours();
+
+        try {
+            const formatter = new Intl.DateTimeFormat(locale, { hour: 'numeric', hour12: false });
+            const parts = formatter.formatToParts(now);
+            const hourPart = parts.find(part => part.type === 'hour');
+            if (hourPart && !Number.isNaN(Number(hourPart.value))) {
+                hour = Number(hourPart.value);
+            }
+        } catch (err) {
+            console.warn('Intl date formatting failed, using local hour fallback.', err);
+        }
+
+        if (hour >= 5 && hour < 12) return 'Good morning';
+        if (hour >= 12 && hour < 18) return 'Good afternoon';
+        if (hour >= 18 && hour < 22) return 'Good evening';
+        return 'Good night';
     }
 
     // Handle form submission
