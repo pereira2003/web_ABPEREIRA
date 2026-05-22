@@ -33,19 +33,20 @@
         .login-card {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(20px);
-            padding: 2rem 2rem 8rem; /* Aumentado significativamente el padding inferior */
+            padding: 2.5rem 2rem 3rem;
             border-radius: 30px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 100%;
+            width: min(100%, 420px);
             max-width: 420px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.3);
             text-align: center;
-            margin-top: -2rem; /* Sube toda la tarjeta un poco */
+            margin: 0;
         }
 
         .login-card img {
-            width: 110px; /* Un poco más pequeño para ganar espacio vertical */
-            margin-bottom: 1rem;
+            display: block;
+            margin: 0 auto 1rem;
+            width: 110px;
             filter: drop-shadow(0 0 10px rgba(190, 148, 93, 0.3));
             background: transparent;
             border-radius: 0;
