@@ -27,6 +27,111 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // --- State / City dependent selects ---
+    const stateSelect = document.getElementById('app-state');
+    const citySelect = document.getElementById('app-city');
+
+    // List of US states (full names)
+    const US_STATES = [
+        'Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','Florida','Georgia',
+        'Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland',
+        'Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey',
+        'New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina',
+        'South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'
+    ];
+
+    // Minimal city lists (capitals and major cities) for each state
+    const US_CITIES = {
+        'Alabama': ['Montgomery','Birmingham','Mobile','Huntsville'],
+        'Alaska': ['Juneau','Anchorage','Fairbanks'],
+        'Arizona': ['Phoenix','Tucson','Mesa'],
+        'Arkansas': ['Little Rock','Fayetteville','Jonesboro'],
+        'California': ['Sacramento','Los Angeles','San Francisco','San Diego'],
+        'Colorado': ['Denver','Colorado Springs','Boulder'],
+        'Connecticut': ['Hartford','New Haven','Bridgeport'],
+        'Delaware': ['Dover','Wilmington','Newark'],
+        'Florida': ['Tallahassee','Miami','Orlando','Tampa'],
+        'Georgia': ['Atlanta','Savannah','Augusta'],
+        'Hawaii': ['Honolulu','Hilo','Kailua'],
+        'Idaho': ['Boise','Idaho Falls','Twin Falls'],
+        'Illinois': ['Springfield','Chicago','Peoria'],
+        'Indiana': ['Indianapolis','Fort Wayne','Evansville'],
+        'Iowa': ['Des Moines','Cedar Rapids','Davenport'],
+        'Kansas': ['Topeka','Wichita','Overland Park'],
+        'Kentucky': ['Frankfort','Louisville','Lexington'],
+        'Louisiana': ['Baton Rouge','New Orleans','Shreveport'],
+        'Maine': ['Augusta','Portland','Bangor'],
+        'Maryland': ['Annapolis','Baltimore','Silver Spring'],
+        'Massachusetts': ['Boston','Worcester','Springfield'],
+        'Michigan': ['Lansing','Detroit','Grand Rapids'],
+        'Minnesota': ['Saint Paul','Minneapolis','Duluth'],
+        'Mississippi': ['Jackson','Gulfport','Hattiesburg'],
+        'Missouri': ['Jefferson City','Kansas City','St. Louis'],
+        'Montana': ['Helena','Billings','Missoula'],
+        'Nebraska': ['Lincoln','Omaha','Grand Island'],
+        'Nevada': ['Carson City','Las Vegas','Reno'],
+        'New Hampshire': ['Concord','Manchester','Nashua'],
+        'New Jersey': ['Trenton','Newark','Jersey City'],
+        'New Mexico': ['Santa Fe','Albuquerque','Las Cruces'],
+        'New York': ['Albany','New York City','Buffalo'],
+        'North Carolina': ['Raleigh','Charlotte','Durham'],
+        'North Dakota': ['Bismarck','Fargo','Grand Forks'],
+        'Ohio': ['Columbus','Cleveland','Cincinnati'],
+        'Oklahoma': ['Oklahoma City','Tulsa','Norman'],
+        'Oregon': ['Salem','Portland','Eugene'],
+        'Pennsylvania': ['Harrisburg','Philadelphia','Pittsburgh'],
+        'Rhode Island': ['Providence','Cranston','Newport'],
+        'South Carolina': ['Columbia','Charleston','Greenville'],
+        'South Dakota': ['Pierre','Sioux Falls','Rapid City'],
+        'Tennessee': ['Nashville','Memphis','Knoxville'],
+        'Texas': ['Austin','Houston','Dallas','San Antonio'],
+        'Utah': ['Salt Lake City','Provo','Ogden'],
+        'Vermont': ['Montpelier','Burlington','Rutland'],
+        'Virginia': ['Richmond','Virginia Beach','Norfolk'],
+        'Washington': ['Olympia','Seattle','Spokane'],
+        'West Virginia': ['Charleston','Morgantown','Huntington'],
+        'Wisconsin': ['Madison','Milwaukee','Green Bay'],
+        'Wyoming': ['Cheyenne','Casper','Laramie']
+    };
+
+    function populateStates() {
+        if (!stateSelect) return;
+        US_STATES.forEach(state => {
+            const opt = document.createElement('option');
+            opt.value = state;
+            opt.textContent = state;
+            stateSelect.appendChild(opt);
+        });
+    }
+
+    function populateCitiesFor(state) {
+        if (!citySelect) return;
+        citySelect.innerHTML = '<option value="" disabled selected>Select a city</option>';
+        const cities = US_CITIES[state] || [];
+        cities.forEach(city => {
+            const opt = document.createElement('option');
+            opt.value = city;
+            opt.textContent = city;
+            citySelect.appendChild(opt);
+        });
+        citySelect.disabled = cities.length === 0;
+        if (cities.length === 0) citySelect.setAttribute('aria-disabled', 'true');
+        else citySelect.removeAttribute('aria-disabled');
+    }
+
+    if (stateSelect && citySelect) {
+        populateStates();
+        stateSelect.addEventListener('change', function() {
+            const chosen = this.value;
+            populateCitiesFor(chosen);
+            citySelect.disabled = false;
+            // Ensure city becomes required only after state selection
+            citySelect.required = true;
+            // Reset selection
+            citySelect.selectedIndex = 0;
+        });
+    }
+
     // Clear any previously saved selected date when the page loads
     try {
         sessionStorage.removeItem('abp_selected_date');
