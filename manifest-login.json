@@ -1,0 +1,23 @@
+{
+  "name": "A⁺Pereira Admin",
+  "short_name": "A⁺Pereira",
+  "description": "Admin login for A⁺Pereira Company.",
+  "start_url": "/web_ABPEREIRA/Vistas/admin-login.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0c3363",
+  "scope": "/web_ABPEREIRA/",
+  "icons": [
+    {
+      "src": "/web_ABPEREIRA/img/ABPEREIRA%20L.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/web_ABPEREIRA/img/ABPEREIRA%20L.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
