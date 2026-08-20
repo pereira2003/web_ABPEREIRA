@@ -486,6 +486,11 @@
                 setTimeout(() => error.style.display = 'none', 3000);
             }
         });
+
+        // --- Registrar Service Worker ---
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('../sw.js').catch(err => console.log('SW registration failed:', err));
+        }
     </script>
 </body>
 </html>

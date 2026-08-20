@@ -30,6 +30,12 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
             db = firebase.database();
             console.log("✅ Firebase connected for contact messages.");
+            // Ensure anonymous auth when DB rules require authentication
+            if (typeof firebase.auth !== 'undefined') {
+                if (!firebase.auth().currentUser) {
+                    firebase.auth().signInAnonymously().catch(err => console.error('Firebase auth error:', err));
+                }
+            }
             
             // Maintenance check for redirect
             db.ref('settings/maintenance').on('value', (snapshot) => {
@@ -189,8 +195,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const formData = new FormData(form);
             
             // Clean up and add creative fields
-            formData.append("email", clientEmail || "contact.abpereira@gmail.com"); // THIS IS CRITICAL FOR CLIENT TO RECEIVE IT
-            formData.append("_replyto", clientEmail || "contact.abpereira@gmail.com");
+            formData.append("email", clientEmail || "abpereiraconstrucion@gmail.com"); // THIS IS CRITICAL FOR CLIENT TO RECEIVE IT
+            formData.append("_replyto", clientEmail || "abpereiraconstrucion@gmail.com");
             formData.append("_from", "A+Pereira Web Platform");
             formData.append(greeting, "thank you for contacting us."); // Usamos el saludo como clave para que no aparezca "MENSAJE"
             formData.append(messageText, ""); // El texto largo va como clave vacía

@@ -166,6 +166,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             db = firebase.database();
             console.log("✅ Firebase connected for shared reservations.");
+            // Ensure anonymous auth so client can read/write when DB rules require auth
+            if (typeof firebase.auth !== 'undefined') {
+                if (!firebase.auth().currentUser) {
+                    firebase.auth().signInAnonymously().catch(err => console.error('Firebase auth error:', err));
+                }
+            }
         } catch (error) {
             console.error("Firebase initialization error:", error);
         }
@@ -243,19 +249,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize booked dates from shared database or local storage
     async function fetchBookedDates() {
         if (db) {
-            // Real-time listener for appointments
+            // Real-time listener for appointments (with error fallback)
             db.ref('appointments').on('value', (snapshot) => {
                 const data = snapshot.val();
                 bookedDates = [];
                 if (data) {
                     Object.values(data).forEach(app => {
-                        // Solo bloquear fechas de citas aceptadas o pendientes (si quieres bloquear todas)
                         if (app.dateDB && (app.status === 'pending' || app.status === 'accepted')) {
                             bookedDates.push(app.dateDB);
                         }
                     });
                 }
                 console.log("Real-time booked dates updated:", bookedDates);
+                generateCalendar();
+            }, (error) => {
+                console.error('Realtime DB listener error:', error);
+                // Fallback to local storage when permission denied or network issues
+                bookedDates = getLocalBookedDates();
+                console.log('Using local booked dates as fallback:', bookedDates);
                 generateCalendar();
             });
         } else {

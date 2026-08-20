@@ -76,6 +76,7 @@
     <!-- Firebase SDK (Unified v10) -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script>
         // Registrar Service Worker para carga rápida
         if ('serviceWorker' in navigator) {
@@ -99,6 +100,14 @@
             appId: "1:270636168434:web:046c7d9bc4d55aaececc6b"
         };
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfigCheck);
+        // Ensure anonymous auth so client can access DB when rules require authentication
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+            if (!firebase.auth().currentUser) {
+                firebase.auth().signInAnonymously()
+                    .then(() => console.log('✅ Firebase anonymous auth signed in'))
+                    .catch((err) => console.error('Firebase anonymous auth error:', err));
+            }
+        }
         
         // Check Mantenimiento
         firebase.database().ref('settings/maintenance').on('value', (snapshot) => {
@@ -369,7 +378,7 @@
             <div class="link">
                 <h3>Mail</h3>
                 <ul>
-                    <li><a href="mailto:a90011410@gmail.com">a90011410@gmail.com</a></li>
+                    <li><a href="mailto:abpereiraconstrucion@gmail.com">abpereiraconstrucion@gmail.com</a></li>
                 </ul>
             </div>
         </div>
