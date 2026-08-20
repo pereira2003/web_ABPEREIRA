@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="../styles/style.css?v=127">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     <style>
@@ -1608,6 +1609,7 @@
         let storage = null;
         if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
             firebase.initializeApp(firebaseConfig);
+            firebase.auth().signInAnonymously().catch(error => console.error('Firebase auth error:', error));
             db = firebase.database();
             storage = firebase.storage();
         }

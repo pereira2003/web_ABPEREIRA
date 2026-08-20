@@ -177,6 +177,7 @@
 
     <!-- Firebase para monitorear estado -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
         const firebaseConfig = {
@@ -189,6 +190,7 @@
             appId: "1:270636168434:web:046c7d9bc4d55aaececc6b"
         };
         firebase.initializeApp(firebaseConfig);
+        firebase.auth().signInAnonymously().catch(error => console.error('Firebase auth error:', error));
         const db = firebase.database();
 
         // Si el mantenimiento se desactiva, volver al inicio

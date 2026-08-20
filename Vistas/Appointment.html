@@ -78,6 +78,7 @@
         });
     </script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script>
         const fbCheck = {
@@ -91,6 +92,7 @@
         };
         if (typeof firebase !== 'undefined') {
             if (!firebase.apps.length) firebase.initializeApp(fbCheck);
+            firebase.auth().signInAnonymously().catch(error => console.error('Firebase auth error:', error));
             firebase.database().ref('settings/maintenance').on('value', (snapshot) => {
                 if (snapshot.val() === true) window.location.href = 'Maintenance.html';
             });
