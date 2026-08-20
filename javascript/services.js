@@ -34,6 +34,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- LOAD SERVICES FROM FIREBASE ---
     async function loadServices() {
+        // Try API first (preferred): if a local API is available, use it and skip Firebase.
+        try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 1500);
+            const resp = await fetch('/api/services', { signal: controller.signal });
+            clearTimeout(timeout);
+            if (resp && resp.ok) {
+                const json = await resp.json();
+                if (Array.isArray(json) && json.length > 0) {
+                    allServices = json.map((s, i) => ({ ...s, id: s.id || ('api_' + i) }));
+                    renderServicesGrid();
+                    return; // done — API provided the services
+                }
+            }
+        } catch (e) {
+            console.warn('API /api/services not available or timed out — falling back to Firebase', e && e.name ? e.name : e);
+        }
+
         if (!db) {
             console.warn('Firebase DB not initialized — showing fallback services');
             const fallback = [
@@ -60,7 +78,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }, (error) => {
                 console.error("Error loading services:", error);
-                servicesGrid.innerHTML = '<div class="empty-state"><p>Error al sincronizar los servicios.</p></div>';
                 const fallback = [
                     { title: 'Painting', tag: 'Painting', image: 'img/Galeria 1.png', description: 'Interior and exterior painting services', pricing_note: '', full_description: '' },
                     { title: 'Roof Repairs', tag: 'Roof', image: 'img/Galeria 4.png', description: 'Small to medium roof repairs', pricing_note: '', full_description: '' }
