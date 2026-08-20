@@ -134,31 +134,81 @@ document.addEventListener('DOMContentLoaded', function () {
                             <p class="service-description">${s.description}</p>
                         </div>
                         <div class="service-actions">
-                            <button class="like-button" aria-pressed="false" aria-label="Like ${s.title}">
-                                <svg class="like-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-                                </svg>
-                                <span class="like-count">0</span>
-                            </button>
-                            <a href="Appointment.html#appointmentForm" class="book-button" aria-label="Book appointment for ${s.title}">Schedule</a>
-                        </div>
-                    </div>
-                    <div class="popover" role="dialog" aria-modal="false">
-                        <h3>${s.title}</h3>
-                        <p>${s.full_description || s.description}</p>
-                    </div>
-                `;
-            } else {
-                // Default rendering
-                article.innerHTML = `
-                    <div class="service-image-wrap">
-                        <img class="service-image" 
-                             src="${s.image}" 
-                             alt="${s.title}" 
-                             ${isFirstThree ? 'fetchpriority="high"' : 'loading="lazy"'} 
-                             decoding="async"
-                             onload="this.classList.add('is-loaded')"
-                             onerror="this.classList.add('is-loaded')">
+                            // Primero intentar obtener datos desde la API local (/api/services)
+                            try {
+                                const controller = new AbortController();
+                                const timeout = setTimeout(() => controller.abort(), 1500);
+                                const resp = await fetch('/api/services', { signal: controller.signal });
+                                clearTimeout(timeout);
+                                if (resp.ok) {
+                                    const json = await resp.json();
+                                    if (Array.isArray(json) && json.length > 0) {
+                                        allServices = json.map((s) => ({ ...s, id: s.id || (s.title || '').toLowerCase().replace(/\s+/g,'_') }));
+                                        renderServicesGrid();
+                                        return;
+                                    }
+                                }
+                            } catch (err) {
+                                // fallo al llamar API — seguimos con Firebase
+                                console.warn('API /api/services no disponible, fallback a Firebase:', err && err.name ? err.name : err);
+                            }
+
+                            if (!db) {
+                                console.warn('Firebase DB not initialized — showing fallback services');
+                                const fallback = [
+                                    { title: 'Painting', tag: 'Painting', image: 'img/Galeria 1.png', description: 'Interior and exterior painting services', pricing_note: '', full_description: '' },
+                                    { title: 'Roof Repairs', tag: 'Roof', image: 'img/Galeria 4.png', description: 'Small to medium roof repairs', pricing_note: '', full_description: '' }
+                                ];
+                                allServices = fallback.map((s, i) => ({ ...s, id: 'fallback_' + i }));
+                                renderServicesGrid();
+                                return;
+                            }
+
+                            // Escuchar cambios en tiempo real — con try/catch por si el SDK lanza
+                            try {
+                                const ref = db.ref('services_catalog');
+                                let listenerAttached = false;
+                                ref.on('value', (snapshot) => {
+                                    listenerAttached = true;
+                                    const data = snapshot.val();
+                                    if (data) {
+                                        allServices = Object.keys(data).map(key => ({ ...data[key], id: key }));
+                                        renderServicesGrid();
+                                    } else {
+                                        servicesGrid.innerHTML = '<div class="empty-state"><p>No hay servicios disponibles en este momento.</p></div>';
+                                    }
+                                }, (error) => {
+                                    console.error("Error loading services:", error);
+                                    servicesGrid.innerHTML = '<div class="empty-state"><p>Error al sincronizar los servicios.</p></div>';
+                                    const fallback = [
+                                        { title: 'Painting', tag: 'Painting', image: 'img/Galeria 1.png', description: 'Interior and exterior painting services', pricing_note: '', full_description: '' },
+                                        { title: 'Roof Repairs', tag: 'Roof', image: 'img/Galeria 4.png', description: 'Small to medium roof repairs', pricing_note: '', full_description: '' }
+                                    ];
+                                    allServices = fallback.map((s, i) => ({ ...s, id: 'fallback_' + i }));
+                                    renderServicesGrid();
+                                });
+
+                                // If nothing comes back quickly, show fallback to avoid blank state
+                                setTimeout(() => {
+                                    if (!allServices || allServices.length === 0) {
+                                        console.warn('No services received from DB — using fallback');
+                                        const fallback = [
+                                            { title: 'Painting', tag: 'Painting', image: 'img/Galeria 1.png', description: 'Interior and exterior painting services', pricing_note: '', full_description: '' },
+                                            { title: 'Roof Repairs', tag: 'Roof', image: 'img/Galeria 4.png', description: 'Small to medium roof repairs', pricing_note: '', full_description: '' }
+                                        ];
+                                        allServices = fallback.map((s, i) => ({ ...s, id: 'fallback_to_' + i }));
+                                        renderServicesGrid();
+                                    }
+                                }, 1200);
+                            } catch (e) {
+                                console.error('Exception while attaching DB listener for services:', e);
+                                const fallback = [
+                                    { title: 'Painting', tag: 'Painting', image: 'img/Galeria 1.png', description: 'Interior and exterior painting services', pricing_note: '', full_description: '' },
+                                    { title: 'Roof Repairs', tag: 'Roof', image: 'img/Galeria 4.png', description: 'Small to medium roof repairs', pricing_note: '', full_description: '' }
+                                ];
+                                allServices = fallback.map((s, i) => ({ ...s, id: 'fallback_ex_' + i }));
+                                renderServicesGrid();
+                            }
                         <span class="service-zoom-hint">${zoomText}</span>
                     </div>
                     <div class="service-content">
