@@ -198,6 +198,46 @@
   <script src="../javascript/menu.js?v=128" defer></script>
   <script src="../javascript/services.v128.js" defer></script>
   <script src="../javascript/scroll-reveal.js?v=128" defer></script>
+  <script>
+    // Fallback quick-insert: if services still not loaded after 1.8s, show static examples
+    window.addEventListener('DOMContentLoaded', function () {
+      setTimeout(() => {
+        try {
+          const grid = document.getElementById('servicesGrid');
+          if (!grid) return;
+          const empty = grid.querySelector('.empty-state');
+          const hasCards = grid.querySelectorAll('.service-card').length > 0;
+          if ((empty || !hasCards) && !hasCards) {
+            grid.innerHTML = '';
+            const samples = [
+              { title: 'Painting', tag: 'Painting', image: '../img/Galeria 1.png', description: 'Interior and exterior painting services' },
+              { title: 'Roof Repairs', tag: 'Roof', image: '../img/Galeria 4.png', description: 'Small to medium roof repairs' },
+              { title: 'Tile & Floor', tag: 'Flooring', image: '../img/Galeria 3.png', description: 'Tile replacement and floor leveling' }
+            ];
+            samples.forEach(s => {
+              const a = document.createElement('article');
+              a.className = 'service-card';
+              a.innerHTML = `
+                <div class="service-image-wrap">
+                  <img class="service-image is-loaded" src="${s.image}" alt="${s.title}">
+                </div>
+                <div class="service-content">
+                  <div>
+                    <span class="service-tag">${s.tag}</span>
+                    <h2 class="service-title">${s.title}</h2>
+                    <p class="service-description">${s.description}</p>
+                  </div>
+                  <div class="service-actions">
+                    <a href="Appointment.html#appointmentForm" class="book-button">Schedule</a>
+                  </div>
+                </div>`;
+              grid.appendChild(a);
+            });
+          }
+        } catch (e) { console.warn('fallback services injector failed', e); }
+      }, 1800);
+    });
+  </script>
 </body>
 
 </html>
