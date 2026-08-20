@@ -51,6 +51,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }, (error) => {
             console.error("Error loading services:", error);
             servicesGrid.innerHTML = '<div class="empty-state"><p>Error al sincronizar los servicios.</p></div>';
+            // Fallback: show a minimal local set so the page doesn't appear empty
+            const fallback = [
+                { title: 'Painting', tag: 'Painting', image: 'img/Galeria 1.png', description: 'Interior and exterior painting services', pricing_note: '', full_description: '' },
+                { title: 'Roof Repairs', tag: 'Roof', image: 'img/Galeria 4.png', description: 'Small to medium roof repairs', pricing_note: '', full_description: '' }
+            ];
+            allServices = fallback.map((s, i) => ({ ...s, id: 'fallback_' + i }));
+            renderServicesGrid();
         });
     }
 
@@ -71,10 +78,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Special rendering for "and more" card with slideshow
                 const slideshowImages = [
                     s.image,
-                    '../img/Galeria 2.png',
-                    '../img/Galeria 3.png',
-                    '../img/Galeria 5.png',
-                    '../img/Galeria 9.png'
+                    'img/Galeria 2.png',
+                    'img/Galeria 3.png',
+                    'img/Galeria 5.png',
+                    'img/Galeria 9.png'
                 ];
                 
                 article.innerHTML = `
