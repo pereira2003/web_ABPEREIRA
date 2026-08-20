@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Editar Servicio</title>
+  <link rel="stylesheet" href="../styles/style.css">
+</head>
+<body>
+  <main style="padding:2rem;">
+    <h1 id="title">Editar Servicio</h1>
+    <form id="serviceForm">
+      <input type="hidden" id="serviceId">
+      <div>
+        <label>Título<br><input id="titleInput" required></label>
+      </div>
+      <div>
+        <label>Tag<br><input id="tagInput"></label>
+      </div>
+      <div>
+        <label>Imagen (ruta)<br><input id="imageInput"></label>
+      </div>
+      <div>
+        <label>Descripción<br><textarea id="descInput"></textarea></label>
+      </div>
+      <div>
+        <label>Precio nota<br><input id="priceInput"></label>
+      </div>
+      <div style="margin-top:1rem;">
+        <button type="submit">Guardar</button>
+        <a href="admin-services.html">Volver</a>
+      </div>
+    </form>
+  </main>
+  <script src="../javascript/admin-edit-service.js"></script>
+</body>
+</html>
