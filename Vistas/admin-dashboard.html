@@ -1621,6 +1621,7 @@
         let currentServices = []; // Global store for services
         let selectedFile = null; // Store the file to be uploaded
         let previewUrl = null;
+        let optimizedImageBlob = null;
 
         // --- UPLOAD LOGIC ---
         const uploadArea = document.getElementById('uploadArea');
@@ -1664,6 +1665,7 @@
             }
 
             selectedFile = file;
+            optimizedImageBlob = null;
 
             if (previewUrl) URL.revokeObjectURL(previewUrl);
             previewUrl = URL.createObjectURL(file);
@@ -1671,6 +1673,14 @@
             imgPreview.style.display = 'block';
             uploadArea.querySelector('svg').style.display = 'none';
             uploadArea.querySelector('p').style.display = 'none';
+
+            try {
+                optimizedImageBlob = await compressImage(file);
+                uploadArea.querySelector('p').textContent = 'Imagen optimizada y lista';
+            } catch (error) {
+                console.error('Error optimizando imagen:', error);
+                uploadArea.querySelector('p').textContent = 'No se pudo optimizar la imagen';
+            }
         }
 
         /**
@@ -1681,7 +1691,7 @@
          * @param {number} quality - Calidad de compresión (0 a 1)
          * @returns {Promise<Blob>} - La imagen comprimida como Blob
          */
-        async function compressImage(file, maxWidth = 1400, maxHeight = 1000, quality = 0.78) {
+        async function compressImage(file, maxWidth = 1000, maxHeight = 750, quality = 0.68) {
             const image = await createImageBitmap(file, { imageOrientation: 'from-image' });
             const scale = Math.min(1, maxWidth / image.width, maxHeight / image.height);
             const width = Math.round(image.width * scale);
@@ -1732,7 +1742,7 @@
                 console.log("Comprimiendo:", selectedFile.name);
                 
                 // WebP optimizado para conservar nitidez y reducir la descarga.
-                const compressedBlob = await compressImage(selectedFile);
+                const compressedBlob = optimizedImageBlob || await compressImage(selectedFile);
                 console.log(`Compresión completada: ${(selectedFile.size / 1024 / 1024).toFixed(2)} MB -> ${(compressedBlob.size / 1024 / 1024).toFixed(2)} MB`);
 
                 const fileName = `services/${Date.now()}_${selectedFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}.webp`;
@@ -2129,6 +2139,11 @@
             // Restaurar valor predeterminado de la nota de precio
             document.getElementById('sPricing').value = "For pricing, contact us or book your appointment.";
             selectedFile = null;
+            optimizedImageBlob = null;
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+                previewUrl = null;
+            }
             imgPreview.src = "";
             imgPreview.style.display = 'none';
             document.getElementById('sImagePath').value = "";
