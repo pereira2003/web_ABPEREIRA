@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" type="image/x-icon" href="../img/ABP.ico?v=2">
-    <link rel="shortcut icon" href="../img/ABP.ico?v=2" type="image/x-icon">
-    <link rel="apple-touch-icon" href="../img/ABPEREIRA%20L.png?v=2">
-    <link rel="manifest" href="../manifest.json?v=2">
+    <link rel="icon" type="image/x-icon" href="img/ABP.ico?v=2">
+    <link rel="shortcut icon" href="img/ABP.ico?v=2" type="image/x-icon">
+    <link rel="apple-touch-icon" href="img/ABPEREIRA%20L.png?v=2">
+    <link rel="manifest" href="manifest.json?v=2">
     <meta name="theme-color" content="#0c3363">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | A⁺Pereira Company</title>
-    <link rel="stylesheet" href="../styles/style.css?v=127">
+    <link rel="stylesheet" href="styles/style.css?v=127">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -1360,7 +1360,7 @@
     <div class="dashboard-container">
         <div class="header">
             <div class="header-left">
-                <img src="../img/ABPEREIRA L.png" alt="A⁺Pereira Logo">
+                <img src="img/ABPEREIRA L.png" alt="A⁺Pereira Logo">
                 <h1>A⁺Pereira Management</h1>
             </div>
             <div class="header-right">
@@ -1915,7 +1915,7 @@
                 <article class="service-card-admin" draggable="true" data-id="${s.id}" data-index="${index}" style="cursor: grab; position: relative;">
                     <div class="service-card-admin-drag-handle" style="position: absolute; top: 10px; left: 10px; background: rgba(255, 255, 255, 0.9); padding: 4px 6px; border-radius: 4px; cursor: grab; z-index: 10; font-size: 14px; font-weight: bold; color: var(--primary);">☰</div>
                     <div class="admin-service-img-wrap">
-                        <img src="${s.image}" alt="${s.title}" onerror="this.src='../img/placeholder.png'">
+                        <img src="${s.image}" alt="${s.title}" onerror="this.src='img/placeholder.png'">
                     </div>
                     <div class="admin-service-content">
                         <span class="admin-service-tag">${s.tag || 'General'}</span>
@@ -1951,7 +1951,7 @@
             list.innerHTML = currentServices.map((s, index) => `
                 <div class="service-order-item" draggable="true" data-id="${s.id}" data-index="${index}">
                     <div class="service-order-drag-handle">☰</div>
-                    <img src="${s.image}" alt="${s.title}" onerror="this.src='../img/placeholder.png'">
+                    <img src="${s.image}" alt="${s.title}" onerror="this.src='img/placeholder.png'">
                     <div class="service-order-info">
                         <h3>${s.title}</h3>
                         <p>${s.tag || 'General'}</p>
@@ -2081,8 +2081,8 @@
                     finalImageUrl = await uploadImage();
                     if (!finalImageUrl) throw new Error("Upload returned null");
                 } else if (imagePath) {
-                    // Si no hay archivo pero hay ruta manual, usar esa ruta con ../ agregado
-                    finalImageUrl = "../" + imagePath;
+                    // Si no hay archivo pero hay ruta manual, usar la ruta proporcionada (relativa al sitio)
+                    finalImageUrl = imagePath;
                 } else if (!finalImageUrl || finalImageUrl.startsWith('data:') || finalImageUrl === window.location.href) {
                     // Si no hay archivo, ni ruta manual, ni preview, mostrar error
                     alert("Por favor sube una imagen o ingresa la ruta de la imagen.");
@@ -2220,13 +2220,13 @@
             const confirmed = await showCustomConfirm("Esto cargará los servicios predeterminados (Gutters, Decks, etc.) si no existen. ¿Continuar?", "Cargar Predeterminados");
             if (!confirmed) return;
             
-            const initialServices = [
-                { title: "Gutters", tag: "Exterior", pricing_note: "For pricing, contact us or book your appointment.", description: "Professional gutter systems designed for proper water management and property protection.", full_description: "Complete gutter solutions including installation, repair, and maintenance to protect your home's foundation.", image: "../img/Galeria 14.png" },
-                { title: "Wood PVC Trex", tag: "Exterior & Interior", pricing_note: "For pricing, contact us or book your appointment.", description: "Expert installation and repair using high-quality Wood, PVC, and Trex materials for lasting durability.", full_description: "Specialized carpentry and exterior work using modern materials like PVC and Trex for weather resistance.", image: "../img/Galeria 8.png" },
-                { title: "Decks", tag: "Exterior", pricing_note: "For pricing, contact us or book your appointment.", description: "Professional deck construction, repair, and refinishing to create beautiful outdoor living spaces.", full_description: "Custom deck solutions including new builds, structural repairs, and staining for a refreshed look.", image: "../img/Galeria 17.png" },
-                { title: "Windows and doors", tag: "Exterior & Interior", pricing_note: "For pricing, contact us or book your appointment.", description: "Expert installation and replacement of windows and doors to improve energy efficiency and security.", full_description: "Full window and door services including framing, sealing, and professional hardware installation.", image: "../img/Galeria 6.png" },
-                { title: "Painting", tag: "Interior & Exterior", pricing_note: "For pricing, contact us or book your appointment.", description: "Careful preparation and clean application for a professional finish that elevates your space.", full_description: "Interior and exterior painting services with high-quality finishes and attention to detail.", image: "../img/Galeria 7.png" },
-                { title: "and more", tag: "General", pricing_note: "For pricing, contact us or book your appointment.", description: "Need something else? We handle various home repairs and technical services tailored to your needs.", full_description: "Contact us for any custom project or home repair not listed here. We are happy to help!", image: "../img/Galeria 1.png" }
+                const initialServices = [
+                { title: "Gutters", tag: "Exterior", pricing_note: "For pricing, contact us or book your appointment.", description: "Professional gutter systems designed for proper water management and property protection.", full_description: "Complete gutter solutions including installation, repair, and maintenance to protect your home's foundation.", image: "img/Galeria 14.png" },
+                { title: "Wood PVC Trex", tag: "Exterior & Interior", pricing_note: "For pricing, contact us or book your appointment.", description: "Expert installation and repair using high-quality Wood, PVC, and Trex materials for lasting durability.", full_description: "Specialized carpentry and exterior work using modern materials like PVC and Trex for weather resistance.", image: "img/Galeria 8.png" },
+                { title: "Decks", tag: "Exterior", pricing_note: "For pricing, contact us or book your appointment.", description: "Professional deck construction, repair, and refinishing to create beautiful outdoor living spaces.", full_description: "Custom deck solutions including new builds, structural repairs, and staining for a refreshed look.", image: "img/Galeria 17.png" },
+                { title: "Windows and doors", tag: "Exterior & Interior", pricing_note: "For pricing, contact us or book your appointment.", description: "Expert installation and replacement of windows and doors to improve energy efficiency and security.", full_description: "Full window and door services including framing, sealing, and professional hardware installation.", image: "img/Galeria 6.png" },
+                { title: "Painting", tag: "Interior & Exterior", pricing_note: "For pricing, contact us or book your appointment.", description: "Careful preparation and clean application for a professional finish that elevates your space.", full_description: "Interior and exterior painting services with high-quality finishes and attention to detail.", image: "img/Galeria 7.png" },
+                { title: "and more", tag: "General", pricing_note: "For pricing, contact us or book your appointment.", description: "Need something else? We handle various home repairs and technical services tailored to your needs.", full_description: "Contact us for any custom project or home repair not listed here. We are happy to help!", image: "img/Galeria 1.png" }
             ];
 
             try {

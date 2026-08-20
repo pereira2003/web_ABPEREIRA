@@ -2,31 +2,31 @@
 <html lang="en">
 
 <head>
-    <link rel="icon" type="image/x-icon" href="../img/ABP.ico?v=2">
-    <link rel="shortcut icon" href="../img/ABP.ico?v=2" type="image/x-icon">
-    <link rel="apple-touch-icon" href="../img/ABPEREIRA%20L.png?v=2">
-    <link rel="manifest" href="../manifest.json?v=2">
+    <link rel="icon" type="image/x-icon" href="img/ABP.ico?v=2">
+    <link rel="shortcut icon" href="img/ABP.ico?v=2" type="image/x-icon">
+    <link rel="apple-touch-icon" href="img/ABPEREIRA%20L.png?v=2">
+    <link rel="manifest" href="manifest.json?v=2">
     <meta name="theme-color" content="#0c3363">
     
     <!-- iOS PWA Optimizations -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="A⁺Pereira">
-    <link rel="apple-touch-startup-image" href="../img/ABPEREIRA%20L.png">
+    <link rel="apple-touch-startup-image" href="img/ABPEREIRA%20L.png">
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A⁺Pereira Company provides elegant, reliable home repair and finish services.">
     <title>A⁺Pereira Company | Home</title>
-    <link rel="preload" href="../styles/menu.css?v=131" as="style">
-    <link rel="stylesheet" href="../styles/menu.css?v=131">
-    <link rel="preload" href="../styles/style.css?v=131" as="style">
-    <link rel="stylesheet" href="../styles/style.css?v=131">
+    <link rel="preload" href="styles/menu.css?v=131" as="style">
+    <link rel="stylesheet" href="styles/menu.css?v=131">
+    <link rel="preload" href="styles/style.css?v=131" as="style">
+    <link rel="stylesheet" href="styles/style.css?v=131">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" as="style">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap">
-    <link rel="preload" href="../img/ABPEREIRA%20L.png" as="image" fetchpriority="high">
+    <link rel="preload" href="img/ABPEREIRA%20L.png" as="image" fetchpriority="high">
     
     <style>
         /* --- APP SPLASH SCREEN (PROFESSIONAL STYLE) --- */
@@ -81,7 +81,7 @@
         // Registrar Service Worker para carga rápida
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('../sw.js');
+                navigator.serviceWorker.register('sw.js');
             });
         }
 
@@ -126,14 +126,14 @@
 <body class="home-page">
     <!-- Pantalla de Bienvenida Animada (Splash Screen) -->
     <div id="app-splash">
-        <img src="../img/ABPEREIRA L.png" alt="A⁺Pereira" class="splash-logo">
+                <img src="img/ABPEREIRA L.png" alt="A⁺Pereira" class="splash-logo">
     </div>
 
     <script>
         // Precargar solo el logo crítico y liberar el splash cuanto antes
         function preloadCriticalImages() {
-            const images = [
-                '../img/ABPEREIRA L.png'
+                const images = [
+                'img/ABPEREIRA L.png'
             ];
             
             const promises = images.map(src => {
@@ -161,7 +161,7 @@
         <!-- AB Pereira Company — Navigation Menu -->
         <div class="menu container" id="site-menu">
             <a href="index.html" class="logo" aria-label="A⁺Pereira Company home">
-                <img src="../img/ABPEREIRA L.png" alt="A⁺Pereira Company logo" class="logo-img" decoding="async" fetchpriority="high">
+                    <img src="img/ABPEREIRA L.png" alt="A⁺Pereira Company logo" class="logo-img" decoding="async" fetchpriority="high">
                 <span>A⁺Pereira Company</span>
             </a>
 
@@ -188,7 +188,7 @@
             <!-- Full-screen mobile overlay -->
              <div class="nav-overlay" id="navOverlay" aria-hidden="true">
                  <div class="overlay-logo">
-                     <img src="../img/ABPEREIRA L.png" alt="A<sup>+</sup>Pereira Company logo">
+                     <img src="img/ABPEREIRA L.png" alt="A<sup>+</sup>Pereira Company logo">
                  </div>
                  <ul>
                      <li><a href="index.html">Home</a></li>
@@ -255,35 +255,35 @@
                 <div class="carousel-viewport">
                     <div class="carousel-track" id="showcaseTrack">
                         <article class="carousel-slide active" aria-hidden="false">
-                            <img src="../img/Galeria 1.png" alt="Painting project" fetchpriority="high" decoding="async">
+                            <img src="img/Galeria 1.png" alt="Painting project" fetchpriority="high" decoding="async">
                             <div class="carousel-caption">
                                 <span>Exterior Finish</span>
                                 <h3>Clean lines and polished detailing.</h3>
                             </div>
                         </article>
                         <article class="carousel-slide" aria-hidden="true">
-                            <img src="../img/Galeria 2.png" alt="Interior detail" loading="lazy" decoding="async">
+                            <img src="img/Galeria 2.png" alt="Interior detail" loading="lazy" decoding="async">
                             <div class="carousel-caption">
                                 <span>Interior Upgrade</span>
                                 <h3>Careful work built for comfort and durability.</h3>
                             </div>
                         </article>
                         <article class="carousel-slide" aria-hidden="true">
-                            <img src="../img/Galeria 3.png" alt="House work in progress" loading="lazy" decoding="async">
+                            <img src="img/Galeria 3.png" alt="House work in progress" loading="lazy" decoding="async">
                             <div class="carousel-caption">
                                 <span>On Site</span>
                                 <h3>Organized execution from structure to finish.</h3>
                             </div>
                         </article>
                         <article class="carousel-slide" aria-hidden="true">
-                            <img src="../img/Galeria 4.png" alt="Roof project" loading="lazy" decoding="async">
+                            <img src="img/Galeria 4.png" alt="Roof project" loading="lazy" decoding="async">
                             <div class="carousel-caption">
                                 <span>Roofing</span>
                                 <h3>Reliable repairs with a stronger final result.</h3>
                             </div>
                         </article>
                         <article class="carousel-slide" aria-hidden="true">
-                            <img src="../img/Galeria 18.png" alt="Finished repair project" loading="lazy" decoding="async">
+                            <img src="img/Galeria 18.png" alt="Finished repair project" loading="lazy" decoding="async">
                             <div class="carousel-caption">
                                 <span>Final Result</span>
                                 <h3>Balanced presentation with durable finishing work.</h3>
@@ -332,7 +332,7 @@
 
         <section class="story container">
             <div class="story-media">
-                <img src="../img/LOGO_AB.png" alt="House repair project" loading="lazy" decoding="async">
+                    <img src="img/LOGO_AB.png" alt="House repair project" loading="lazy" decoding="async">
             </div>
             <div class="story-copy">
                 <p class="eyebrow eyebrow-dark">Who We Are</p>
@@ -355,7 +355,7 @@
     <footer class="footer">
         <div class="footer-content container">
             <div class="footer-brand">
-                <img src="../img/ABPEREIRA L.png" alt="A+Pereira Company logo" class="footer-logo" decoding="async">
+                <img src="img/ABPEREIRA L.png" alt="A+Pereira Company logo" class="footer-logo" decoding="async">
             </div>
             <div class="link">
                 <h3>Whatsapp</h3>
@@ -427,10 +427,10 @@
     </div>
 
     <!-- Scripts Optimizados -->
-    <script src="../javascript/menu.js?v=131" defer></script>
-    <script src="../javascript/contact/success-alert.js?v=124" defer></script>
-    <script src="../javascript/home-carousel.js?v=124" defer></script>
-    <script src="../javascript/scroll-reveal.js?v=124" defer></script>
+    <script src="javascript/menu.js?v=131" defer></script>
+    <script src="javascript/contact/success-alert.js?v=124" defer></script>
+    <script src="javascript/home-carousel.js?v=124" defer></script>
+    <script src="javascript/scroll-reveal.js?v=124" defer></script>
 </body>
 
 </html>
