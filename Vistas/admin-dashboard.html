@@ -1620,6 +1620,7 @@
         let currentFilter = 'all'; // Global filter state
         let currentServices = []; // Global store for services
         let selectedFile = null; // Store the file to be uploaded
+        let previewUrl = null;
 
         // --- UPLOAD LOGIC ---
         const uploadArea = document.getElementById('uploadArea');
@@ -1652,20 +1653,24 @@
         });
 
         async function handleFileSelect(file) {
-            selectedFile = file;
-            
-            // Mostrar vista previa original mientras se procesa
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                imgPreview.src = e.target.result;
-                imgPreview.style.display = 'block';
-                uploadArea.querySelector('svg').style.display = 'none';
-                uploadArea.querySelector('p').style.display = 'none';
-            };
-            reader.readAsDataURL(file);
+            if (!file.type.startsWith('image/')) {
+                alert('Selecciona un archivo de imagen.');
+                return;
+            }
 
-            // Opcional: Podríamos comprimir aquí para la vista previa, 
-            // pero lo haremos justo antes de subir para asegurar máxima eficiencia.
+            if (file.size > 15 * 1024 * 1024) {
+                alert('La imagen no puede superar los 15 MB.');
+                return;
+            }
+
+            selectedFile = file;
+
+            if (previewUrl) URL.revokeObjectURL(previewUrl);
+            previewUrl = URL.createObjectURL(file);
+            imgPreview.src = previewUrl;
+            imgPreview.style.display = 'block';
+            uploadArea.querySelector('svg').style.display = 'none';
+            uploadArea.querySelector('p').style.display = 'none';
         }
 
         /**
@@ -1676,57 +1681,25 @@
          * @param {number} quality - Calidad de compresión (0 a 1)
          * @returns {Promise<Blob>} - La imagen comprimida como Blob
          */
-        function compressImage(file, maxWidth = 800, maxHeight = 800, quality = 0.5) {
+        async function compressImage(file, maxWidth = 1400, maxHeight = 1000, quality = 0.78) {
+            const image = await createImageBitmap(file, { imageOrientation: 'from-image' });
+            const scale = Math.min(1, maxWidth / image.width, maxHeight / image.height);
+            const width = Math.round(image.width * scale);
+            const height = Math.round(image.height * scale);
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const context = canvas.getContext('2d', { alpha: false });
+            context.imageSmoothingEnabled = true;
+            context.imageSmoothingQuality = 'high';
+            context.drawImage(image, 0, 0, width, height);
+            image.close();
+
             return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (event) => {
-                    const img = new Image();
-                    img.src = event.target.result;
-                    img.onload = () => {
-                        let width = img.width;
-                        let height = img.height;
-
-                        // Redimensionamiento más agresivo para máxima velocidad
-                        if (width > height) {
-                            if (width > maxWidth) {
-                                height *= maxWidth / width;
-                                width = maxWidth;
-                            }
-                        } else {
-                            if (height > maxHeight) {
-                                width *= maxHeight / height;
-                                height = maxHeight;
-                            }
-                        }
-
-                        const canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        
-                        // Configuración de suavizado para mantener calidad aceptable
-                        ctx.imageSmoothingEnabled = true;
-                        ctx.imageSmoothingQuality = 'medium';
-                        
-                        ctx.drawImage(img, 0, 0, width, height);
-
-                        // Calidad 0.5 y formato WebP para archivos ultra ligeros
-                        const format = 'image/webp';
-                        canvas.toBlob((blob) => {
-                            if (blob) {
-                                resolve(blob);
-                            } else {
-                                canvas.toBlob((fallbackBlob) => {
-                                    if (fallbackBlob) resolve(fallbackBlob);
-                                    else reject(new Error("No se pudo generar el Blob"));
-                                }, 'image/jpeg', 0.5);
-                            }
-                        }, format, 0.5);
-                    };
-                    img.onerror = (err) => reject(err);
-                };
-                reader.onerror = (err) => reject(err);
+                canvas.toBlob(blob => {
+                    if (blob) resolve(blob);
+                    else reject(new Error('No se pudo generar WebP'));
+                }, 'image/webp', quality);
             });
         }
 
@@ -1758,9 +1731,9 @@
                 updateUI('Comprimiendo imagen...');
                 console.log("Comprimiendo:", selectedFile.name);
                 
-                // Comprimir imagen (máximo 800px, calidad 0.5)
+                // WebP optimizado para conservar nitidez y reducir la descarga.
                 const compressedBlob = await compressImage(selectedFile);
-                console.log("Compresión completada");
+                console.log(`Compresión completada: ${(selectedFile.size / 1024 / 1024).toFixed(2)} MB -> ${(compressedBlob.size / 1024 / 1024).toFixed(2)} MB`);
 
                 const fileName = `services/${Date.now()}_${selectedFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}.webp`;
                 const storageRef = storage.ref(fileName);
@@ -1799,29 +1772,9 @@
                 });
             } catch (error) {
                 console.error("Error en proceso uploadImage:", error);
-                updateUI('Fallo compresión. Subiendo original...');
-                
-                // Intento con archivo original
-                const fileName = `services/${Date.now()}_raw_${selectedFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-                const storageRef = storage.ref(fileName);
-                
-                return new Promise((resolve, reject) => {
-                    const uploadTask = storageRef.put(selectedFile);
-                    uploadTask.on('state_changed', 
-                        (snapshot) => {
-                            const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                            updateUI(`Subiendo original: ${progress}%`, progress);
-                        }, 
-                        (err) => {
-                            alert("Error subiendo original: " + err.message);
-                            reject(err);
-                        }, 
-                        async () => {
-                            const url = await uploadTask.snapshot.ref.getDownloadURL();
-                            resolve(url);
-                        }
-                    );
-                });
+                progressContainer.style.display = 'none';
+                alert('No se pudo optimizar la imagen. Elige otra imagen en JPG, PNG o WebP.');
+                return null;
             }
         }
 
