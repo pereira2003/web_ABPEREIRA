@@ -8,6 +8,10 @@
       ".read": true,
       ".write": true
     },
+    "services_catalog": {
+      ".read": true,
+      ".write": false
+    },
     ".read": false,
     ".write": false
   }
