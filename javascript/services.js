@@ -39,6 +39,22 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const controller = new AbortController();
             const timeout = setTimeout(() => controller.abort(), 1500);
+            // 0) try public tunnel API
+            const PUBLIC_API_BASE = 'https://every-dingos-remain.loca.lt';
+            try {
+                const pub = await fetch(PUBLIC_API_BASE + '/api/services', { signal: controller.signal });
+                if (pub && pub.ok) {
+                    const json = await pub.json();
+                    if (Array.isArray(json) && json.length > 0) {
+                        allServices = json.map((s, i) => ({ ...s, id: s.id || ('pub_' + i) }));
+                        renderServicesGrid();
+                        clearTimeout(timeout);
+                        return;
+                    }
+                }
+            } catch (e) {
+                // not available — continue to other fallbacks
+            }
             // 1) static services.json — try relative path first (works when page served under /Vistas/), then absolute
             let resp = null;
             try { resp = await fetch('services.json', { signal: controller.signal }); } catch (e) { /* ignore */ }
