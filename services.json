@@ -1,0 +1,5 @@
+[
+  { "id": "painting", "title": "Painting", "tag": "Painting", "image": "img/Galeria 1.png", "description": "Interior and exterior painting services", "pricing_note": "From $200", "full_description": "Complete painting service for interior and exterior, includes prep and cleanup." },
+  { "id": "roof-repairs", "title": "Roof Repairs", "tag": "Roof", "image": "img/Galeria 4.png", "description": "Small to medium roof repairs", "pricing_note": "From $150", "full_description": "Patch and repair damaged roofing, replace tiles, fix leaks." },
+  { "id": "tile-flooring", "title": "Tile & Floor", "tag": "Flooring", "image": "img/Galeria 3.png", "description": "Tile replacement and floor leveling", "pricing_note": "From $120", "full_description": "Tile installation, leveling services and grout replacement." }
+]

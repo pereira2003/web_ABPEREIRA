@@ -35,10 +35,24 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- LOAD SERVICES FROM FIREBASE ---
     async function loadServices() {
         // Try API first (preferred): if a local API is available, use it and skip Firebase.
+        // Try a static JSON blob first (served by GitHub Pages), then local API, then Firebase
         try {
             const controller = new AbortController();
             const timeout = setTimeout(() => controller.abort(), 1500);
-            const resp = await fetch('/api/services', { signal: controller.signal });
+            // 1) static services.json
+            let resp = await fetch('/services.json', { signal: controller.signal });
+            if (resp && resp.ok) {
+                const json = await resp.json();
+                if (Array.isArray(json) && json.length > 0) {
+                    allServices = json.map((s, i) => ({ ...s, id: s.id || ('static_' + i) }));
+                    renderServicesGrid();
+                    clearTimeout(timeout);
+                    return;
+                }
+            }
+
+            // 2) try /api/services
+            resp = await fetch('/api/services', { signal: controller.signal });
             clearTimeout(timeout);
             if (resp && resp.ok) {
                 const json = await resp.json();
@@ -49,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         } catch (e) {
-            console.warn('API /api/services not available or timed out — falling back to Firebase', e && e.name ? e.name : e);
+            console.warn('Network services fetch failed — falling back to Firebase', e && e.name ? e.name : e);
         }
 
         if (!db) {
