@@ -177,10 +177,54 @@
 
   <main class="container">
     <section class="services-grid" id="servicesGrid" aria-label="List of home repair services">
-      <!-- Services loaded via JS -->
-      <div class="empty-state" id="servicesLoading">
-        <p>Cargando servicios...</p>
-      </div>
+      <!-- Static fallback services (visible immediately while JS/DB load) -->
+      <article class="service-card">
+        <div class="service-image-wrap">
+          <img class="service-image is-loaded" src="../img/Galeria 1.png" alt="Painting">
+        </div>
+        <div class="service-content">
+          <div>
+            <span class="service-tag">Painting</span>
+            <h2 class="service-title">Painting</h2>
+            <p class="service-description">Interior and exterior painting services</p>
+          </div>
+          <div class="service-actions">
+            <a href="Appointment.html#appointmentForm" class="book-button">Schedule</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="service-card">
+        <div class="service-image-wrap">
+          <img class="service-image is-loaded" src="../img/Galeria 4.png" alt="Roof Repairs">
+        </div>
+        <div class="service-content">
+          <div>
+            <span class="service-tag">Roof</span>
+            <h2 class="service-title">Roof Repairs</h2>
+            <p class="service-description">Small to medium roof repairs</p>
+          </div>
+          <div class="service-actions">
+            <a href="Appointment.html#appointmentForm" class="book-button">Schedule</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="service-card">
+        <div class="service-image-wrap">
+          <img class="service-image is-loaded" src="../img/Galeria 3.png" alt="Tile & Floor">
+        </div>
+        <div class="service-content">
+          <div>
+            <span class="service-tag">Flooring</span>
+            <h2 class="service-title">Tile & Floor</h2>
+            <p class="service-description">Tile replacement and floor leveling</p>
+          </div>
+          <div class="service-actions">
+            <a href="Appointment.html#appointmentForm" class="book-button">Schedule</a>
+          </div>
+        </div>
+      </article>
     </section>
 
     <section class="services-note">
