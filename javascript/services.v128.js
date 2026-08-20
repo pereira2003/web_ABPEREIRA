@@ -39,8 +39,10 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const controller = new AbortController();
             const timeout = setTimeout(() => controller.abort(), 1500);
-            // 1) static services.json
-            let resp = await fetch('/services.json', { signal: controller.signal });
+            // 1) static services.json — try relative path first (works when page served under /Vistas/), then absolute
+            let resp = null;
+            try { resp = await fetch('services.json', { signal: controller.signal }); } catch (e) { /* ignore */ }
+            if ((!resp || !resp.ok)) resp = await fetch('/services.json', { signal: controller.signal });
             if (resp && resp.ok) {
                 const json = await resp.json();
                 if (Array.isArray(json) && json.length > 0) {
