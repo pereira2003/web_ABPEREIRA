@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/x-icon" href="img/ABP.ico?v=2">
+    <link rel="shortcut icon" href="img/ABP.ico?v=2" type="image/x-icon">
+    <link rel="apple-touch-icon" href="img/ABPEREIRA%20L.png?v=2">
+    <link rel="manifest" href="manifest.json?v=2">
+    <meta name="theme-color" content="#0c3363">
+    
+    <!-- iOS PWA Optimizations -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="A⁺Pereira">
+    <link rel="apple-touch-startup-image" href="img/ABPEREIRA%20L.png">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support | A⁺Pereira Company</title>
+    <link rel="preload" href="styles/menu.css?v=114" as="style">
+    <link rel="stylesheet" href="styles/menu.css?v=114">
+    <link rel="preload" href="styles/style.css?v=114" as="style">
+    <link rel="stylesheet" href="styles/style.css?v=114">
+    <link rel="preload" href="styles/styleContact.css?v=114" as="style">
+    <link rel="stylesheet" href="styles/styleContact.css?v=114">
+    
+    <style>
+        /* --- APP SPLASH SCREEN (PROFESSIONAL STYLE) --- */
+        #app-splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1), visibility 0.8s;
+        }
+
+        .splash-logo {
+            width: 140px;
+            height: auto;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: professionalIntro 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+                       logoPulse 3s ease-in-out 1.5s infinite;
+            filter: drop-shadow(0 15px 35px rgba(12, 51, 99, 0.1));
+        }
+
+        @keyframes professionalIntro {
+            0% { opacity: 0; transform: translateY(30px) scale(0.9); filter: blur(10px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        /* Ocultar splash cuando cargue */
+        body.loaded #app-splash {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+    </style>
+    
+    <script>
+        // Lógica para ocultar el Splash Screen cuando TODO esté cargado
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 400);
+        });
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script>
+        const fbCheck = {
+            apiKey: "AIzaSyD6h6fErJd-nVhvxsTyBdJmkqLMzzR4rOk",
+            authDomain: "abpereira-web.firebaseapp.com",
+            databaseURL: "https://abpereira-web-default-rtdb.firebaseio.com",
+            projectId: "abpereira-web",
+            storageBucket: "abpereira-web.firebasestorage.app",
+            messagingSenderId: "270636168434",
+            appId: "1:270636168434:web:046c7d9bc4d55aaececc6b"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(fbCheck);
+        firebase.database().ref('settings/maintenance').on('value', (snapshot) => {
+            const isMaintenance = snapshot.val();
+            const navbar = document.getElementById('mainNav');
+            const overlay = document.getElementById('navOverlay');
+            
+            if (isMaintenance === true) {
+                // Si estamos en mantenimiento, ocultar otras categorías del menú
+                if (navbar) {
+                    navbar.querySelectorAll('li').forEach(li => {
+                        const link = li.querySelector('a');
+                        if (link && !link.textContent.toLowerCase().includes('support')) {
+                            li.style.display = 'none';
+                        }
+                    });
+                }
+                if (overlay) {
+                    overlay.querySelectorAll('li').forEach(li => {
+                        const link = li.querySelector('a');
+                        if (link && !link.textContent.toLowerCase().includes('support')) {
+                            li.style.display = 'none';
+                        }
+                    });
+                }
+            } else {
+                // Si NO hay mantenimiento, asegurar que todo sea visible
+                if (navbar) navbar.querySelectorAll('li').forEach(li => li.style.display = '');
+                if (overlay) overlay.querySelectorAll('li').forEach(li => li.style.display = '');
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <!-- Pantalla de Bienvenida Animada (Splash Screen) -->
+    <div id="app-splash">
+        <img src="img/ABPEREIRA L.png" alt="A⁺Pereira" class="splash-logo">
+    </div>
+
+    <script>
+        // Lógica para ocultar el Splash Screen cuando TODO esté cargado
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 300);
+        });
+    </script>
+    <header class="page-header">
+        <!-- AB Pereira Company — Navigation Menu -->
+        <div class="menu container" id="site-menu">
+            <a href="index.html" class="logo" aria-label="A⁺Pereira Company home">
+                <img src="img/ABPEREIRA L.png" alt="A⁺Pereira Company logo" class="logo-img" decoding="async" fetchpriority="high">
+                <span>A⁺Pereira Company</span>
+            </a>
+
+            <button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false" aria-controls="navOverlay">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+
+            <nav class="navbar" id="mainNav" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="Servicios.html">Services</a></li>
+                    <li><a href="Appointment.html">Book Appointment</a></li>
+                    <li><a href="Contact.html">Support</a></li>
+                    <li><a href="admin-login.html" aria-label="Admin Login" style="opacity: 0.8; display: inline-flex; align-items: center; justify-content: center;" title="Admin Login">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+    </svg>
+</a></li>
+                </ul>
+            </nav>
+
+            <!-- Full-screen mobile overlay -->
+            <div class="nav-overlay" id="navOverlay" aria-hidden="true">
+                <div class="overlay-logo">
+                    <img src="img/ABPEREIRA L.png" alt="A<sup>+</sup>Pereira Company logo">
+                </div>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="Servicios.html">Services</a></li>
+                    <li><a href="Appointment.html">Book Appointment</a></li>
+                    <li><a href="Contact.html">Support</a></li>
+                    <li><a href="admin-login.html" aria-label="Admin Login" style="opacity: 0.8; display: inline-flex; align-items: center; justify-content: center;" title="Admin Login">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+    </svg>
+</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main class="container contact-shell">
+        <section class="form-contact">
+            <div class="contact-intro">
+                <p class="eyebrow">Support</p>
+                <div class="intro-copy">
+                    <h1>Tell us what you need and we will guide the next step clearly.</h1>
+                    <p>Use the form to request a quote or describe the repair you need. We keep the process direct, organized, and easy to follow.</p>
+                </div>
+
+                <div class="contact-highlights">
+                    <div class="highlight-item">
+                        <span class="highlight-label">Clear quotes</span>
+                        <span class="highlight-value">Simple request flow with the right project details.</span>
+                    </div>
+                    <div class="highlight-item">
+                        <span class="highlight-label">Service-based inquiry</span>
+                        <span class="highlight-value">Choose the service first so the request arrives better organized.</span>
+                    </div>
+                    <div class="highlight-item">
+                        <span class="highlight-label">Fast follow-up</span>
+                        <span class="highlight-value">We can review your information and respond with a clearer next step.</span>
+                    </div>
+                </div>
+            </div>
+
+            <form class="contact-form" id="contactForm" action="https://formsubmit.co/abpereiraconstrucion@gmail.com" method="POST">
+                <input type="hidden" name="_next" id="redirect-home">
+                <input type="hidden" name="_template" value="box">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_subject" id="email-subject" value="✨ NUEVA CONSULTA DESDE LA WEB | A+PEREIRA COMPANY">
+                <div class="form-section-heading">
+                    <h2>Project Details</h2>
+                    <p>Complete the form and we will redirect you to the homepage after sending your request. A formatted message with all your information will be sent.</p>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" name="Name" id="name" placeholder="Your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Number</label>
+                        <input type="tel" name="Phone" id="phone" placeholder="Your phone number" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email (Optional)</label>
+                        <input type="email" name="Email" id="email" placeholder="you@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="service">Service</label>
+                        <select name="Service" id="service" required>
+                            <option value="" disabled selected>Select a service</option>
+                            <option value="Gutters">Gutters</option>
+                            <option value="Wood, PVC & Trex">Wood, PVC & Trex</option>
+                            <option value="Decks">Decks</option>
+                            <option value="Windows and Doors">Windows and Doors</option>
+                            <option value="Painting">Painting</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+
+
+                <div class="form-group form-group-full">
+                    <label for="comments">Comments (Optional)</label>
+                    <textarea name="Message" id="comments" rows="5" placeholder="Write a brief description of the job or service you need"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <input class="btn" type="submit" value="Send Message">
+                </div>
+
+                <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+    </main>
+
+    <!-- Floating Menu Removed -->
+
+    <!-- Scripts Optimizados -->
+    <script src="javascript/menu.js?v=113" defer></script>
+    <script src="javascript/contact/success-alert.js?v=113" defer></script>
+    <script src="javascript/contact.js?v=113" defer></script>
+    <script src="javascript/scroll-reveal.js?v=113" defer></script>
+</body>
+
+</html>

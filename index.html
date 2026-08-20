@@ -1,21 +1,436 @@
-<!doctype html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" type="image/x-icon" href="./img/ABP.ico?v=2">
-  <link rel="shortcut icon" href="./img/ABP.ico?v=2" type="image/x-icon">
-  <link rel="apple-touch-icon" href="./img/ABPEREIRA%20L.png?v=2">
-  <link rel="manifest" href="./manifest.json?v=2">
-  <meta name="theme-color" content="#0c3363">
-  <!-- Update to trigger rebuild: 2026-05-26 -->
-  <meta http-equiv="refresh" content="0; url=./Vistas/index.html" />
-  <title>A⁺Pereira Company - Servicios de Limpieza</title>
-  <script>
-    window.location.replace('./Vistas/index.html');
-  </script>
+    <link rel="icon" type="image/x-icon" href="img/ABP.ico?v=2">
+    <link rel="shortcut icon" href="img/ABP.ico?v=2" type="image/x-icon">
+    <link rel="apple-touch-icon" href="img/ABPEREIRA%20L.png?v=2">
+    <link rel="manifest" href="manifest.json?v=2">
+    <meta name="theme-color" content="#0c3363">
+    
+    <!-- iOS PWA Optimizations -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="A⁺Pereira">
+    <link rel="apple-touch-startup-image" href="img/ABPEREIRA%20L.png">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A⁺Pereira Company provides elegant, reliable home repair and finish services.">
+    <title>A⁺Pereira Company | Home</title>
+    <link rel="preload" href="styles/menu.css?v=131" as="style">
+    <link rel="stylesheet" href="styles/menu.css?v=131">
+    <link rel="preload" href="styles/style.css?v=131" as="style">
+    <link rel="stylesheet" href="styles/style.css?v=131">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" as="style">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap">
+    <link rel="preload" href="img/ABPEREIRA%20L.png" as="image" fetchpriority="high">
+    
+    <style>
+        /* --- APP SPLASH SCREEN (PROFESSIONAL STYLE) --- */
+        #app-splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1), visibility 0.8s;
+        }
+
+        .splash-logo {
+            width: 140px;
+            height: auto;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: professionalIntro 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+                       logoPulse 3s ease-in-out 1.5s infinite;
+            filter: drop-shadow(0 15px 35px rgba(12, 51, 99, 0.1));
+        }
+
+        @keyframes professionalIntro {
+            0% { opacity: 0; transform: translateY(30px) scale(0.9); filter: blur(10px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        /* Ocultar splash cuando cargue */
+        body.loaded #app-splash {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+    </style>
+    
+    <!-- Firebase SDK (Unified v10) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script>
+        // Registrar Service Worker para carga rápida
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js');
+            });
+        }
+
+        // Detectar Offline
+        window.addEventListener('offline', () => {
+            window.location.href = 'Error.html?type=offline';
+        });
+
+        const firebaseConfigCheck = {
+            apiKey: "AIzaSyD6h6fErJd-nVhvxsTyBdJmkqLMzzR4rOk",
+            authDomain: "abpereira-web.firebaseapp.com",
+            databaseURL: "https://abpereira-web-default-rtdb.firebaseio.com",
+            projectId: "abpereira-web",
+            storageBucket: "abpereira-web.firebasestorage.app",
+            messagingSenderId: "270636168434",
+            appId: "1:270636168434:web:046c7d9bc4d55aaececc6b"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfigCheck);
+        // Ensure anonymous auth so client can access DB when rules require authentication
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+            if (!firebase.auth().currentUser) {
+                firebase.auth().signInAnonymously()
+                    .then(() => console.log('✅ Firebase anonymous auth signed in'))
+                    .catch((err) => console.error('Firebase anonymous auth error:', err));
+            }
+        }
+        
+        // Check Mantenimiento
+        firebase.database().ref('settings/maintenance').on('value', (snapshot) => {
+            if (snapshot.val() === true) window.location.href = 'Maintenance.html';
+        });
+
+        // Detectar errores de carga globales
+        window.addEventListener('error', (e) => {
+            if (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK') {
+                console.error('Error cargando recurso:', e.target.src || e.target.href);
+            }
+        }, true);
+    </script>
 </head>
-<body>
-  <p>Redirigiendo a <a href="./Vistas/index.html">la página principal</a>...</p>
+
+<body class="home-page">
+    <!-- Pantalla de Bienvenida Animada (Splash Screen) -->
+    <div id="app-splash">
+                <img src="img/ABPEREIRA L.png" alt="A⁺Pereira" class="splash-logo">
+    </div>
+
+    <script>
+        // Precargar solo el logo crítico y liberar el splash cuanto antes
+        function preloadCriticalImages() {
+                const images = [
+                'img/ABPEREIRA L.png'
+            ];
+            
+            const promises = images.map(src => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.src = src;
+                    img.onload = resolve;
+                    img.onerror = resolve;
+                });
+            });
+            
+            return Promise.all(promises);
+        }
+
+        // Ocultar el Splash Screen tan pronto como el DOM esté listo
+        window.addEventListener('DOMContentLoaded', () => {
+            preloadCriticalImages().then(() => {
+                setTimeout(() => {
+                    document.body.classList.add('loaded');
+                }, 250);
+            });
+        });
+    </script>
+    <header class="page-header">
+        <!-- AB Pereira Company — Navigation Menu -->
+        <div class="menu container" id="site-menu">
+            <a href="index.html" class="logo" aria-label="A⁺Pereira Company home">
+                    <img src="img/ABPEREIRA L.png" alt="A⁺Pereira Company logo" class="logo-img" decoding="async" fetchpriority="high">
+                <span>A⁺Pereira Company</span>
+            </a>
+
+            <button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false" aria-controls="navOverlay">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+
+            <nav class="navbar" id="mainNav" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="Servicios.html">Services</a></li>
+                    <li><a href="Appointment.html">Book Appointment</a></li>
+                    <li><a href="Contact.html">Support</a></li>
+                    <li><a href="admin-login.html" aria-label="Admin Login" style="opacity: 0.8; display: inline-flex; align-items: center; justify-content: center;" title="Admin Login">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+    </svg>
+</a></li>
+                </ul>
+            </nav>
+
+            <!-- Full-screen mobile overlay -->
+             <div class="nav-overlay" id="navOverlay" aria-hidden="true">
+                 <div class="overlay-logo">
+                     <img src="img/ABPEREIRA L.png" alt="A<sup>+</sup>Pereira Company logo">
+                 </div>
+                 <ul>
+                     <li><a href="index.html">Home</a></li>
+                     <li><a href="Servicios.html">Services</a></li>
+                     <li><a href="Appointment.html">Book Appointment</a></li>
+                     <li><a href="Contact.html">Support</a></li>
+                     <li><a href="admin-login.html" aria-label="Admin Login" style="opacity: 0.8; display: inline-flex; align-items: center; justify-content: center;" title="Admin Login">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+    </svg>
+</a></li>
+                 </ul>
+             </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content container">
+            <div class="hero-copy">
+                <p class="eyebrow">HOME REPAIR AND FINISHES</p>
+                <h1>Elegant work, dependable execution, and a cleaner client experience.</h1>
+                <p class="hero-description">We handle roofing, painting, and electrical work with an organized process, refined finish, and practical solutions built for everyday living.</p>
+                <div class="hero-actions">
+                    <a href="Servicios.html#servicesGrid" class="btn btn-primary">Explore Services</a>
+                    <a href="Appointment.html#appointmentForm" class="btn btn-primary">Book Appointment</a>
+                </div>
+            </div>
+
+            <div class="hero-panel">
+                <div class="hero-note">
+                    <span class="hero-note-label">Signature Approach</span>
+                    <h2>From the first walkthrough to the final detail, the job stays organized.</h2>
+                    <p>Our process is built around durable repairs, polished presentation, and a site that feels respected from start to finish.</p>
+                    <div class="hero-metrics" aria-label="Company highlights">
+                        <div class="metric-card">
+                            <strong>Detail</strong>
+                            <span>Thoughtful finishes in every step</span>
+                        </div>
+                        <div class="metric-card">
+                            <strong>Clarity</strong>
+                            <span>Simple communication and quotes</span>
+                        </div>
+                        <div class="metric-card">
+                            <strong>Reliability</strong>
+                            <span>Solutions designed to last</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <section class="showcase container">
+            <div class="section-heading">
+                <p class="eyebrow eyebrow-dark">Selected Work</p>
+                <h2>Real images from the type of work we deliver.</h2>
+            </div>
+            <div class="showcase-carousel" aria-label="Project image carousel">
+                <button class="carousel-control carousel-control-prev" id="carouselPrev" type="button" aria-label="Previous image">
+                    <span aria-hidden="true">&#8249;</span>
+                </button>
+
+                <div class="carousel-viewport">
+                    <div class="carousel-track" id="showcaseTrack">
+                        <article class="carousel-slide active" aria-hidden="false">
+                            <img src="img/Galeria 1.png" alt="Painting project" fetchpriority="high" decoding="async">
+                            <div class="carousel-caption">
+                                <span>Exterior Finish</span>
+                                <h3>Clean lines and polished detailing.</h3>
+                            </div>
+                        </article>
+                        <article class="carousel-slide" aria-hidden="true">
+                            <img src="img/Galeria 2.png" alt="Interior detail" loading="lazy" decoding="async">
+                            <div class="carousel-caption">
+                                <span>Interior Upgrade</span>
+                                <h3>Careful work built for comfort and durability.</h3>
+                            </div>
+                        </article>
+                        <article class="carousel-slide" aria-hidden="true">
+                            <img src="img/Galeria 3.png" alt="House work in progress" loading="lazy" decoding="async">
+                            <div class="carousel-caption">
+                                <span>On Site</span>
+                                <h3>Organized execution from structure to finish.</h3>
+                            </div>
+                        </article>
+                        <article class="carousel-slide" aria-hidden="true">
+                            <img src="img/Galeria 4.png" alt="Roof project" loading="lazy" decoding="async">
+                            <div class="carousel-caption">
+                                <span>Roofing</span>
+                                <h3>Reliable repairs with a stronger final result.</h3>
+                            </div>
+                        </article>
+                        <article class="carousel-slide" aria-hidden="true">
+                            <img src="img/Galeria 18.png" alt="Finished repair project" loading="lazy" decoding="async">
+                            <div class="carousel-caption">
+                                <span>Final Result</span>
+                                <h3>Balanced presentation with durable finishing work.</h3>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <button class="carousel-control carousel-control-next" id="carouselNext" type="button" aria-label="Next image">
+                    <span aria-hidden="true">&#8250;</span>
+                </button>
+
+                <div class="carousel-dots" id="carouselDots" aria-label="Carousel navigation">
+                    <button class="carousel-dot active" type="button" aria-label="Show slide 1" aria-pressed="true"></button>
+                    <button class="carousel-dot" type="button" aria-label="Show slide 2" aria-pressed="false"></button>
+                    <button class="carousel-dot" type="button" aria-label="Show slide 3" aria-pressed="false"></button>
+                    <button class="carousel-dot" type="button" aria-label="Show slide 4" aria-pressed="false"></button>
+                    <button class="carousel-dot" type="button" aria-label="Show slide 5" aria-pressed="false"></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="process container">
+            <div class="section-heading">
+                <p class="eyebrow eyebrow-dark">Working Procedure</p>
+                <h2>A straightforward process with premium attention to detail.</h2>
+            </div>
+            <div class="process-grid">
+                <article class="process-card">
+                    <span class="process-number">01</span>
+                    <h3>Assessment</h3>
+                    <p>We review the scope carefully, identify the real need, and define the best approach before work starts.</p>
+                </article>
+                <article class="process-card">
+                    <span class="process-number">02</span>
+                    <h3>Execution</h3>
+                    <p>Each repair is completed with clean coordination, durable materials, and a focus on visible quality.</p>
+                </article>
+                <article class="process-card">
+                    <span class="process-number">03</span>
+                    <h3>Delivery</h3>
+                    <p>We close each project with a professional finish that improves comfort, safety, and long-term value.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="story container">
+            <div class="story-media">
+                    <img src="img/LOGO_AB.png" alt="House repair project" loading="lazy" decoding="async">
+            </div>
+            <div class="story-copy">
+                <p class="eyebrow eyebrow-dark">Who We Are</p>
+                <h2>We bring practical repair work and a more refined finish to every home project.</h2>
+                <p>A<sup>+</sup>Pereira Company focuses on dependable execution, quality materials, and a result that looks as good as it performs. We work with homeowners who want repairs handled with care and professionalism.</p>
+                <a href="Appointment.html#appointmentForm" class="btn btn-primary">Start Your Project</a>
+            </div>
+        </section>
+
+        <section class="cta-band">
+            <div class="cta-overlay"></div>
+            <div class="container cta-content">
+                <p class="eyebrow">Direct Support</p>
+                <h2>Need help with a project or have questions? Our support team is ready to guide you.</h2>
+                <a href="Contact.html#contactForm" class="btn btn-primary">Support</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content container">
+            <div class="footer-brand">
+                <img src="img/ABPEREIRA L.png" alt="A+Pereira Company logo" class="footer-logo" decoding="async">
+            </div>
+            <div class="link">
+                <h3>Whatsapp</h3>
+                <ul>
+                    <li><a href="https://wa.me/16319601989">+1 (631) 960-1989</a></li>
+                </ul>
+            </div>
+            <div class="link">
+                <h3>Instagram</h3>
+                <ul>
+                    <li><a href="https://www.instagram.com/ab__pereira/">ab__pereira</a></li>
+                </ul>
+            </div>
+            <div class="link">
+                <h3>Phone</h3>
+                <ul>
+                    <li><a href="tel:+16319601989">+1 (631) 960-1989</a></li>
+                </ul>
+            </div>
+            <div class="link">
+                <h3>Mail</h3>
+                <ul>
+                    <li><a href="mailto:abpereiraconstrucion@gmail.com">abpereiraconstrucion@gmail.com</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright container" style="display: flex; justify-content: center; align-items: center; width: 100%;">
+            <p>A<sup>+</sup>Pereira Company © 2022</p>
+        </div>
+    </footer>
+
+    <div class="communication-menu" id="commMenu">
+        <div class="comm-options">
+            <a href="Appointment.html#appointmentForm" class="comm-item" title="Book Appointment">
+                <span class="comm-label">Book Appointment</span>
+                <div class="comm-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                </div>
+            </a>
+            <a href="Contact.html#contactForm" class="comm-item" title="Support">
+                <span class="comm-label">Support</span>
+                <div class="comm-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                </div>
+            </a>
+            <a href="tel:+16319601989" class="comm-item" title="Call Us">
+                <span class="comm-label">Call Us</span>
+                <div class="comm-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.79 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.28-2.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                </div>
+            </a>
+            <a href="https://wa.me/16319601989" class="comm-item" title="WhatsApp">
+                <span class="comm-label">WhatsApp</span>
+                <div class="comm-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.353-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.216 1.36.186 1.871.11.57-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.94 3.659 1.437 5.634 1.437h.005c6.558 0 11.894-5.338 11.897-11.896a11.821 11.821 0 00-3.48-8.413Z"></path></svg>
+                </div>
+            </a>
+        </div>
+        <button class="comm-toggle" id="commToggleBtn" aria-label="Open communication menu">
+            <div class="icon-open" id="iconCarousel">
+                <svg class="carousel-icon active" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.79 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.28-2.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                <svg class="carousel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <svg class="carousel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <div class="icon-close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </div>
+        </button>
+    </div>
+
+    <!-- Scripts Optimizados -->
+    <script src="javascript/menu.js?v=131" defer></script>
+    <script src="javascript/contact/success-alert.js?v=124" defer></script>
+    <script src="javascript/home-carousel.js?v=124" defer></script>
+    <script src="javascript/scroll-reveal.js?v=124" defer></script>
 </body>
+
 </html>

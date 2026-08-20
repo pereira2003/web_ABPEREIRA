@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mantenimiento | A⁺Pereira Company</title>
+    <link rel="icon" type="image/x-icon" href="img/ABP.ico?v=2">
+    <link rel="shortcut icon" href="img/ABP.ico?v=2" type="image/x-icon">
+    <link rel="apple-touch-icon" href="img/ABPEREIRA%20L.png?v=2">
+    <link rel="manifest" href="../manifest.json?v=2">
+    <meta name="theme-color" content="#0c3363">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Cormorant+Garamond:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0c3363;
+            --accent: #be945d;
+            --text: #1a1a1a;
+            --bg: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--bg);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            text-align: center;
+            color: var(--text);
+        }
+
+        .container {
+            padding: 2rem;
+            max-width: 800px;
+            width: 90%;
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.2rem, 7vw, 3.5rem);
+            color: var(--primary);
+            margin: 0;
+            letter-spacing: -1px;
+        }
+
+        p {
+            font-size: 1.05rem;
+            color: #555;
+            margin: 0.3rem 0 0.8rem;
+            font-weight: 300;
+        }
+
+        .btn-support {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.9rem 2.2rem;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(12, 51, 99, 0.2);
+            position: relative;
+            z-index: 10;
+        }
+
+        .status-loader {
+            margin-bottom: 1rem;
+        }
+
+        .btn-support:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(12, 51, 99, 0.3);
+            filter: brightness(1.1);
+        }
+
+        /* --- ESCENA PROFESIONAL DE ESPERA --- */
+        .scene {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .maintenance-illustration {
+            width: 320px;
+            height: 260px; /* Altura reducida para ocultar las letras de abajo */
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Alinear arriba */
+            overflow: hidden; /* Cortar lo que sobresalga (las letras) */
+        }
+
+        .tech-img {
+            width: 300px;
+            height: auto;
+            z-index: 2;
+            /* Eliminación agresiva del fondo blanco */
+            mix-blend-mode: darken;
+            filter: contrast(1.2) brightness(1.1);
+            /* Posicionamiento para ocultar la marca de agua */
+            margin-top: -10px; 
+        }
+
+        /* Brillo sutil de fondo */
+        .glow-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(190, 148, 93, 0.15) 0%, rgba(255,255,255,0) 70%);
+            z-index: 1;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+        }
+
+        /* --- LOADER MODERNO --- */
+        .status-loader {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 2rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: dotWave 1.2s infinite ease-in-out;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dotWave {
+            0%, 80%, 100% { transform: translateY(0); opacity: 0.3; }
+            40% { transform: translateY(-15px); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="scene">
+            <div class="glow-circle"></div>
+            <div class="maintenance-illustration">
+                <!-- Imagen subida por el usuario con fondo eliminado por CSS -->
+                <img src="img/icono de mantenimiento.jpg" alt="Technician" class="tech-img">
+            </div>
+        </div>
+        
+        <h1>Under Maintenance</h1>
+        <p>Our expert technician is preparing the tools to improve your experience. We'll be back online shortly. <br><br> <strong>We apologize for the inconvenience.</strong></p>
+        
+        <a href="Contact.html" class="btn-support">Support</a>
+        
+        <div class="status-loader">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
+    <!-- Firebase para monitorear estado -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyD6h6fErJd-nVhvxsTyBdJmkqLMzzR4rOk",
+            authDomain: "abpereira-web.firebaseapp.com",
+            databaseURL: "https://abpereira-web-default-rtdb.firebaseio.com",
+            projectId: "abpereira-web",
+            storageBucket: "abpereira-web.firebasestorage.app",
+            messagingSenderId: "270636168434",
+            appId: "1:270636168434:web:046c7d9bc4d55aaececc6b"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Si el mantenimiento se desactiva, volver al inicio
+        db.ref('settings/maintenance').on('value', (snapshot) => {
+            if (snapshot.val() === false) {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/x-icon" href="img/ABP.ico?v=2">
+    <link rel="shortcut icon" href="img/ABP.ico?v=2" type="image/x-icon">
+    <link rel="apple-touch-icon" href="img/ABPEREIRA%20L.png?v=2">
+    <link rel="manifest" href="manifest-login.json?v=2">
+    <meta name="theme-color" content="#0c3363">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | A⁺Pereira Company</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <style>
+        :root {
+            --primary: #0c3363;
+            --accent: #be945d;
+            --bg: #0c1d34;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            background: radial-gradient(circle at top right, #17365f, #0c1d34);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            padding: 2.5rem 2rem 3rem;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: min(100%, 420px);
+            max-width: 420px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            text-align: center;
+            margin: 0;
+        }
+
+        .login-card img {
+            display: block;
+            margin: 0 auto 1rem;
+            width: 110px;
+            filter: drop-shadow(0 0 10px rgba(190, 148, 93, 0.3));
+            background: transparent;
+            border-radius: 0;
+            padding: 0;
+        }
+
+        .btn-cancel {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .login-card h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            color: white;
+            margin-bottom: 0.3rem;
+        }
+
+        .login-card p {
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 1.2rem; /* Reducido ligeramente */
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1.1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            color: white;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .remember-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+            justify-content: flex-start;
+        }
+
+        .remember-wrap label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            text-transform: none;
+            letter-spacing: normal;
+            font-weight: 400;
+            margin-bottom: 0;
+        }
+
+        .remember-wrap input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(190, 148, 93, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 1.1rem;
+            background: linear-gradient(135deg, var(--accent) 0%, #d5b082 100%);
+            color: #0c1d34;
+            border: none;
+            border-radius: 15px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(190, 148, 93, 0.2);
+        }
+
+        .btn-cancel {
+            display: none; /* Oculto por defecto */
+            margin-top: 1.5rem;
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .btn-cancel:hover {
+            color: var(--accent);
+        }
+        .btn-faceid {
+            width: 100%;
+            padding: 1.1rem;
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .btn-faceid:hover {
+            border-color: var(--accent);
+            background: rgba(190, 148, 93, 0.05);
+        }
+
+        .faceid-icon-wrap {
+            background: rgba(255, 255, 255, 0.1);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            right: 10px;
+        }
+
+        .faceid-icon-wrap svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+
+        #error-msg {
+            background: rgba(211, 47, 47, 0.1);
+            color: #ff8a80;
+            padding: 0.8rem;
+            border-radius: 10px;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            display: none;
+            border: 1px solid rgba(211, 47, 47, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <img src="img/ABPEREIRA L.png" alt="A⁺Pereira">
+        <h1>Bienvenido</h1>
+        <p>Gestión de A⁺Pereira Company</p>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Usuario Administrador</label>
+                <input type="text" id="username" placeholder="Usuario" autocomplete="username" required>
+            </div>
+            <div class="remember-wrap">
+                <input type="checkbox" id="rememberUser">
+                <label for="rememberUser">Recordar usuario</label>
+            </div>
+            <div class="form-group">
+                <label>Contraseña Segura</label>
+                <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
+            </div>
+            <button type="submit" class="btn-login">Acceder</button>
+            <button type="button" class="btn-faceid" id="faceIdBtn">
+                Ingresar con Face ID
+                <div class="faceid-icon-wrap">
+                    <svg viewBox="0 0 24 24"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10,10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8,8,3.59,8,8 S16.41,20,12,20z M12,6c-3.31,0-6,2.69-6,6s2.69,6,6,6s6-2.69,6-6S15.31,6,12,6z M12,16c-2.21,0-4-1.79-4-4s1.79-4,4-4s4,1.79,4,4 S14.21,16,12,16z"/></svg>
+                </div>
+            </button>
+            <a href="index.html" class="btn-cancel" id="btnCancel">Cancelar y Volver</a>
+        </form>
+        <div id="error-msg">Credenciales de administrador inválidas</div>
+    </div>
+
+    <!-- Modal de Confirmación Estilo iOS -->
+    <div id="confirmModal" class="custom-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(16, 35, 63, 0.85); display: none; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(8px); animation: fadeIn 0.3s ease-out;">
+        <div class="modal-content" style="background: #ffffff; padding: 2.5rem 2rem; border-radius: 32px; width: 95%; max-width: 440px; text-align: center; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35); animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
+            <div class="modal-header">
+                <h3 id="confirmTitle" style="margin: 0 0 1.5rem 0; color: #0c3363; font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 700;">Confirmación</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage" style="font-size: 1.1rem; color: #1a2a3a; margin-bottom: 1.5rem; font-weight: 500; line-height: 1.5;">
+                    ¿Estás seguro de realizar esta acción?
+                </p>
+                <div style="background: #f8fafd; padding: 1.8rem 1.5rem; border-radius: 20px; border: 1px solid #e1e8f0; margin-top: 1rem;">
+                    <div style="display: flex; flex-direction: column; gap: 0.9rem;">
+                        <button id="confirmOkBtn" style="display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 0.9rem; border: 2px solid #0c3363; border-radius: 14px; background: #f0f7ff; color: #0c3363; cursor: pointer; font-size: 0.95rem; font-weight: 700; transition: all 0.25s ease;">
+                            ACEPTAR
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button id="confirmCancelBtn" style="width: 100%; padding: 1.1rem; background: #0c3363; color: #ffffff; border: none; border-radius: 16px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; margin-top: 1.5rem;">CANCELAR</button>
+        </div>
+    </div>
+
+    <style>
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+
+    <script>
+        // --- SISTEMA DE ALERTA PERSONALIZADO (iOS Style) ---
+         function showCustomAlert(message, title = "Aviso", showCancel = false) {
+             return new Promise((resolve) => {
+                 const modal = document.getElementById('confirmModal');
+                 const msgEl = document.getElementById('confirmMessage');
+                 const titleEl = document.getElementById('confirmTitle');
+                 const okBtn = document.getElementById('confirmOkBtn');
+                 const cancelBtn = document.getElementById('confirmCancelBtn');
+
+                 msgEl.textContent = message;
+                 titleEl.textContent = title;
+                 
+                 if (showCancel) {
+                     cancelBtn.style.display = 'block';
+                 } else {
+                     cancelBtn.style.display = 'none';
+                 }
+                 
+                 modal.style.display = 'flex';
+
+                 const handleConfirm = () => {
+                     modal.style.display = 'none';
+                     cleanup();
+                     resolve(true);
+                 };
+
+                 const handleCancel = () => {
+                     modal.style.display = 'none';
+                     cleanup();
+                     resolve(false);
+                 };
+
+                 const cleanup = () => {
+                     okBtn.removeEventListener('click', handleConfirm);
+                     cancelBtn.removeEventListener('click', handleCancel);
+                 };
+
+                 okBtn.addEventListener('click', handleConfirm);
+                 cancelBtn.addEventListener('click', handleCancel);
+             });
+         }
+
+        // --- DETECTAR MODO (WEB VS APP/HOME SCREEN) ---
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        const btnCancel = document.getElementById('btnCancel');
+        
+        // --- MULTI-IDIOMA CONDICIONAL ---
+        if (isStandalone) {
+            // Modo Home Screen: ESPAÑOL
+            const title = document.querySelector('.login-card h1');
+            if (title) title.textContent = "Bienvenido";
+            document.querySelector('.login-card p').textContent = "Gestión de A⁺Pereira Company";
+            document.querySelectorAll('.form-group label')[0].textContent = "Usuario Administrador";
+            document.getElementById('username').placeholder = "Usuario";
+            document.querySelector('.remember-wrap label').textContent = "Recordar usuario";
+            document.querySelectorAll('.form-group label')[1].textContent = "Contraseña Segura";
+            document.querySelector('.btn-login').textContent = "Acceder";
+            document.getElementById('faceIdBtn').firstChild.textContent = "Ingresar con Face ID ";
+            
+            btnCancel.style.display = 'none';
+        } else {
+            // Modo Web: INGLES
+            const title = document.querySelector('.login-card h1');
+            if (title) title.textContent = "Welcome";
+            document.querySelector('.login-card p').textContent = "A⁺Pereira Company Management";
+            document.querySelectorAll('.form-group label')[0].textContent = "Admin User";
+            document.getElementById('username').placeholder = "Username";
+            document.querySelector('.remember-wrap label').textContent = "Remember user";
+            document.querySelectorAll('.form-group label')[1].textContent = "Secure Password";
+            document.querySelector('.btn-login').textContent = "Login";
+            document.getElementById('faceIdBtn').firstChild.textContent = "Sign in with Face ID ";
+            
+            btnCancel.style.display = 'inline-block';
+            btnCancel.textContent = "Cancel and Return";
+        }
+
+         const loginForm = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const rememberCheckbox = document.getElementById('rememberUser');
+  
+        // --- 1. Gestión de Usuario Guardado (Solo al tocar) ---
+        usernameInput.addEventListener('focus', () => {
+            if (!usernameInput.value && localStorage.getItem('savedAdminUser')) {
+                usernameInput.value = localStorage.getItem('savedAdminUser');
+                rememberCheckbox.checked = true;
+            }
+        }, { once: true });
+
+        // Función para validar credenciales y entrar
+        function attemptLogin(user, pass) {
+            if ((user === 'admin' || user === 'admin2') && pass === 'abp2026') {
+                if (rememberCheckbox.checked) {
+                    localStorage.setItem('savedAdminUser', user);
+                } else {
+                    localStorage.removeItem('savedAdminUser');
+                }
+                sessionStorage.setItem('isAdmin', 'true');
+                sessionStorage.setItem('currentAdminUser', user); // Guardar usuario actual para preferencias
+                window.location.href = 'admin-dashboard.html';
+                return true;
+            }
+            return false;
+        }
+
+        // --- 2. Autocompletado Automático (Solo tras interacción) ---
+        let autoLoginTriggered = false;
+        let userInteracted = false; 
+
+        // Detectamos cuando el usuario realmente toca para escribir
+        const setInteraction = () => { userInteracted = true; };
+        usernameInput.addEventListener('focus', setInteraction);
+        passwordInput.addEventListener('focus', setInteraction);
+        usernameInput.addEventListener('click', setInteraction);
+        passwordInput.addEventListener('click', setInteraction);
+        
+        function checkAutoFill() {
+            // Solo procesamos el autologin si el usuario ya interactuó con el formulario
+            if (autoLoginTriggered || !userInteracted) return;
+            
+            if (usernameInput.value && passwordInput.value) {
+                autoLoginTriggered = true;
+                setTimeout(() => {
+                    if (attemptLogin(usernameInput.value, passwordInput.value)) {
+                        console.log("Autologin exitoso via Autofill tras interacción");
+                    } else {
+                        autoLoginTriggered = false;
+                    }
+                }, 500);
+            }
+        }
+
+        // Monitorear cambios (autofill dispara 'input' o 'change')
+        usernameInput.addEventListener('input', checkAutoFill);
+        passwordInput.addEventListener('input', checkAutoFill);
+        
+        // --- 2. Botón Face ID (Activa el sistema nativo) ---
+        document.getElementById('faceIdBtn').addEventListener('click', async function() {
+            try {
+                // Verificar si hay algún admin con biometría activa en este dispositivo
+                const isAdmin1Bio = localStorage.getItem('bio_active_admin') === 'true';
+                const isAdmin2Bio = localStorage.getItem('bio_active_admin2') === 'true';
+
+                if (!isAdmin1Bio && !isAdmin2Bio) {
+                    await showCustomAlert("No has configurado Face ID todavía. Por favor, ingresa con tu contraseña una vez y configúralo en el panel.", "Face ID no configurado");
+                    passwordInput.focus();
+                    return;
+                }
+
+                // Intentar autenticación biométrica real
+                const challenge = new Uint8Array(32);
+                window.crypto.getRandomValues(challenge);
+
+                const options = {
+                    publicKey: {
+                        challenge: challenge,
+                        timeout: 60000,
+                        userVerification: "required"
+                    }
+                };
+
+                const assertion = await navigator.credentials.get(options);
+                
+                if (assertion) {
+                    // Si el dispositivo autoriza, buscamos qué usuario está activo en este equipo
+                    const userToLogin = isAdmin1Bio ? 'admin' : 'admin2';
+                    sessionStorage.setItem('isAdmin', 'true');
+                    sessionStorage.setItem('currentAdminUser', userToLogin); // Guardar usuario actual
+                    window.location.href = 'admin-dashboard.html';
+                }
+            } catch (err) {
+                console.log("Face ID cancelado o no disponible:", err);
+                // Fallback a autocompletado normal si la API real falla
+                if (usernameInput.value && passwordInput.value) {
+                    attemptLogin(usernameInput.value, passwordInput.value);
+                } else {
+                    passwordInput.focus();
+                }
+            }
+        });
+
+        // --- 3. Login Manual ---
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = usernameInput.value;
+            const pass = passwordInput.value;
+
+            if (!attemptLogin(user, pass)) {
+                const error = document.getElementById('error-msg');
+                error.style.display = 'block';
+                setTimeout(() => error.style.display = 'none', 3000);
+            }
+        });
+
+        // --- Registrar Service Worker ---
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('../sw.js').catch(err => console.log('SW registration failed:', err));
+        }
+    </script>
+</body>
+</html>
