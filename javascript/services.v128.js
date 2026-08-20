@@ -39,20 +39,25 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const controller = new AbortController();
             const timeout = setTimeout(() => controller.abort(), 1500);
-            // 0) try public tunnel API
-            const PUBLIC_API_BASE = 'https://every-dingos-remain.loca.lt';
-            try {
-                const pub = await fetch(PUBLIC_API_BASE + '/api/services', { signal: controller.signal });
-                if (pub && pub.ok) {
-                    const json = await pub.json();
-                    if (Array.isArray(json) && json.length > 0) {
-                        allServices = json.map((s, i) => ({ ...s, id: s.id || ('pub_' + i) }));
-                        renderServicesGrid();
-                        clearTimeout(timeout);
-                        return;
+            // 0) try public tunnel APIs (try known recent tunnels first)
+            const PUBLIC_API_CANDIDATES = [
+                'https://fluffy-actors-yell.loca.lt',
+                'https://every-dingos-remain.loca.lt'
+            ];
+            for (const PUBLIC_API_BASE of PUBLIC_API_CANDIDATES) {
+                try {
+                    const pub = await fetch(PUBLIC_API_BASE + '/api/services', { signal: controller.signal });
+                    if (pub && pub.ok) {
+                        const json = await pub.json();
+                        if (Array.isArray(json) && json.length > 0) {
+                            allServices = json.map((s, i) => ({ ...s, id: s.id || ('pub_' + i) }));
+                            renderServicesGrid();
+                            clearTimeout(timeout);
+                            return;
+                        }
                     }
-                }
-            } catch (e) { /* ignore and continue */ }
+                } catch (e) { /* ignore and continue */ }
+            }
 
             // 1) static services.json — try relative path first (works when page served under /Vistas/), then absolute
             let resp = null;
