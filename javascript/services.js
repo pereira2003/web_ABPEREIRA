@@ -34,31 +34,62 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- LOAD SERVICES FROM FIREBASE ---
     async function loadServices() {
-        if (!db) return;
-        
-        // Escuchar cambios en tiempo real
-        db.ref('services_catalog').on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                // Convertir objeto de Firebase a array y ordenar por fecha de creación (opcional)
-                allServices = Object.keys(data).map(key => ({ ...data[key], id: key }));
-                
-                // Mantener el orden original si es necesario o aplicar uno nuevo
-                renderServicesGrid();
-            } else {
-                servicesGrid.innerHTML = '<div class="empty-state"><p>No hay servicios disponibles en este momento.</p></div>';
-            }
-        }, (error) => {
-            console.error("Error loading services:", error);
-            servicesGrid.innerHTML = '<div class="empty-state"><p>Error al sincronizar los servicios.</p></div>';
-            // Fallback: show a minimal local set so the page doesn't appear empty
+        if (!db) {
+            console.warn('Firebase DB not initialized — showing fallback services');
             const fallback = [
                 { title: 'Painting', tag: 'Painting', image: 'img/Galeria 1.png', description: 'Interior and exterior painting services', pricing_note: '', full_description: '' },
                 { title: 'Roof Repairs', tag: 'Roof', image: 'img/Galeria 4.png', description: 'Small to medium roof repairs', pricing_note: '', full_description: '' }
             ];
             allServices = fallback.map((s, i) => ({ ...s, id: 'fallback_' + i }));
             renderServicesGrid();
-        });
+            return;
+        }
+
+        // Escuchar cambios en tiempo real — con try/catch por si el SDK lanza
+        try {
+            const ref = db.ref('services_catalog');
+            let listenerAttached = false;
+            ref.on('value', (snapshot) => {
+                listenerAttached = true;
+                const data = snapshot.val();
+                if (data) {
+                    allServices = Object.keys(data).map(key => ({ ...data[key], id: key }));
+                    renderServicesGrid();
+                } else {
+                    servicesGrid.innerHTML = '<div class="empty-state"><p>No hay servicios disponibles en este momento.</p></div>';
+                }
+            }, (error) => {
+                console.error("Error loading services:", error);
+                servicesGrid.innerHTML = '<div class="empty-state"><p>Error al sincronizar los servicios.</p></div>';
+                const fallback = [
+                    { title: 'Painting', tag: 'Painting', image: 'img/Galeria 1.png', description: 'Interior and exterior painting services', pricing_note: '', full_description: '' },
+                    { title: 'Roof Repairs', tag: 'Roof', image: 'img/Galeria 4.png', description: 'Small to medium roof repairs', pricing_note: '', full_description: '' }
+                ];
+                allServices = fallback.map((s, i) => ({ ...s, id: 'fallback_' + i }));
+                renderServicesGrid();
+            });
+
+            // If nothing comes back quickly, show fallback to avoid blank state
+            setTimeout(() => {
+                if (!allServices || allServices.length === 0) {
+                    console.warn('No services received from DB — using fallback');
+                    const fallback = [
+                        { title: 'Painting', tag: 'Painting', image: 'img/Galeria 1.png', description: 'Interior and exterior painting services', pricing_note: '', full_description: '' },
+                        { title: 'Roof Repairs', tag: 'Roof', image: 'img/Galeria 4.png', description: 'Small to medium roof repairs', pricing_note: '', full_description: '' }
+                    ];
+                    allServices = fallback.map((s, i) => ({ ...s, id: 'fallback_to_' + i }));
+                    renderServicesGrid();
+                }
+            }, 1200);
+        } catch (e) {
+            console.error('Exception while attaching DB listener for services:', e);
+            const fallback = [
+                { title: 'Painting', tag: 'Painting', image: 'img/Galeria 1.png', description: 'Interior and exterior painting services', pricing_note: '', full_description: '' },
+                { title: 'Roof Repairs', tag: 'Roof', image: 'img/Galeria 4.png', description: 'Small to medium roof repairs', pricing_note: '', full_description: '' }
+            ];
+            allServices = fallback.map((s, i) => ({ ...s, id: 'fallback_ex_' + i }));
+            renderServicesGrid();
+        }
     }
 
     function renderServicesGrid() {
