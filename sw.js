@@ -1,22 +1,23 @@
-const CACHE_NAME = 'abpereira-v44';
+const CACHE_NAME = 'abpereira-v45';
 const ASSETS = [
-  '/',
-  '/Vistas/index.html',
-  '/Vistas/Servicios.html',
-  '/Vistas/Contact.html',
-  '/Vistas/Appointment.html',
-  '/styles/style.css',
-  '/styles/menu.css',
-  '/styles/Servicios.css',
-  '/styles/styleContact.css',
-  '/styles/appointmentStyle.css',
-  '/img/ABPEREIRA L.png',
-  '/img/ABP.ico',
-  '/javascript/menu.js',
-  '/javascript/scroll-reveal.js',
-  '/javascript/home-carousel.js',
-  '/javascript/services.js',
-  'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap'
+  './',
+  './Vistas/index.html',
+  './Vistas/Servicios.html',
+  './Vistas/Contact.html',
+  './Vistas/Appointment.html',
+  './Vistas/Error.html',
+  './styles/style.css',
+  './styles/menu.css',
+  './styles/Servicios.css',
+  './styles/styleContact.css',
+  './styles/appointmentStyle.css',
+  './img/ABPEREIRA L.png',
+  './img/ABP.ico',
+  './javascript/menu.js',
+  './javascript/scroll-reveal.js',
+  './javascript/home-carousel.js',
+  './javascript/services.js',
+  './javascript/appointment.js'
 ];
 
 // Instalar y cachear recursos críticos
@@ -58,7 +59,7 @@ self.addEventListener('fetch', (event) => {
           return response;
         })
         .catch(() => {
-          return caches.match(event.request);
+          return caches.match(event.request, { ignoreSearch: true });
         })
     );
     return;
@@ -66,7 +67,7 @@ self.addEventListener('fetch', (event) => {
 
   // Para el resto (CSS, JS, Img, Fonts), Cache First con Network Fallback y Cache Update
   event.respondWith(
-    caches.match(event.request).then((response) => {
+    caches.match(event.request, { ignoreSearch: true }).then((response) => {
       const fetchPromise = fetch(event.request).then((networkResponse) => {
         if (networkResponse.ok) {
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, networkResponse.clone()));

@@ -454,6 +454,9 @@
     <script src="../javascript/menu.js?v=115" defer></script>
     <script src="../javascript/appointment.js?v=115" defer></script>
     <script src="../javascript/scroll-reveal.js?v=115" defer></script>
+    <script>
+        if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js');
+    </script>
 </body>
 
 </html>

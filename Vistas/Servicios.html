@@ -191,6 +191,9 @@
   <script src="../javascript/menu.js?v=127" defer></script>
   <script src="../javascript/services.js?v=127" defer></script>
   <script src="../javascript/scroll-reveal.js?v=127" defer></script>
+  <script>
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js');
+  </script>
 </body>
 
 </html>
