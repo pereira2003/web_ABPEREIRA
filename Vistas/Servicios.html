@@ -192,7 +192,14 @@
   <script src="../javascript/services.js?v=127" defer></script>
   <script src="../javascript/scroll-reveal.js?v=127" defer></script>
   <script>
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js?v=45');
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        registrations.forEach(registration => registration.unregister());
+      });
+    }
+    window.addEventListener('offline', () => {
+      window.location.href = 'Error.html?type=offline';
+    });
   </script>
 </body>
 

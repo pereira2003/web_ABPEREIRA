@@ -78,12 +78,15 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script>
-        // Registrar Service Worker para carga rápida
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('../sw.js?v=45');
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                registrations.forEach(registration => registration.unregister());
             });
         }
+
+        window.addEventListener('offline', () => {
+            window.location.href = 'Error.html?type=offline';
+        });
 
         const firebaseConfigCheck = {
             apiKey: "AIzaSyD6h6fErJd-nVhvxsTyBdJmkqLMzzR4rOk",
