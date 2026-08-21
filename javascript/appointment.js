@@ -27,6 +27,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    if (serviceSelect) {
+        const requestedService = new URLSearchParams(window.location.search).get('service');
+        if (requestedService) {
+            const normalizeService = value => value.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const normalizedRequestedService = normalizeService(requestedService);
+            const matchingOption = Array.from(serviceSelect.options).find(option =>
+                option.value === requestedService || normalizeService(option.value) === normalizedRequestedService
+            );
+
+            if (matchingOption) {
+                serviceSelect.value = matchingOption.value;
+                serviceSelect.dispatchEvent(new Event('change'));
+            }
+        }
+    }
+
     // --- State / City dependent selects ---
     const stateSelect = document.getElementById('app-state');
     const citySelect = document.getElementById('app-city');
