@@ -31,6 +31,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let allServices = [];
     let cardsArray = [];
+    const fallbackServices = [
+        { title: 'Gutters', tag: 'Exterior', pricing_note: 'For pricing, contact us or book your appointment.', description: 'Professional gutter systems designed for proper water management and property protection.', full_description: "Complete gutter solutions including installation, repair, and maintenance to protect your home's foundation.", image: '../img/Galeria 14.png' },
+        { title: 'Wood PVC Trex', tag: 'Exterior & Interior', pricing_note: 'For pricing, contact us or book your appointment.', description: 'Expert installation and repair using high-quality Wood, PVC, and Trex materials for lasting durability.', full_description: 'Specialized carpentry and exterior work using modern materials like PVC and Trex for weather resistance.', image: '../img/Galeria 8.png' },
+        { title: 'Decks', tag: 'Exterior', pricing_note: 'For pricing, contact us or book your appointment.', description: 'Professional deck construction, repair, and refinishing to create beautiful outdoor living spaces.', full_description: 'Custom deck solutions including new builds, structural repairs, and staining for a refreshed look.', image: '../img/Galeria 17.png' },
+        { title: 'Windows and doors', tag: 'Exterior & Interior', pricing_note: 'For pricing, contact us or book your appointment.', description: 'Expert installation and replacement of windows and doors to improve energy efficiency and security.', full_description: 'Full window and door services including framing, sealing, and professional hardware installation.', image: '../img/Galeria 6.png' },
+        { title: 'Painting', tag: 'Interior & Exterior', pricing_note: 'For pricing, contact us or book your appointment.', description: 'Careful preparation and clean application for a professional finish that elevates your space.', full_description: 'Interior and exterior painting services with high-quality finishes and attention to detail.', image: '../img/Galeria 7.png' },
+        { title: 'and more', tag: 'General', pricing_note: 'For pricing, contact us or book your appointment.', description: 'Need something else? We handle various home repairs and technical services tailored to your needs.', full_description: 'Contact us for any custom project or home repair not listed here. We are happy to help!', image: '../img/Galeria 1.png' }
+    ];
 
     // --- LOAD SERVICES FROM FIREBASE ---
     async function loadServices() {
@@ -50,7 +58,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }, (error) => {
             console.error("Error loading services:", error);
-            servicesGrid.innerHTML = '<div class="empty-state"><p>Error al sincronizar los servicios.</p></div>';
+            allServices = fallbackServices;
+            renderServicesGrid();
         });
     }
 
