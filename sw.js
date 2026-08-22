@@ -1,4 +1,4 @@
-const CACHE_NAME = 'abpereira-v44';
+const CACHE_NAME = 'abpereira-v46';
 const ASSETS = [
   '/',
   '/Vistas/index.html',
@@ -67,7 +67,7 @@ self.addEventListener('fetch', (event) => {
 
   // Para el resto (CSS, JS, Img, Fonts), Cache First con Network Fallback y Cache Update
   event.respondWith(
-    caches.match(event.request).then((response) => {
+    caches.match(event.request, { ignoreSearch: false }).then((response) => {
       const fetchPromise = fetch(event.request).then((networkResponse) => {
         if (networkResponse.ok) {
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, networkResponse.clone()));
