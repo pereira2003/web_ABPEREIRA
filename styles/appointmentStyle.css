@@ -382,6 +382,13 @@ textarea:focus {
     box-shadow: 0 18px 32px rgba(15, 63, 121, 0.25);
 }
 
+.appointment-form input.btn[type="submit"],
+.appointment-form input.btn[type="submit"]:hover,
+.appointment-form input.btn[type="submit"]:focus-visible,
+.appointment-form input.btn[type="submit"]:disabled {
+    color: #ffffff !important;
+}
+
 .form-group-full {
     grid-column: 1 / -1;
 }
