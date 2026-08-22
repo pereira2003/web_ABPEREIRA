@@ -548,7 +548,6 @@ textarea:focus {
     box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35);
     border: 1px solid rgba(255, 255, 255, 0.2);
     transform: translateY(0);
-    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     max-height: calc(100vh - 2rem);
     overflow: auto;
 }
@@ -566,11 +565,6 @@ textarea:focus {
         border-radius: 28px;
         max-height: calc(100vh - 2.4rem);
     }
-}
-
-@keyframes slideUp {
-    from { transform: translateY(30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
 }
 
 .modal-header h3 {
@@ -626,10 +620,10 @@ textarea:focus {
     justify-content: center;
     gap: 1rem;
     padding: 0.9rem;
-    border: 1.5px solid #d0dbe8;
+    border: 1.5px solid #0c3363;
     border-radius: 14px;
-    background: #ffffff;
-    color: #2c3e50;
+    background: #0c3363;
+    color: #ffffff;
     cursor: pointer;
     font-size: 0.95rem;
     font-weight: 600;
@@ -643,10 +637,11 @@ textarea:focus {
 }
 
 .btn-cal:hover {
-    border-color: #0c3363;
-    background: #f0f7ff;
+    border-color: #184984;
+    background: #184984;
+    color: #ffffff;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(12, 51, 99, 0.1);
+    box-shadow: 0 8px 18px rgba(12, 51, 99, 0.22);
 }
 
 .btn-close {

@@ -853,19 +853,6 @@ main {
     text-transform: uppercase;
 }
 
-.carousel-stats {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 0.6rem;
-}
-
-.carousel-likes {
-    background: rgba(211, 82, 82, 0.85) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
-    color: #ffffff;
-}
-
 .carousel-caption h3 {
     font-family: 'Cormorant Garamond', serif;
     font-size: clamp(1.4rem, 2.4vw, 2.2rem);

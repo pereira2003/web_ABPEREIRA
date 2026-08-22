@@ -80,13 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         newSlide.innerHTML = `
                             <img src="${imagePath}" alt="${originalTitle}" loading="lazy" decoding="async" draggable="false">
                             <div class="carousel-caption">
-                                <div class="carousel-stats">
-                                    <span>Featured Work</span>
-                                    <span class="carousel-likes">
-                                        <svg viewBox="0 0 24 24" fill="currentColor" style="width:12px; height:12px; margin-right:4px;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
-                                        <span class="count-val">${count}</span>
-                                    </span>
-                                </div>
+                                <span>Featured Work</span>
                                 <h3 style="text-transform: capitalize;">${originalTitle}</h3>
                             </div>
                         `;
@@ -98,16 +92,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         newDot.setAttribute('aria-label', `Show slide ${slides.length + 1}`);
                         dotsContainer.appendChild(newDot);
                         changesMade = true;
-                    } else {
-                        // Update existing slide's count
-                        const slide = slides.find(s => {
-                            const img = s.querySelector('img');
-                            return img && img.src.includes(imagePath.split('/').pop());
-                        });
-                        if (slide) {
-                            const countVal = slide.querySelector('.count-val');
-                            if (countVal) countVal.textContent = count;
-                        }
                     }
                 }
             });
@@ -124,25 +108,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     const val = globalLikes[matchedKey];
                     const count = (typeof val === 'number') ? val : (val.count || 0);
                     
-                    let statsDiv = slide.querySelector('.carousel-stats');
-                    if (!statsDiv) {
-                        statsDiv = document.createElement('div');
-                        statsDiv.className = 'carousel-stats';
-                        const eyebrowSpan = slide.querySelector('.carousel-caption span');
-                        eyebrowSpan.parentNode.insertBefore(statsDiv, eyebrowSpan);
-                        statsDiv.appendChild(eyebrowSpan);
-                        
-                        const likesSpan = document.createElement('span');
-                        likesSpan.className = 'carousel-likes';
-                        likesSpan.innerHTML = `
-                            <svg viewBox="0 0 24 24" fill="currentColor" style="width:12px; height:12px; margin-right:4px;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
-                            <span class="count-val">${count}</span>
-                        `;
-                        statsDiv.appendChild(likesSpan);
-                    } else {
-                        const countVal = statsDiv.querySelector('.count-val');
-                        if (countVal) countVal.textContent = count;
-                    }
                 }
             });
 
