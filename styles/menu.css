@@ -239,7 +239,7 @@
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     body {
         padding-top: var(--menu-mobile-height);
     }
@@ -293,8 +293,8 @@
         color: var(--menu-text);
     }
 
-    .navbar {
-        display: none;
+    .menu.container .navbar {
+        display: none !important;
     }
 
     .menu-toggle {
