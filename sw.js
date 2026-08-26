@@ -1,4 +1,4 @@
-const CACHE_NAME = 'abpereira-v46';
+const CACHE_NAME = 'abpereira-v47';
 const ASSETS = [
   './',
   './Vistas/index.html',
@@ -33,6 +33,7 @@ self.addEventListener('install', (event) => {
 
 // Activar y limpiar caches antiguos
 self.addEventListener('activate', (event) => {
+  self.clients.claim();
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
