@@ -1877,7 +1877,7 @@
             const sortedServices = [...currentServices].sort((a, b) => (a.order || 999) - (b.order || 999));
 
             list.innerHTML = sortedServices.map((s, index) => `
-                <article class="service-card-admin" draggable="true" data-id="${s.id}" data-index="${index}" style="cursor: grab; position: relative;">
+                <article class="service-card-admin" draggable="true" data-id="${s.id}" data-index="${index}" tabindex="0" style="position: relative;" aria-label="Servicio ${s.title}">
                     <div class="service-card-admin-drag-handle" style="position: absolute; top: 10px; left: 10px; background: rgba(255, 255, 255, 0.9); padding: 4px 6px; border-radius: 4px; cursor: grab; z-index: 10; font-size: 14px; font-weight: bold; color: var(--primary);">☰</div>
                     <div class="admin-service-img-wrap">
                         <img src="${s.image}" alt="${s.title}" onerror="this.src='../img/placeholder.png'">
@@ -1889,15 +1889,24 @@
                         <p class="admin-service-desc">${s.description}</p>
                         
                         <div class="admin-service-actions">
-                            <button class="btn-admin-edit" onclick="editService('${s.id}')">Editar</button>
-                            <button class="btn-admin-delete" onclick="deleteService('${s.id}')">Eliminar</button>
+                            <button type="button" class="btn-admin-edit" onclick="event.stopPropagation(); editService('${s.id}')">Editar</button>
+                            <button type="button" class="btn-admin-delete" onclick="event.stopPropagation(); deleteService('${s.id}')">Eliminar</button>
                         </div>
                     </div>
                 </article>
             `).join('');
 
-            // Agregar event listeners para drag and drop
             document.querySelectorAll('.service-card-admin').forEach(item => {
+                item.addEventListener('click', (event) => {
+                    if (event.target.closest('button')) return;
+                    editService(item.dataset.id);
+                });
+                item.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        editService(item.dataset.id);
+                    }
+                });
                 item.addEventListener('dragstart', dragStart);
                 item.addEventListener('dragover', dragOver);
                 item.addEventListener('drop', drop);
