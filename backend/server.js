@@ -24,18 +24,17 @@ function initializeFirebase() {
       clientEmail: serviceAccount.client_email,
       privateKey: serviceAccount.private_key.replace(/\\n/g, '\n'),
     }),
-    databaseURL: process.env.FIREBASE_DATABASE_URL,
   });
 }
 
 initializeFirebase();
-const database = admin.database();
+const database = admin.firestore();
 
 async function initializeDatabase() {
   try {
-    await database.ref('contacts').limitToFirst(1).once('value');
-    await database.ref('appointments').limitToFirst(1).once('value');
-    console.log('Rutas verificadas en Firebase Realtime Database');
+    await database.collection('contacts').limit(1).get();
+    await database.collection('appointments').limit(1).get();
+    console.log('Colecciones verificadas en Cloud Firestore');
   } catch (error) {
     console.error('Error al inicializar la base de datos:', error.message);
     process.exit(1);
@@ -44,16 +43,16 @@ async function initializeDatabase() {
 
 app.get('/api/health', async (req, res) => {
   try {
-    await database.ref('.info/connected').once('value');
+    await database.collection('contacts').limit(1).get();
     res.json({
       ok: true,
-      message: 'Conexión a Firebase Realtime Database activa',
+      message: 'Conexión a Cloud Firestore activa',
       result: { ok: 1 },
     });
   } catch (error) {
     res.status(500).json({
       ok: false,
-      message: 'No se pudo conectar a Firebase Realtime Database',
+      message: 'No se pudo conectar a Cloud Firestore',
       error: error.message,
     });
   }
@@ -70,13 +69,12 @@ app.post('/api/contact', async (req, res) => {
   }
 
   try {
-    const document = database.ref('contacts').push();
-    await document.set({
+    const document = await database.collection('contacts').add({
       full_name: fullName,
       email,
       phone: phone || '',
       message,
-      created_at: admin.database.ServerValue.TIMESTAMP,
+      created_at: admin.firestore.FieldValue.serverTimestamp(),
     });
 
     res.status(201).json({
@@ -104,8 +102,7 @@ app.post('/api/appointments', async (req, res) => {
   }
 
   try {
-    const document = database.ref('appointments').push();
-    await document.set({
+    const document = await database.collection('appointments').add({
       first_name: firstName,
       last_name: lastName,
       email,
@@ -114,7 +111,7 @@ app.post('/api/appointments', async (req, res) => {
       date,
       time,
       notes: notes || '',
-      created_at: admin.database.ServerValue.TIMESTAMP,
+      created_at: admin.firestore.FieldValue.serverTimestamp(),
     });
 
     res.status(201).json({
@@ -135,7 +132,7 @@ app.get('/', (req, res) => {
   res.json({
     ok: true,
     name: 'ABPereira API',
-    message: 'Backend listo para usar Firebase Realtime Database',
+    message: 'Backend listo para usar Cloud Firestore',
   });
 });
 
@@ -143,7 +140,7 @@ async function startServer() {
   await initializeDatabase();
   app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
-    console.log('Usa FIREBASE_DATABASE_URL y FIREBASE_SERVICE_ACCOUNT en .env');
+    console.log('Usa FIREBASE_SERVICE_ACCOUNT en .env');
   });
 }
 

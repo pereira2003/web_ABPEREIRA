@@ -4,7 +4,8 @@
   "description": "Backend para conectar la web con Firebase Firestore",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "migrate": "node migrate-rtdb-to-firestore.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

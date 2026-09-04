@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!firebase.apps.length) {
                 firebase.initializeApp(firebaseConfig);
             }
-            db = firebase.database();
+            db = firebase.firestore();
             console.log("✅ Firebase connected for shared reservations.");
         } catch (error) {
             console.error("Firebase initialization error:", error);
@@ -199,12 +199,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!db) return getLocalBookedDates();
 
         try {
-            const snapshot = await db.ref('appointments').once('value');
-            const data = snapshot.val();
-            if (!data) return [];
+            const snapshot = await db.collection('appointments').get();
+            if (snapshot.empty) return [];
 
-            const appointments = Object.values(data);
-            return appointments
+            return snapshot.docs
+                .map(doc => doc.data())
                 .filter(app => app.status === 'accepted' || app.status === 'pending')
                 .map(app => app.dateDB);
         } catch (error) {
@@ -228,14 +227,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Save to Firebase (Shared Database)
         if (db) {
             try {
-                const newAppRef = db.ref('appointments').push();
+                const newAppRef = db.collection('appointments').doc();
                 await newAppRef.set({
                     ...fullData,
                     dateDB: date,
                     created_at: new Date().toISOString(),
                     status: 'pending',
                     type: 'appointment',
-                    id: newAppRef.key
+                    id: newAppRef.id
                 });
             } catch (error) {
                 console.error("Error saving to Firebase:", error);
@@ -260,17 +259,15 @@ document.addEventListener('DOMContentLoaded', function() {
     async function fetchBookedDates() {
         if (db) {
             // Real-time listener for appointments
-            db.ref('appointments').on('value', (snapshot) => {
-                const data = snapshot.val();
+            db.collection('appointments').onSnapshot((snapshot) => {
                 bookedDates = [];
-                if (data) {
-                    Object.values(data).forEach(app => {
-                        // Solo bloquear fechas de citas aceptadas o pendientes (si quieres bloquear todas)
-                        if (app.dateDB && (app.status === 'pending' || app.status === 'accepted')) {
-                            bookedDates.push(app.dateDB);
-                        }
-                    });
-                }
+                snapshot.forEach(doc => {
+                    const app = doc.data();
+                    // Solo bloquear fechas de citas aceptadas o pendientes (si quieres bloquear todas)
+                    if (app.dateDB && (app.status === 'pending' || app.status === 'accepted')) {
+                        bookedDates.push(app.dateDB);
+                    }
+                });
                 console.log("Real-time booked dates updated:", bookedDates);
                 generateCalendar();
             });

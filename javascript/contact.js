@@ -28,12 +28,12 @@ document.addEventListener('DOMContentLoaded', function () {
     try {
         if (typeof firebase !== 'undefined') {
             if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-            db = firebase.database();
+            db = firebase.firestore();
             console.log("✅ Firebase connected for contact messages.");
-            
+
             // Maintenance check for redirect
-            db.ref('settings/maintenance').on('value', (snapshot) => {
-                if (snapshot.val() === true) {
+            db.collection('settings').doc('config').onSnapshot((doc) => {
+                if (doc.exists && doc.data().maintenance === true) {
                     redirectHome.value = './Maintenance.html';
                 } else {
                     redirectHome.value = './index.html';
@@ -161,7 +161,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // --- Save to Firebase ---
             if (db) {
                 try {
-                    const newContactRef = db.ref('appointments').push(); // We use 'appointments' node to keep it simple for the dashboard, but we mark it as type 'contact'
+                    // We use the 'appointments' collection to keep it simple for the dashboard, but we mark it as type 'contact'
+                    const newContactRef = db.collection('appointments').doc();
                     await newContactRef.set({
                         name: clientName,
                         email: clientEmail,
@@ -172,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         created_at: new Date().toISOString(),
                         status: 'pending',
                         type: 'contact', // Distinguish from appointment
-                        id: newContactRef.key
+                        id: newContactRef.id
                     });
                     console.log("✅ Contact message saved to Firebase");
                 } catch (error) {

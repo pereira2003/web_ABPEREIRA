@@ -1,0 +1,61 @@
+rules_version = '2';
+
+// Reglas de Cloud Firestore para abpereira-web.
+// Sin fecha de caducidad. Permisivas por coleccion + validacion de formato.
+//
+// NOTA DE SEGURIDAD: el panel de admin entra con login anonimo + contrasena en
+// el HTML, por lo que estas reglas NO pueden distinguir un admin de un visitante.
+// Cualquiera puede escribir en services_catalog / settings y crear/editar citas,
+// y leer todas las citas. Para cerrarlo hay que activar Firebase Auth para el
+// admin y mover las fechas ocupadas a una coleccion publica aparte.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Contadores de "me gusta" por servicio. Doc id = clave del servicio.
+    match /likes/{serviceKey} {
+      allow read: if true;
+      allow write: if request.resource.data.keys().hasOnly(['count'])
+                   && request.resource.data.count is number
+                   && request.resource.data.count >= 0;
+    }
+
+    // Ajustes globales del sitio. Se usa el doc "config" con { maintenance: bool }.
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if request.resource.data.maintenance is bool;
+    }
+
+    // Catalogo de servicios que se muestra en la web y gestiona el panel.
+    match /services_catalog/{docId} {
+      allow read: if true;
+      allow create, update: if request.resource.data.title is string
+                            && request.resource.data.image is string;
+      allow delete: if true;
+    }
+
+    // Citas y mensajes de contacto (type: "appointment" | "contact").
+    // read publico: necesario para pintar las fechas ocupadas del calendario.
+    match /appointments/{docId} {
+      allow read: if true;
+      allow create: if request.resource.data.type in ['appointment', 'contact']
+                    && request.resource.data.status is string;
+      // Desde la web publica solo se cambia el estado; el panel tambien borra.
+      allow update: if request.resource.data.diff(resource.data)
+                        .affectedKeys().hasOnly(['status']);
+      allow delete: if true;
+    }
+
+    // Mensajes de contacto guardados por el backend Express.
+    match /contacts/{docId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if false;
+    }
+
+    // Todo lo demas queda bloqueado.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

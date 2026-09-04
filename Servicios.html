@@ -78,7 +78,7 @@
         });
     </script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script>
       const fbCheck = {
@@ -99,8 +99,8 @@
               .catch((err) => console.error('Firebase anonymous auth error (Servicios):', err));
           }
         }
-        firebase.database().ref('settings/maintenance').on('value', (snapshot) => {
-          if (snapshot.val() === true) window.location.href = 'Maintenance.html';
+        firebase.firestore().collection('settings').doc('config').onSnapshot((doc) => {
+          if (doc.exists && doc.data().maintenance === true) window.location.href = 'Maintenance.html';
         });
   </script>
 </head>

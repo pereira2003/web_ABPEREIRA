@@ -1,0 +1,12 @@
+# Credenciales de Firebase / Google - NUNCA subir
+*firebase-adminsdk*.json
+*-adminsdk-*.json
+serviceAccount*.json
+service-account*.json
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+npm-debug.log*

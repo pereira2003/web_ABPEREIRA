@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
-        db = firebase.database();
+        db = firebase.firestore();
     }
 
     // Helper to create a safe Firebase key
@@ -45,13 +45,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!db) return;
         
         // Escuchar cambios en tiempo real
-        db.ref('services_catalog').on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                // Convertir objeto de Firebase a array y ordenar por fecha de creación (opcional)
-                allServices = Object.keys(data).map(key => ({ ...data[key], id: key }));
-                
-                // Mantener el orden original si es necesario o aplicar uno nuevo
+        db.collection('services_catalog').onSnapshot((snapshot) => {
+            if (!snapshot.empty) {
+                allServices = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
                 renderServicesGrid();
             } else {
                 servicesGrid.innerHTML = '<div class="empty-state"><p>No hay servicios disponibles en este momento.</p></div>';
@@ -199,10 +195,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const key = getServiceKey(title);
             const countDisplay = button.querySelector('.like-count');
 
-            // Sync with Firebase real-time
+            // Sync with Firestore real-time
             if (db) {
-                db.ref('likes/' + key).on('value', (snapshot) => {
-                    const val = snapshot.val();
+                db.collection('likes').doc(key).onSnapshot((doc) => {
+                    const val = doc.exists ? doc.data() : null;
                     const count = (typeof val === 'number') ? val : (val?.count || 0);
                     countDisplay.textContent = count;
                 });
@@ -215,12 +211,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 e.stopPropagation();
                 if (!db) return;
                 button.liked = !button.liked;
-                const ref = db.ref('likes/' + key);
-                
-                ref.transaction(current => {
-                    const currentCount = (typeof current === 'number') ? current : (current?.count || 0);
-                    return { count: Math.max(0, button.liked ? currentCount + 1 : currentCount - 1) };
-                });
+                const ref = db.collection('likes').doc(key);
+
+                db.runTransaction(async (tx) => {
+                    const snap = await tx.get(ref);
+                    const data = snap.exists ? snap.data() : null;
+                    const currentCount = (typeof data === 'number') ? data : (data?.count || 0);
+                    tx.set(ref, { count: Math.max(0, button.liked ? currentCount + 1 : currentCount - 1) });
+                }).catch(error => console.error("Error updating like:", error));
 
                 if (button.liked) localLikes[key] = true;
                 else delete localLikes[key];

@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
-        db = firebase.database();
+        db = firebase.firestore();
     }
 
     // Helper to create a safe Firebase key
@@ -38,10 +38,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function injectLikedServices() {
         if (!track || !dotsContainer || !db) return;
 
-        // Listen for ALL likes from Firebase (Real-time)
-        db.ref('likes').on('value', (snapshot) => {
-            const globalLikes = snapshot.val() || {};
-            
+        // Listen for ALL likes from Firestore (Real-time)
+        db.collection('likes').onSnapshot((snapshot) => {
+            const globalLikes = {};
+            snapshot.forEach((doc) => { globalLikes[doc.id] = doc.data(); });
+
             // Define threshold (20 likes)
             const LIKE_THRESHOLD = 20;
 
